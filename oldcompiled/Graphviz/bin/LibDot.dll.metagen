@@ -1,0 +1,32 @@
+ImageRuntimeVersion: v4.0.30319
+Assembly LibDot, Version=1.0.*, Culture=固定语言(固定国家/地区): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=None, flags=None
+Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class GraphResult: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String, System.Drawing.Bitmap): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Fields:
+    System.String Text : Public
+    System.Drawing.Bitmap Image : Public
+  Methods:
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig
+Class GraphProvider: AutoLayout, AnsiClass, Class, Public
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    Int32 BYTES_PER_PIXEL IsConst : Public
+    System.Drawing.Bitmap Working : Public, Static
+  Methods:
+    Generate(String, String, String): PrivateScope, Public, Static, HideBySig
+    Generate(String, String): PrivateScope, Public, Static, HideBySig
+    Generate(String): PrivateScope, Public, Static, HideBySig
+    Process(String[]): PrivateScope, Public, Static, HideBySig
