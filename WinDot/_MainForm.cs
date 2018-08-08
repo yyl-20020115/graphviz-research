@@ -24,7 +24,7 @@ namespace WinDot
                     {
                         gx.DrawImage(g.Image, 0, 0);
                     }
-                    nb.Save("c:\\working\\gv\\images\\test.jpg");
+                    nb.Save("\\WorkingCurrent\\gv\\images\\test.jpg");
                 }
                 g.Dispose();
             }
