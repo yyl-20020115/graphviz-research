@@ -347,7 +347,8 @@ pointf ccwrotatepf(pointf p, int ccwrot)
     return p;
 }
 
-inline box flip_rec_box(box b, point p)
+//inline 
+box flip_rec_box(box b, point p)
 {
     box r;
     /* flip box */

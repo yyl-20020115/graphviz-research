@@ -289,20 +289,20 @@ int colorxlate(char *str, gvcolor_t * color, color_type_t target_type)
 	    color->u.HSVA[3] = A;
 	    break;
 	case RGBA_BYTE:
-	    color->u.rgba[0] = r;
-	    color->u.rgba[1] = g;
-	    color->u.rgba[2] = b;
-	    color->u.rgba[3] = a;
+	    color->u.rgba[0] = (unsigned char) r;
+	    color->u.rgba[1] = (unsigned char)g;
+	    color->u.rgba[2] = (unsigned char)b;
+	    color->u.rgba[3] = (unsigned char)a;
 	    break;
 	case CMYK_BYTE:
 	    R = (double) r / 255.0;
 	    G = (double) g / 255.0;
 	    B = (double) b / 255.0;
 	    rgb2cmyk(R, G, B, &C, &M, &Y, &K);
-	    color->u.cmyk[0] = (int) C *255;
-	    color->u.cmyk[1] = (int) M *255;
-	    color->u.cmyk[2] = (int) Y *255;
-	    color->u.cmyk[3] = (int) K *255;
+	    color->u.cmyk[0] = (unsigned char)(int) C *255;
+	    color->u.cmyk[1] = (unsigned char)(int) M *255;
+	    color->u.cmyk[2] = (unsigned char)(int) Y *255;
+	    color->u.cmyk[3] = (unsigned char)(int) K *255;
 	    break;
 	case RGBA_WORD:
 	    color->u.rrggbbaa[0] = r * 65535 / 255;
@@ -357,18 +357,18 @@ int colorxlate(char *str, gvcolor_t * color, color_type_t target_type)
 		break;
 	    case RGBA_BYTE:
 		hsv2rgb(H, S, V, &R, &G, &B);
-		color->u.rgba[0] = (int) (R * 255);
-		color->u.rgba[1] = (int) (G * 255);
-		color->u.rgba[2] = (int) (B * 255);
+		color->u.rgba[0] = (unsigned char)(int) (R * 255);
+		color->u.rgba[1] = (unsigned char)(int) (G * 255);
+		color->u.rgba[2] = (unsigned char)(int) (B * 255);
 		color->u.rgba[3] = 255;	/* opaque */
 		break;
 	    case CMYK_BYTE:
 		hsv2rgb(H, S, V, &R, &G, &B);
 		rgb2cmyk(R, G, B, &C, &M, &Y, &K);
-		color->u.cmyk[0] = (int) C *255;
-		color->u.cmyk[1] = (int) M *255;
-		color->u.cmyk[2] = (int) Y *255;
-		color->u.cmyk[3] = (int) K *255;
+		color->u.cmyk[0] = (unsigned char)(int) C *255;
+		color->u.cmyk[1] = (unsigned char)(int) M *255;
+		color->u.cmyk[2] = (unsigned char)(int) Y *255;
+		color->u.cmyk[3] = (unsigned char)(int) K *255;
 		break;
 	    case RGBA_WORD:
 		hsv2rgb(H, S, V, &R, &G, &B);
@@ -425,10 +425,10 @@ int colorxlate(char *str, gvcolor_t * color, color_type_t target_type)
 	    G = (last->g) / 255.0;
 	    B = (last->b) / 255.0;
 	    rgb2cmyk(R, G, B, &C, &M, &Y, &K);
-	    color->u.cmyk[0] = (int) C * 255;
-	    color->u.cmyk[1] = (int) M * 255;
-	    color->u.cmyk[2] = (int) Y * 255;
-	    color->u.cmyk[3] = (int) K * 255;
+	    color->u.cmyk[0] = (unsigned char)(int) C * 255;
+	    color->u.cmyk[1] = (unsigned char)(int) M * 255;
+	    color->u.cmyk[2] = (unsigned char)(int) Y * 255;
+	    color->u.cmyk[3] = (unsigned char)(int) K * 255;
 	    break;
 	case RGBA_WORD:
 	    color->u.rrggbbaa[0] = last->r * 65535 / 255;
@@ -486,7 +486,7 @@ static void rgba_wordToByte (int* rrggbbaa, unsigned char* rgba)
     int i;
 
     for (i = 0; i < 4; i++) {
-	rgba[i] = rrggbbaa[i] * 255 / 65535;
+	rgba[i] =(unsigned char)( rrggbbaa[i] * 255.0 / 65535.0);
     }
 }
 

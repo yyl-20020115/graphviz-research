@@ -416,7 +416,8 @@ static void arrow_type_normal(GVJ_t * job, pointf p, pointf u, double arrowsize,
 {
     pointf q, v, a[5];
     double arrowwidth;
-
+	arrowsize;
+	flag;
     arrowwidth = 0.35;
     if (penwidth > 4)
         arrowwidth *= penwidth / 4;
@@ -511,7 +512,9 @@ static void arrow_type_crow(GVJ_t * job, pointf p, pointf u, double arrowsize, d
 static void arrow_type_gap(GVJ_t * job, pointf p, pointf u, double arrowsize, double penwidth, int flag)
 {
     pointf q, a[2];
-
+	flag;
+	penwidth;
+	arrowsize;
     q.x = p.x + u.x;
     q.y = p.y + u.y;
     a[0] = p;
@@ -522,6 +525,8 @@ static void arrow_type_gap(GVJ_t * job, pointf p, pointf u, double arrowsize, do
 static void arrow_type_tee(GVJ_t * job, pointf p, pointf u, double arrowsize, double penwidth, int flag)
 {
     pointf m, n, q, v, a[4];
+	penwidth;
+	arrowsize;
 
     v.x = -u.y;
     v.y = u.x;
@@ -555,6 +560,8 @@ static void arrow_type_tee(GVJ_t * job, pointf p, pointf u, double arrowsize, do
 static void arrow_type_box(GVJ_t * job, pointf p, pointf u, double arrowsize, double penwidth, int flag)
 {
     pointf m, q, v, a[4];
+	penwidth;
+	arrowsize;
 
     v.x = -u.y * 0.4;
     v.y = u.x * 0.4;
@@ -586,6 +593,8 @@ static void arrow_type_box(GVJ_t * job, pointf p, pointf u, double arrowsize, do
 static void arrow_type_diamond(GVJ_t * job, pointf p, pointf u, double arrowsize, double penwidth, int flag)
 {
     pointf q, r, v, a[5];
+	penwidth;
+	arrowsize;
 
     v.x = -u.y / 3.;
     v.y = u.x / 3.;
@@ -611,6 +620,8 @@ static void arrow_type_dot(GVJ_t * job, pointf p, pointf u, double arrowsize, do
 {
     double r;
     pointf AF[2];
+	penwidth;
+	arrowsize;
 
     r = sqrt(u.x * u.x + u.y * u.y) / 2.;
     AF[0].x = p.x + u.x / 2. - r;
@@ -629,7 +640,7 @@ static void arrow_type_curve(GVJ_t* job, pointf p, pointf u, double arrowsize, d
     double arrowwidth = penwidth > 4 ? 0.5 * penwidth / 4 : 0.5;
     pointf q, v, w;
     pointf AF[4], a[2];
-
+	arrowsize;
     q.x = p.x + u.x;
     q.y = p.y + u.y; 
     v.x = -u.y * arrowwidth; 
@@ -694,7 +705,7 @@ boxf arrow_bb(pointf p, pointf u, double arrowsize, int flag)
     boxf bb;
     double ax,ay,bx,by,cx,cy,dx,dy;
     double ux2, uy2;
-
+	flag;
     /* generate arrowhead vector */
     u.x -= p.x;
     u.y -= p.y;

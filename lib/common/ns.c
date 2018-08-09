@@ -202,12 +202,12 @@ void init_rank(void)
 		}
 	}
 
-	while ((v = dequeue(Q))) {
+	while ((v = dequeue(Q)) != 0) {
 		ND_rank(v) = 0;
 		ctr++;
-		for (i = 0; (e = ND_in(v).list[i]); i++)
+		for (i = 0; (e = ND_in(v).list[i]) != 0; i++)
 			ND_rank(v) = MAX(ND_rank(v), ND_rank(agtail(e)) + ED_minlen(e));
-		for (i = 0; (e = ND_out(v).list[i]); i++) {
+		for (i = 0; (e = ND_out(v).list[i]) != 0; i++) {
 			if (--(ND_priority(aghead(e))) <= 0)
 				enqueue(Q, aghead(e));
 		}
@@ -264,7 +264,7 @@ static void dfs_enter_outedge(node_t * v)
 	int i, slack;
 	edge_t *e;
 
-	for (i = 0; (e = ND_out(v).list[i]); i++) {
+	for (i = 0; (e = ND_out(v).list[i]) != 0; i++) {
 		if (TREE_EDGE(e) == FALSE) {
 			if (!SEQ(Low, ND_lim(aghead(e)), Lim)) {
 				slack = SLACK(e);
@@ -277,7 +277,7 @@ static void dfs_enter_outedge(node_t * v)
 		else if (ND_lim(aghead(e)) < ND_lim(v))
 			dfs_enter_outedge(aghead(e));
 	}
-	for (i = 0; (e = ND_tree_in(v).list[i]) && (Slack > 0); i++)
+	for (i = 0; (e = ND_tree_in(v).list[i]) != 0 && (Slack > 0); i++)
 		if (ND_lim(agtail(e)) < ND_lim(v))
 			dfs_enter_outedge(agtail(e));
 }
@@ -287,7 +287,7 @@ static void dfs_enter_inedge(node_t * v)
 	int i, slack;
 	edge_t *e;
 
-	for (i = 0; (e = ND_in(v).list[i]); i++) {
+	for (i = 0; (e = ND_in(v).list[i]) != 0; i++) {
 		if (TREE_EDGE(e) == FALSE) {
 			if (!SEQ(Low, ND_lim(agtail(e)), Lim)) {
 				slack = SLACK(e);
@@ -300,7 +300,7 @@ static void dfs_enter_inedge(node_t * v)
 		else if (ND_lim(agtail(e)) < ND_lim(v))
 			dfs_enter_inedge(agtail(e));
 	}
-	for (i = 0; (e = ND_tree_out(v).list[i]) && (Slack > 0); i++)
+	for (i = 0; (e = ND_tree_out(v).list[i]) != 0 && (Slack > 0); i++)
 		if (ND_lim(aghead(e)) < ND_lim(v))
 			dfs_enter_inedge(aghead(e));
 }
@@ -358,14 +358,14 @@ static int tight_subtree_search(Agnode_t *v, subtree_t *st)
 
 	rv = 1;
 	ND_subtree_set(v, st);
-	for (i = 0; (e = ND_in(v).list[i]); i++) {
+	for (i = 0; (e = ND_in(v).list[i]) != 0; i++) {
 		if (TREE_EDGE(e)) continue;
 		if ((ND_subtree(agtail(e)) == 0) && (SLACK(e) == 0)) {
 			add_tree_edge(e);
 			rv += tight_subtree_search(agtail(e), st);
 		}
 	}
-	for (i = 0; (e = ND_out(v).list[i]); i++) {
+	for (i = 0; (e = ND_out(v).list[i]) != 0; i++) {
 		if (TREE_EDGE(e)) continue;
 		if ((ND_subtree(aghead(e)) == 0) && (SLACK(e) == 0)) {
 			add_tree_edge(e);
@@ -428,7 +428,7 @@ static Agedge_t *inter_tree_edge_search(Agnode_t *v, Agnode_t *from, Agedge_t *b
 	Agedge_t *e;
 	subtree_t *ts = STsetFind(v);
 	if (best && SLACK(best) == 0) return best;
-	for (i = 0; (e = ND_out(v).list[i]); i++) {
+	for (i = 0; (e = ND_out(v).list[i]) != 0; i++) {
 		if (TREE_EDGE(e)) {
 			if (aghead(e) == from) continue;  // do not search back in tree
 			best = inter_tree_edge_search(aghead(e), v, best); // search forward in tree
@@ -441,7 +441,7 @@ static Agedge_t *inter_tree_edge_search(Agnode_t *v, Agnode_t *from, Agedge_t *b
 		}
 	}
 	/* the following code must mirror the above, but for in-edges */
-	for (i = 0; (e = ND_in(v).list[i]); i++) {
+	for (i = 0; (e = ND_in(v).list[i]) != 0; i++) {
 		if (TREE_EDGE(e)) {
 			if (agtail(e) == from) continue;
 			best = inter_tree_edge_search(agtail(e), v, best);
@@ -525,12 +525,12 @@ void tree_adjust(Agnode_t *v, Agnode_t *from, int delta)
 	Agedge_t *e;
 	Agnode_t *w;
 	ND_rank(v) = ND_rank(v) + delta;
-	for (i = 0; (e = ND_tree_in(v).list[i]); i++) {
+	for (i = 0; (e = ND_tree_in(v).list[i]) != 0; i++) {
 		w = agtail(e);
 		if (w != from)
 			tree_adjust(w, v, delta);
 	}
-	for (i = 0; (e = ND_tree_out(v).list[i]); i++) {
+	for (i = 0; (e = ND_tree_out(v).list[i]) != 0; i++) {
 		w = aghead(e);
 		if (w != from)
 			tree_adjust(w, v, delta);
@@ -597,7 +597,7 @@ int feasible_tree(void)
 	heap = STbuildheap(subTrees, subtree_count);
 	while (STheapsize(heap) > 1) {
 		tree0 = STextractmin(heap);
-		if (!(ee = inter_tree_edge(tree0))) {
+		if (0==(ee = inter_tree_edge(tree0))) {
 			error = 1;
 			break;
 		}
@@ -650,10 +650,10 @@ static void rerank(Agnode_t * v, int delta)
 	edge_t *e;
 
 	ND_rank(v) -= delta;
-	for (i = 0; (e = ND_tree_out(v).list[i]); i++)
+	for (i = 0; (e = ND_tree_out(v).list[i]) != 0; i++)
 		if (e != ND_par(v))
 			rerank(aghead(e), delta);
-	for (i = 0; (e = ND_tree_in(v).list[i]); i++)
+	for (i = 0; (e = ND_tree_in(v).list[i]) != 0; i++)
 		if (e != ND_par(v))
 			rerank(agtail(e), delta);
 }
@@ -776,11 +776,11 @@ static void TB_balance(void)
 		inweight = outweight = 0;
 		low = 0;
 		high = Maxrank;
-		for (i = 0; (e = ND_in(n).list[i]); i++) {
+		for (i = 0; (e = ND_in(n).list[i]) != 0; i++) {
 			inweight += ED_weight(e);
 			low = MAX(low, ND_rank(agtail(e)) + ED_minlen(e));
 		}
-		for (i = 0; (e = ND_out(n).list[i]); i++) {
+		for (i = 0; (e = ND_out(n).list[i]) != 0; i++) {
 			outweight += ED_weight(e);
 			high = MIN(high, ND_rank(aghead(e)) - ED_minlen(e));
 		}
@@ -813,7 +813,7 @@ static int init_graph(graph_t * g)
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
 		ND_mark(n) = FALSE;
 		N_nodes++;
-		for (i = 0; (e = ND_out(n).list[i]); i++)
+		for (i = 0; (e = ND_out(n).list[i]) != 0; i++)
 			N_edges++;
 	}
 
@@ -828,7 +828,7 @@ static int init_graph(graph_t * g)
 		//char* t = ND_label(n)->text;
 
 		ND_priority(n) = 0;
-		for (i = 0; (e = ND_in(n).list[i]); i++) {
+		for (i = 0; (e = ND_in(n).list[i]) != 0; i++) {
 			ND_priority(n)++;
 			ED_cutvalue(e) = 0;
 			ED_tree_index(e) = -1;
@@ -838,7 +838,7 @@ static int init_graph(graph_t * g)
 		}
 		ND_tree_in(n).list = N_NEW(i + 1, edge_t *);
 		ND_tree_in(n).size = 0;
-		for (i = 0; (e = ND_out(n).list[i]); i++);
+		for (i = 0; (e = ND_out(n).list[i]) != 0; i++);
 		ND_tree_out(n).list = N_NEW(i + 1, edge_t *);
 		ND_tree_out(n).size = 0;
 	}
@@ -858,7 +858,7 @@ graphSize(graph_t * g, int* nn, int* ne)
 	nnodes = nedges = 0;
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
 		nnodes++;
-		for (i = 0; (e = ND_out(n).list[i]); i++) {
+		for (i = 0; (e = ND_out(n).list[i]) != 0; i++) {
 			nedges++;
 		}
 	}
@@ -958,7 +958,7 @@ int rank2(graph_t * g, int balance, int maxiter, int search_size)
 	//char display_e[256] = { 0 };
 	//char display_f[256] = { 0 };
 
-	while ((e = leave_edge())) {
+	while ((e = leave_edge()) != 0) {
 		//memset(display_e, 0, sizeof(display_e));
 		//memset(display_f, 0, sizeof(display_f));
 
@@ -1005,7 +1005,7 @@ int rank(graph_t * g, int balance, int maxiter)
 	char *s;
 	int search_size;
 
-	if ((s = agget(g, "searchsize")))
+	if ((s = agget(g, "searchsize")) != 0)
 		search_size = atoi(s);
 	else
 		search_size = SEARCHSIZE;
@@ -1031,9 +1031,9 @@ static void x_cutval(edge_t * f)
 	}
 
 	sum = 0;
-	for (i = 0; (e = ND_out(v).list[i]); i++)
+	for (i = 0; (e = ND_out(v).list[i]) != 0; i++)
 		sum += x_val(e, v, dir);
-	for (i = 0; (e = ND_in(v).list[i]); i++)
+	for (i = 0; (e = ND_in(v).list[i]) != 0; i++)
 		sum += x_val(e, v, dir);
 	ED_cutvalue(f) = sum;
 }
@@ -1083,10 +1083,10 @@ static void dfs_cutval(node_t * v, edge_t * par)
 	int i;
 	edge_t *e;
 
-	for (i = 0; (e = ND_tree_out(v).list[i]); i++)
+	for (i = 0; (e = ND_tree_out(v).list[i]) != 0; i++)
 		if (e != par)
 			dfs_cutval(aghead(e), e);
-	for (i = 0; (e = ND_tree_in(v).list[i]); i++)
+	for (i = 0; (e = ND_tree_in(v).list[i]) != 0; i++)
 		if (e != par)
 			dfs_cutval(agtail(e), e);
 	if (par)
@@ -1101,10 +1101,10 @@ static int dfs_range(node_t * v, edge_t * par, int low)
 	lim = low;
 	ND_par(v) = par;
 	ND_low(v) = low;
-	for (i = 0; (e = ND_tree_out(v).list[i]); i++)
+	for (i = 0; (e = ND_tree_out(v).list[i]) != 0; i++)
 		if (e != par)
 			lim = dfs_range(aghead(e), e, lim);
-	for (i = 0; (e = ND_tree_in(v).list[i]); i++)
+	for (i = 0; (e = ND_tree_in(v).list[i]) != 0; i++)
 		if (e != par)
 			lim = dfs_range(agtail(e), e, lim);
 	ND_lim(v) = lim;

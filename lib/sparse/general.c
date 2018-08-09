@@ -44,7 +44,7 @@ real vector_percentile(int n, real *x, real y){
   y = MIN(y, 1);
   y = MAX(0, y);
 
-  i = n*y;
+  i = (int)(n*y);
   res = x[p[i]];
   FREE(p); return res;
 }

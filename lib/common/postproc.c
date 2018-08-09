@@ -419,7 +419,7 @@ static void addXLabels(Agraph_t * gp)
 	int n_set_lbls = 0;		/* # of set xlabels and edge labels */
 	int n_clbls = 0;		/* # of set cluster labels */
 	boxf bb;
-	pointf ur;
+	pointf ur = { 0.0,0.0 };
 	textlabel_t* lp;
 	label_params_t params;
 	object_t* objs;
@@ -489,7 +489,7 @@ static void addXLabels(Agraph_t * gp)
 	for (np = agfstnode(gp); np; np = agnxtnode(gp, np)) {
 
 		bb = addNodeObj(np, objp, bb);
-		if ((lp = ND_xlabel(np))) {
+		if ((lp = ND_xlabel(np))!=0) {
 			if (lp->set) {
 				objp++;
 				bb = addLabelObj(lp, objp, bb);
@@ -501,7 +501,7 @@ static void addXLabels(Agraph_t * gp)
 		}
 		objp++;
 		for (ep = agfstout(gp, np); ep; ep = agnxtout(gp, ep)) {
-			if ((lp = ED_label(ep))) {
+			if ((lp = ED_label(ep)) != 0) {
 				if (lp->set) {
 					bb = addLabelObj(lp, objp, bb);
 				}
@@ -516,7 +516,7 @@ static void addXLabels(Agraph_t * gp)
 				}
 				objp++;
 			}
-			if ((lp = ED_tail_label(ep))) {
+			if ((lp = ED_tail_label(ep)) != 0) {
 				if (lp->set) {
 					bb = addLabelObj(lp, objp, bb);
 				}
@@ -531,7 +531,7 @@ static void addXLabels(Agraph_t * gp)
 				}
 				objp++;
 			}
-			if ((lp = ED_head_label(ep))) {
+			if ((lp = ED_head_label(ep)) != 0) {
 				if (lp->set) {
 					bb = addLabelObj(lp, objp, bb);
 				}
@@ -546,7 +546,7 @@ static void addXLabels(Agraph_t * gp)
 				}
 				objp++;
 			}
-			if ((lp = ED_xlabel(ep))) {
+			if ((lp = ED_xlabel(ep)) != 0) {
 				if (lp->set) {
 					bb = addLabelObj(lp, objp, bb);
 				}

@@ -123,6 +123,8 @@ typedef struct {
 
 static namev_t *make_nitem(Dt_t * d, namev_t * objp, Dtdisc_t * disc)
 {
+	d;
+	disc;
     namev_t *np = NEW(namev_t);
     np->name = objp->name;
     np->unique_name = 0;
@@ -131,6 +133,8 @@ static namev_t *make_nitem(Dt_t * d, namev_t * objp, Dtdisc_t * disc)
 
 static void free_nitem(Dt_t * d, namev_t * np, Dtdisc_t * disc)
 {
+	d;
+	disc;
     free(np->unique_name);
     free(np);
 }
@@ -296,6 +300,7 @@ setNodeAttr(Agnode_t * np, char *name, char *value, userdata_t * ud)
 static void
 setGlobalNodeAttr(Agraph_t * g, char *name, char *value, userdata_t * ud)
 {
+	ud;
     if (strncmp(name, NODELBL, NLBLLEN))
 	fprintf(stderr,
 		"Warning: global node attribute %s in graph %s does not begin with the prefix %s\n",
@@ -346,6 +351,7 @@ setEdgeAttr(Agedge_t * ep, char *name, char *value, userdata_t * ud)
 static void
 setGlobalEdgeAttr(Agraph_t * g, char *name, char *value, userdata_t * ud)
 {
+	ud;
     if (strncmp(name, EDGELBL, ELBLLEN))
 	fprintf(stderr,
 		"Warning: global edge attribute %s in graph %s does not begin with the prefix %s\n",
@@ -595,7 +601,7 @@ static void endElementHandler(void *userData, const char *name)
 	ud->closedElementType = TAG_EDGE;
 	ud->edgeinverted = FALSE;
     } else if (strcmp(name, "attr") == 0) {
-	char *name;
+	char *_name;
 	char *value;
 	char buf[SMALLBUF] = GXL_COMP;
 	char *dynbuf = 0;
@@ -604,33 +610,33 @@ static void endElementHandler(void *userData, const char *name)
 	if (ud->compositeReadState) {
 	    int len = sizeof(GXL_COMP) + agxblen(&ud->xml_attr_name);
 	    if (len <= SMALLBUF) {
-		name = buf;
+		_name = buf;
 	    } else {
-		name = dynbuf = N_NEW(len, char);
-		strcpy(name, GXL_COMP);
+		_name = dynbuf = N_NEW(len, char);
+		strcpy(_name, GXL_COMP);
 	    }
-	    strcpy(name + sizeof(GXL_COMP) - 1,
+	    strcpy(_name + sizeof(GXL_COMP) - 1,
 		   agxbuse(&ud->xml_attr_name));
 	    value = agxbuse(&ud->composite_buffer);
 	    agxbclear(&ud->xml_attr_value);
 	    ud->compositeReadState = FALSE;
 	} else {
-	    name = agxbuse(&ud->xml_attr_name);
+	    _name = agxbuse(&ud->xml_attr_name);
 	    value = agxbuse(&ud->xml_attr_value);
 	}
 
 	switch (ud->globalAttrType) {
 	case TAG_NONE:
-	    setAttr(name, value, ud);
+	    setAttr(_name, value, ud);
 	    break;
 	case TAG_NODE:
-	    setGlobalNodeAttr(G, name, value, ud);
+	    setGlobalNodeAttr(G, _name, value, ud);
 	    break;
 	case TAG_EDGE:
-	    setGlobalEdgeAttr(G, name, value, ud);
+	    setGlobalEdgeAttr(G, _name, value, ud);
 	    break;
 	case TAG_GRAPH:
-	    setGraphAttr(G, name, value, ud);
+	    setGraphAttr(G, _name, value, ud);
 	    break;
 	}
 	if (dynbuf)

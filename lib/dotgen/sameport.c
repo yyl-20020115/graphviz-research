@@ -96,7 +96,7 @@ static int sameedge(same_t * same, int n_same, node_t * n, edge_t * e, char *id)
 	same[i].arr_len = 0;
 set_arrow:
 	arrow_flags(e, &sflag, &eflag);
-	if ((flag = aghead(e) == n ? eflag : sflag))
+	if ((flag = aghead(e) == n ? eflag : sflag)!=0)
 		same[i].arr_len =
 		/* only consider arrows if there's exactly one arrow */
 		(++same[i].n_arr == 1) ? arrow_length(e, flag) : 0;

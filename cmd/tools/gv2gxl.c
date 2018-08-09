@@ -56,6 +56,8 @@ typedef struct {
 
 static namev_t *make_nitem(Dt_t * d, namev_t * objp, Dtdisc_t * disc)
 {
+	d;
+	disc;
     namev_t *np = NEW(namev_t);
     np->name = objp->name;
     np->unique_name = 0;
@@ -64,6 +66,8 @@ static namev_t *make_nitem(Dt_t * d, namev_t * objp, Dtdisc_t * disc)
 
 static void free_nitem(Dt_t * d, namev_t * np, Dtdisc_t * disc)
 {
+	d;
+	disc;
     free(np);
 }
 
@@ -86,6 +90,9 @@ typedef struct {
 
 static void free_iditem(Dt_t * d, idv_t * idp, Dtdisc_t * disc)
 {
+	d;
+	disc;
+
     free(idp->name);
     free(idp);
 }
@@ -410,6 +417,7 @@ writeDict(Agraph_t * g, FILE * gxlFile, char *name, Dict_t * dict,
 {
     Dict_t *view;
     Agsym_t *sym, *psym;
+	g;
 
     view = dtview(dict, NIL(Dict_t *));
     for (sym = (Agsym_t *) dtfirst(dict); sym;
@@ -479,7 +487,7 @@ writeDict(Agraph_t * g, FILE * gxlFile, char *name, Dict_t * dict,
 static void writeDicts(Agraph_t * g, FILE * gxlFile)
 {
     Agdatadict_t *def;
-    if ((def = (Agdatadict_t *) agdatadict(g, FALSE))) {
+    if ((def = (Agdatadict_t *) agdatadict(g, FALSE))!=0) {
 	writeDict(g, gxlFile, "graph", def->dict.g, 1);
 	writeDict(g, gxlFile, "node", def->dict.n, 0);
 	writeDict(g, gxlFile, "edge", def->dict.e, 0);
@@ -498,7 +506,7 @@ writeHdr(gxlstate_t * stp, Agraph_t * g, FILE * gxlFile, int top)
     int len;
 
     Level++;
-    stp->attrsNotWritten = AGATTRWF(g);
+    stp->attrsNotWritten = (char)AGATTRWF(g);
 
     name = agnameof(g);
     if (g->desc.directed)
@@ -591,7 +599,7 @@ static int writeEdgeName(Agedge_t * e, FILE * gxlFile, int terminate)
 {
     int rv;
     char *p;
-
+	terminate;
     p = agnameof(e);
     if (!(EMPTY(p))) {
 	tabover(gxlFile);
@@ -684,7 +692,7 @@ writeNondefaultAttr(void *obj, FILE * gxlFile, Dict_t * defdict)
  */
 static int attrs_written(gxlstate_t * stp, void *obj)
 {
-    return !(AGATTRWF((Agobj_t *) obj) == stp->attrsNotWritten);
+    return 0==(AGATTRWF((Agobj_t *) obj) == stp->attrsNotWritten);
 }
 
 static void
@@ -880,7 +888,7 @@ static gxlstate_t *initState(Agraph_t * g)
     stp->idList = dtopen(&idDisc, Dtoset);
     stp->attrsNotWritten = 0;
     stp->root = g;
-    stp->directed = agisdirected(g);
+    stp->directed = (char)agisdirected(g);
     return stp;
 }
 

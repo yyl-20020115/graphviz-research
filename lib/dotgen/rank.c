@@ -561,7 +561,7 @@ int dumpGraph(graph_t* g) {
 	}
 
 	fclose(f);
-
+	return 0;
 }
 #endif
 /* dot1_rank:

@@ -202,8 +202,8 @@ int main(int argc, char **argv)
     } else {
 #ifdef HAVE_EXPAT
 	FILE *inFile;
-	while ((inFile = getFile())) {
-	    while ((G = gxl_to_gv(inFile))) {
+	while ((inFile = getFile()) != 0) {
+	    while ((G = gxl_to_gv(inFile)) != 0) {
 		if (prev)
 		    agclose(prev);
 		prev = G;

@@ -42,17 +42,17 @@ static Multilevel_Modularity_Clustering Multilevel_Modularity_Clustering_init(Sp
 
   if (level == 0){
     real modularity = 0;
-    int *ia = A->ia, *ja = A->ja, n = A->n;
+    int *ia = A->ia, *ja = A->ja, _n = A->n;
     real deg_total = 0;
     real *deg, *a = (real*) (A->a);
     real *indeg;
 
     grid->deg_total = 0.;
-    grid->deg = MALLOC(sizeof(real)*(n));
+    grid->deg = MALLOC(sizeof(real)*(_n));
     deg = grid->deg;
 
-    indeg = MALLOC(sizeof(real)*n);
-    for (i = 0; i < n; i++){
+    indeg = MALLOC(sizeof(real)*_n);
+    for (i = 0; i < _n; i++){
       deg[i] = 0;
       indeg[i] = 0.;
       for (j = ia[i]; j < ia[i+1]; j++){
@@ -62,7 +62,7 @@ static Multilevel_Modularity_Clustering Multilevel_Modularity_Clustering_init(Sp
       deg_total += deg[i];
     }
     if (deg_total == 0) deg_total = 1;
-    for (i = 0; i < n; i++){
+    for (i = 0; i < _n; i++){
       modularity += (indeg[i] - deg[i]*deg[i]/deg_total)/deg_total;
     }
     grid->deg_total = deg_total;

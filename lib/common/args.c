@@ -37,7 +37,7 @@ neato_extra_args(GVC_t *gvc, int argc, char** argv)
   int    i;
   char*  arg;
   int    cnt = 1;
-
+  gvc;
   for (i = 1; i < argc; i++) {
     arg = argv[i];
     if (arg && *arg == '-') {
@@ -82,7 +82,7 @@ memtest_extra_args(GVC_t *gvc, int argc, char** argv)
   int    i;
   char*  arg;
   int    cnt = 1;
-
+  gvc;
   for (i = 1; i < argc; i++) {
     arg = argv[i];
     if (arg && *arg == '-') {
@@ -246,7 +246,7 @@ fdp_extra_args (GVC_t *gvc, int argc, char** argv)
   int    i;
   char*  arg;
   int    cnt = 1;
-
+  gvc;
   for (i = 1; i < argc; i++) {
     arg = argv[i];
     if (arg && (*arg == '-') && (*(arg+1) == 'L')) {

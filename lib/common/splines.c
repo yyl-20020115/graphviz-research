@@ -336,9 +336,9 @@ conc_slope(node_t* n)
     edge_t *e;
 
     s_in = s_out = 0.0;
-    for (cnt_in = 0; (e = ND_in(n).list[cnt_in]); cnt_in++)
+    for (cnt_in = 0; (e = ND_in(n).list[cnt_in])!=0; cnt_in++)
 	s_in += ND_coord(agtail(e)).x;
-    for (cnt_out = 0; (e = ND_out(n).list[cnt_out]); cnt_out++)
+    for (cnt_out = 0; (e = ND_out(n).list[cnt_out]) != 0; cnt_out++)
 	s_out += ND_coord(aghead(e)).x;
     p.x = ND_coord(n).x - (s_in / cnt_in);
     p.y = ND_coord(n).y - ND_coord(agtail(ND_in(n).list[0])).y;
@@ -419,7 +419,7 @@ beginpath(path * P, edge_t * e, int et, pathend_t * endp, boolean merge)
     P->nbox = 0;
     P->data = (void *) e;
     endp->np = P->start.p;
-    if ((et == REGULAREDGE) && (ND_node_type(n) == NORMAL) && ((side = ED_tail_port(e).side))) {
+    if ((et == REGULAREDGE) && (ND_node_type(n) == NORMAL) != 0 && ((side = ED_tail_port(e).side)) != 0) {
 	edge_t* orig;
 	boxf b0, b = endp->nb;
 	if (side & TOP) {
@@ -485,7 +485,7 @@ beginpath(path * P, edge_t * e, int et, pathend_t * endp, boolean merge)
 	    ED_head_port(orig).clip = FALSE;
 	return;
     }
-    if ((et == FLATEDGE) && ((side = ED_tail_port(e).side))) {
+    if ((et == FLATEDGE) && ((side = ED_tail_port(e).side)) != 0) {
 	boxf b0, b = endp->nb;
 	edge_t* orig;
 	if (side & TOP) {
@@ -555,7 +555,7 @@ beginpath(path * P, edge_t * e, int et, pathend_t * endp, boolean merge)
     if (et == REGULAREDGE) side = BOTTOM;
     else side = endp->sidemask;  /* for flat edges */
     if (pboxfn
-	&& (mask = (*pboxfn) (n, &ED_tail_port(e), side, &endp->boxes[0], &endp->boxn)))
+	&& (mask = (*pboxfn) (n, &ED_tail_port(e), side, &endp->boxes[0], &endp->boxn)) != 0)
 	endp->sidemask = mask;
     else {
 	endp->boxes[0] = endp->nb;
@@ -613,7 +613,7 @@ void endpath(path * P, edge_t * e, int et, pathend_t * endp, boolean merge)
 	    P->end.constrained = FALSE;
     }
     endp->np = P->end.p;
-    if ((et == REGULAREDGE) && (ND_node_type(n) == NORMAL) && ((side = ED_head_port(e).side))) {
+    if ((et == REGULAREDGE) && (ND_node_type(n) == NORMAL) && ((side = ED_head_port(e).side)) != 0) {
 	edge_t* orig;
 	boxf b0, b = endp->nb;
 	if (side & TOP) {
@@ -681,7 +681,7 @@ void endpath(path * P, edge_t * e, int et, pathend_t * endp, boolean merge)
 	return;
     }
 
-    if ((et == FLATEDGE) && ((side = ED_head_port(e).side))) {
+    if ((et == FLATEDGE) && ((side = ED_head_port(e).side)) != 0) {
 	boxf b0, b = endp->nb;
 	edge_t* orig;
 	if (side & TOP) {
@@ -751,7 +751,7 @@ void endpath(path * P, edge_t * e, int et, pathend_t * endp, boolean merge)
     if (et == REGULAREDGE) side = TOP;
     else side = endp->sidemask;  /* for flat edges */
     if (pboxfn
-	&& (mask = (*pboxfn) (n, &ED_head_port(e), side, &endp->boxes[0], &endp->boxn)))
+	&& (mask = (*pboxfn) (n, &ED_head_port(e), side, &endp->boxes[0], &endp->boxn)) != 0)
 	endp->sidemask = mask;
     else {
 	endp->boxes[0] = endp->nb;
@@ -1284,8 +1284,8 @@ polylineMidpoint (splines* spl, pointf* pp, pointf* pq)
 {
     bezier bz;
     int i, j, k;
-    double d, dist = 0;
-    pointf pf, qf, mf;
+    double d=0.0, dist = 0.0;
+	pointf pf = { 0.0,0.0 }, qf = { 0.0,0.0 }, mf = { 0.0,0.0 };
 
     for (i = 0; i < spl->size; i++) {
 	bz = spl->list[i];
@@ -1483,7 +1483,7 @@ splines *getsplinepoints(edge_t * e)
     edge_t *le;
     splines *sp;
 
-    for (le = e; !(sp = ED_spl(le)) && ED_edge_type(le) != NORMAL;
+    for (le = e; 0==(sp = ED_spl(le)) && ED_edge_type(le) != NORMAL;
 	 le = ED_to_orig(le));
     if (sp == NULL) 
 	agerr (AGERR, "getsplinepoints: no spline points available for edge (%s,%s)\n",

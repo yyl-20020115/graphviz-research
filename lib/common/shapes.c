@@ -382,7 +382,7 @@ isBox (node_t* n)
 {
     polygon_t *p;
 
-    if ((p = ND_shape(n)->polygon)) {
+    if ((p = ND_shape(n)->polygon) != 0) {
 	return (p->sides == 4 && (ROUND(p->orientation) % 90) == 0 && p->distortion == 0. && p->skew == 0.);
     }
     else
@@ -396,7 +396,7 @@ isEllipse(node_t* n)
 {
     polygon_t *p;
 
-    if ((p = ND_shape(n)->polygon)) {
+    if ((p = ND_shape(n)->polygon) != 0) {
 	return (p->sides <= 2);
     }
     else
@@ -416,7 +416,7 @@ static char **checkStyle(node_t * n, int *flagp)
 	char **qp;
 	char *p;
 	pp = pstyle = parse_style(style);
-	while ((p = *pp)) {
+	while ((p = *pp) != 0) {
 	    if (streq(p, "filled")) {
 		istyle |= FILLED;
 		pp++;
@@ -462,7 +462,7 @@ static char **checkStyle(node_t * n, int *flagp)
 		pp++;
 	}
     }
-    if ((poly = ND_shape(n)->polygon))
+    if ((poly = ND_shape(n)->polygon) != 0)
 	istyle |= poly->option;
 
     *flagp = istyle;
@@ -475,10 +475,10 @@ static int stylenode(GVJ_t * job, node_t * n)
     int istyle;
     double penwidth;
 
-    if ((pstyle = checkStyle(n, &istyle)))
+    if ((pstyle = checkStyle(n, &istyle)) != 0)
 	gvrender_set_style(job, pstyle);
 
-    if (N_penwidth && ((s = agxget(n, N_penwidth)) && s[0])) {
+    if (N_penwidth != 0 && ((s = agxget(n, N_penwidth)) != 0 && s[0] != 0)) {
 	penwidth = late_double(n, N_penwidth, 1.0, 0.0);
 	gvrender_set_penwidth(job, penwidth);
     }
@@ -1906,7 +1906,7 @@ static void poly_init(node_t * n)
     if ((dimen.x > 0) || (dimen.y > 0)) {
 	/* padding */
 	if (!isPlain) {
-	    if ((p = agget(n, "margin"))) {
+	    if ((p = agget(n, "margin")) != 0) {
 		marginx = marginy = 0;
 		i = sscanf(p, "%lf,%lf", &marginx, &marginy);
 		if (marginx < 0)
@@ -1954,7 +1954,7 @@ static void poly_init(node_t * n)
 		imagesize.y += 2;
 	    }
 	}
-    } else if ((sfile = agget(n, "image")) && (*sfile != '\0')) {
+    } else if ((sfile = agget(n, "image")) != 0 && (*sfile != '\0')) {
 	imagesize = gvusershape_size(agraphof(n), sfile);
 	if ((imagesize.x == -1) && (imagesize.y == -1)) {
 	    agerr(AGWARN,
@@ -2355,7 +2355,7 @@ static boolean poly_inside(inside_t * inside_context, pointf p)
     if (!(same_side(P, O, Q, R)))   /* false if outside the segment's face */
 	return FALSE;
     /* else inside the segment face... */
-    if ((s = same_side(P, Q, R, O)) && (same_side(P, R, O, Q))) /* true if between the segment's sides */
+    if ((s = same_side(P, Q, R, O)) != 0 && (same_side(P, R, O, Q)) != 0) /* true if between the segment's sides */
 	return TRUE;
     /* else maybe in another segment */
     for (j = 1; j < sides; j++) { /* iterate over remaining segments */
@@ -2743,7 +2743,7 @@ static port poly_port(node_t * n, char *portname, char *compass)
     if (compass == NULL)
 	compass = "_";
     sides = BOTTOM | RIGHT | TOP | LEFT;
-    if ((ND_label(n)->html) && (bp = html_port(n, portname, &sides))) {
+    if ((ND_label(n)->html) && (bp = html_port(n, portname, &sides)) != 0) {
 	if (compassPort(n, bp, &rv, compass, sides, NULL)) {
 	    agerr(AGWARN,
 		  "node %s, port %s, unrecognized compass point '%s' - ignored\n",
@@ -2926,11 +2926,11 @@ static void poly_gencode(GVJ_t * job, node_t * n)
     if (ND_shape(n)->usershape) {
 	name = ND_shape(n)->name;
 	if (streq(name, "custom")) {
-	    if ((name = agget(n, "shapefile")) && name[0])
+	    if ((name = agget(n, "shapefile")) != 0 && name[0] != 0)
 		usershape_p = TRUE;
 	} else
 	    usershape_p = TRUE;
-    } else if ((name = agget(n, "image")) && name[0]) {
+    } else if ((name = agget(n, "image")) != 0 && name[0] != 0) {
 	usershape_p = TRUE;
     }
     if (usershape_p) {
@@ -3257,7 +3257,7 @@ static field_t *parse_reclbl(node_t * n, int LR, int flag, char *text)
     wflag = TRUE;
     ishardspace = FALSE;
     while (wflag) {
-	if ((uc = *(unsigned char*)reclblp) && (uc < ' ')) {    /* Ignore non-0 control characters */
+	if ((uc = *(unsigned char*)reclblp)!=0 && (uc < ' ')) {    /* Ignore non-0 control characters */
 	    reclblp++;
 	    continue;
 	}
@@ -3385,7 +3385,7 @@ static pointf size_reclbl(node_t * n, field_t * f)
 	/* minimal whitespace around label */
 	if ((dimen.x > 0.0) || (dimen.y > 0.0)) {
 	    /* padding */
-	    if ((p = agget(n, "margin"))) {
+	    if ((p = agget(n, "margin")) != 0) {
 		i = sscanf(p, "%lf,%lf", &marginx, &marginy);
 		if (i > 0) {
 		    dimen.x += 2 * POINTS(marginx);
@@ -3550,7 +3550,7 @@ static void record_init(node_t * n)
      */
     len = MAX(len, 1);
     textbuf = N_NEW(len + 1, char);
-    if (!(info = parse_reclbl(n, flip, TRUE, textbuf))) {
+    if (0==(info = parse_reclbl(n, flip, TRUE, textbuf))) {
 	agerr(AGERR, "bad label format %s\n", ND_label(n)->text);
 	reclblp = "\\N";
 	info = parse_reclbl(n, flip, TRUE, textbuf);
@@ -3595,7 +3595,7 @@ static field_t *map_rec_port(field_t * f, char *str)
     else {
 	rv = NULL;
 	for (sub = 0; sub < f->n_flds; sub++)
-	    if ((rv = map_rec_port(f->fld[sub], str)))
+	    if ((rv = map_rec_port(f->fld[sub], str)) != 0)
 		break;
     }
     return rv;
@@ -3614,7 +3614,7 @@ static port record_port(node_t * n, char *portname, char *compass)
     if (compass == NULL)
 	compass = "_";
     f = (field_t *) ND_shape_info(n);
-    if ((subf = map_rec_port(f, portname))) {
+    if ((subf = map_rec_port(f, portname)) != 0) {
 	if (compassPort(n, &subf->b, &rv, compass, subf->sides, NULL)) {
 	    agerr(AGWARN,
 		  "node %s, port %s, unrecognized compass point '%s' - ignored\n",
@@ -3817,7 +3817,7 @@ static shape_desc *user_shape(char *name)
     int i;
     shape_desc *p;
 
-    if ((p = find_user_shape(name)))
+    if ((p = find_user_shape(name)) != 0)
 	return p;
     i = N_UserShape++;
     UserShape = ALLOC(N_UserShape, UserShape, shape_desc *);

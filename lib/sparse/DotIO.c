@@ -236,19 +236,19 @@ SparseMatrix_import_dot (Agraph_t* g, int dim, real **label_sizes, real **x, int
 
   if (label_sizes) *label_sizes = MALLOC(sizeof(real)*2*nnodes);
   for (n = agfstnode (g); n; n = agnxtnode (g, n)) {
-    real sz;
+    real _sz;
     i = ND_id(n);
     if (edge_label_nodes && strncmp(agnameof(n), "|edgelabel|",11)==0) {
       (*edge_label_nodes)[nedge_nodes++] = i;
     }
     if (label_sizes){
       if (agget(n, "width") && agget(n, "height")){
-	sscanf(agget(n, "width"), "%lf", &sz);
-	/*      (*label_sizes)[i*2] = POINTS(sz)*.6;*/
-	(*label_sizes)[i*2] = POINTS(sz)*.5 + padding*0.5;
-	sscanf(agget(n, "height"), "%lf", &sz);
-	/*(*label_sizes)[i*2+1] = POINTS(sz)*.6;*/
-	(*label_sizes)[i*2+1] = POINTS(sz)*.5  + padding*0.5;
+	sscanf(agget(n, "width"), "%lf", &_sz);
+	/*      (*label_sizes)[i*2] = POINTS(_sz)*.6;*/
+	(*label_sizes)[i*2] = POINTS(_sz)*.5 + padding*0.5;
+	sscanf(agget(n, "height"), "%lf", &_sz);
+	/*(*label_sizes)[i*2+1] = POINTS(_sz)*.6;*/
+	(*label_sizes)[i*2+1] = POINTS(_sz)*.5  + padding*0.5;
       } else {
 	(*label_sizes)[i*2] = 4*POINTS(0.75)*.5;
 	(*label_sizes)[i*2+1] = 4*POINTS(0.5)*.5;
@@ -256,7 +256,7 @@ SparseMatrix_import_dot (Agraph_t* g, int dim, real **label_sizes, real **x, int
     }
   }
 
-  if (x && (psym = agattr(g, AGNODE, "pos", NULL))) {
+  if (x && (psym = agattr(g, AGNODE, "pos", NULL))!=0) {
     int has_positions = TRUE;
     char* pval;
     if (!(*x)) {
@@ -267,7 +267,7 @@ SparseMatrix_import_dot (Agraph_t* g, int dim, real **label_sizes, real **x, int
       real xx,yy, zz,ww;
       int nitems;
       i = ND_id(n);
-      if ((pval = agxget(n, psym)) && *pval) {
+      if ((pval = agxget(n, psym))!=0 && *pval) {
 	if (dim == 2){
 	  nitems = sscanf(pval, "%lf,%lf", &xx, &yy);
 	  if (nitems != 2) {
@@ -387,7 +387,7 @@ int Import_dot_splines(Agraph_t* g, int *ne, char ***xsplines){
 void edgelist_export(FILE* f, SparseMatrix A, int dim, real *x){
   int n = A->m, *ia = A->ia, *ja = A->ja;
   int i, j, len;
-  real max_edge_len, min_edge_len;
+  real max_edge_len = 0.0, min_edge_len = 0.0;
 
   for (i = 0; i < n; i++){
     for (j = ia[i]; j < ia[i+1]; j++){
@@ -730,7 +730,7 @@ Agraph_t *convert_edge_labels_to_nodes(Agraph_t* g){
   for (n = agfstnode (g); n; n = agnxtnode (g, n)) {
     for (ep = agfstedge(g, n); ep; ep = agnxtedge(g, ep, n)) {
       if (agtail(ep) == n && (aghead(ep) != n)) continue;
-      if (sym && (elabel = agxget(ep,sym)) && strcmp(elabel,"") != 0) {
+      if (sym && (elabel = agxget(ep,sym))!=0 && strcmp(elabel,"") != 0) {
 	s = cat_string3("|edgelabel",agnameof(agtail(ep)), agnameof(aghead(ep)), id++);
 	newnode = mkNode(dg,s);
 	agset(newnode,"label",elabel);
@@ -775,7 +775,7 @@ static int hex2int(char h){
   return 0;
 }  
 static float hexcol2rgb(char *h){
-  return (hex2int(h[0])*16 + hex2int(h[1]))/255.;
+  return (float)((hex2int(h[0])*16 + hex2int(h[1]))/255.0);
 }
 
 void Dot_SetClusterColor(Agraph_t* g, float *rgb_r,  float *rgb_g,  float *rgb_b, int *clusters){
@@ -992,13 +992,13 @@ SparseMatrix Import_coord_clusters_from_dot(Agraph_t* g, int maxcluster, int dim
 
   for (n = agfstnode (g); n; n = agnxtnode (g, n)) {
     gvcolor_t color;
-    real sz;
+    real _sz;
     i = ND_id(n);
     if (agget(n, "width") && agget(n, "height")){
-      sscanf(agget(n, "width"), "%lf", &sz);
-      (*label_sizes)[i*2] = POINTS(sz*0.5);
-      sscanf(agget(n, "height"), "%lf", &sz);
-      (*label_sizes)[i*2+1] = POINTS(sz*0.5);
+      sscanf(agget(n, "width"), "%lf", &_sz);
+      (*label_sizes)[i*2] = POINTS(_sz*0.5);
+      sscanf(agget(n, "height"), "%lf", &_sz);
+      (*label_sizes)[i*2+1] = POINTS(_sz*0.5);
     } else {
       (*label_sizes)[i*2] = POINTS(0.75/2);
       (*label_sizes)[i*2+1] = POINTS(0.5*2);
@@ -1038,9 +1038,9 @@ SparseMatrix Import_coord_clusters_from_dot(Agraph_t* g, int maxcluster, int dim
    }
 
    if (!noclusterinfo && clust_clr_sym && (colorxlate(agxget(n,clust_clr_sym),&color,RGBA_DOUBLE) == COLOR_OK)) {
-     (*rgb_r)[(*clusters)[i]] = color.u.RGBA[0];
-     (*rgb_g)[(*clusters)[i]] = color.u.RGBA[1];
-     (*rgb_b)[(*clusters)[i]] = color.u.RGBA[2];
+     (*rgb_r)[(*clusters)[i]] = (float)color.u.RGBA[0];
+     (*rgb_g)[(*clusters)[i]] = (float)color.u.RGBA[1];
+     (*rgb_b)[(*clusters)[i]] = (float)color.u.RGBA[2];
    }
 
    if (!noclusterinfo && agget(n, "cluster") && agget(n, "clustercolor") && strlen(agget(n, "clustercolor") ) >= 7 && pal){

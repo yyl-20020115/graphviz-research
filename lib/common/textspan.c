@@ -152,7 +152,7 @@ estimate_textspan_size(textspan_t * span, char **fontpath)
     }
     if (fontpath)
 	*fontpath = fpp;
-    if ((p = span->str)) {
+    if ((p = span->str) != 0) {
 	while ((c = *p++))
 	    span->size.x += Fontwidth[(unsigned char) c];
  	/* NOTE: Tables are based on a font of size 1. Need to multiply by

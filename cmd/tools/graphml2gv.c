@@ -764,23 +764,23 @@ nameOf (char* name, int cnt)
 
 int main(int argc, char **argv)
 {
-    Agraph_t *G;
+    Agraph_t *_G;
     Agraph_t *prev = 0;
     FILE *inFile;
-    int rv, gcnt = 0;
+    int rv = 0, gcnt = 0;
 
 #ifdef HAVE_EXPAT
     initargs(argc, argv);
-    while ((inFile = getFile())) {
-	while ((G = graphml_to_gv(nameOf(gname, gcnt), inFile, &rv))) {
+    while ((inFile = getFile())!=0) {
+	while ((_G = graphml_to_gv(nameOf(gname, gcnt), inFile, &rv))!=0) {
 	    gcnt++;
 	    if (prev)
 		agclose(prev);
-	    prev = G;
+	    prev = _G;
 	    if (Verbose) 
 		fprintf (stderr, "%s: %d nodes %d edges\n",
-		    agnameof (G), agnnodes(G), agnedges(G));
-	    agwrite(G, outFile);
+		    agnameof (_G), agnnodes(_G), agnedges(_G));
+	    agwrite(_G, outFile);
 	    fflush(outFile);
 	}
     }

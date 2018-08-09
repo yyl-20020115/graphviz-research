@@ -42,7 +42,8 @@ static void agxbinit(agxbuf * xb, unsigned int hint, unsigned char *init)
     }
     xb->eptr = xb->buf + hint;
     xb->ptr = xb->buf;
-    *xb->ptr = '\0';
+	if(xb->ptr!=0)
+		*xb->ptr = '\0';
 }
 static int agxbmore(agxbuf * xb, unsigned int ssz)
 {
@@ -194,26 +195,31 @@ static char *parsePolyline(char *s, xdot_polyline * pp)
     s = parseInt(s, &i);
     if (!s) return s;
     pts = ps = N_NEW(i, xdot_point);
-    pp->cnt = i;
-    for (i = 0; i < pp->cnt; i++) {
-	ps->x = strtod (s, &endp);
-	if (s == endp) {
-	    free (pts);
-	    return 0;
+	if (ps == 0) {
+		//bad memory
 	}
-	else
-	    s = endp;
-	ps->y = strtod (s, &endp);
-	if (s == endp) {
-	    free (pts);
-	    return 0;
+	else {
+		pp->cnt = i;
+		for (i = 0; i < pp->cnt; i++) {
+			ps->x = strtod(s, &endp);
+			if (s == endp) {
+				free(pts);
+				return 0;
+			}
+			else
+				s = endp;
+			ps->y = strtod(s, &endp);
+			if (s == endp) {
+				free(pts);
+				return 0;
+			}
+			else
+				s = endp;
+			ps->z = 0;
+			ps++;
+		}
+		pp->pts = pts;
 	}
-	else
-	    s = endp;
-	ps->z = 0;
-	ps++;
-    }
-    pp->pts = pts;
     return s;
 }
 
@@ -230,6 +236,10 @@ static char *parseString(char *s, char **sp)
 	return 0;
     }
     c = N_NEW(i + 1, char);
+	if (c == 0) {
+		//bad memory
+		return s;
+	}
     p = c;
     while ((i > 0) && *s) {
 	*p++ = *s++;
@@ -448,6 +458,9 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 
     if (!x) {
 	x = NEW(xdot);
+	if (x == 0) {
+		return 0;
+	}
 	if (sz <= sizeof(xdot_op))
 	    sz = sizeof(xdot_op);
 
@@ -460,17 +473,24 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
     if (initcnt == 0) {
 	bufsz = XDBSIZE;
 	ops = (char *) calloc(XDBSIZE, sz);
+	if (ops == 0) {
+		//bad memory
+
+		return x;
+	}
     }
     else {
 	ops = (char*)(x->ops);
 	bufsz = initcnt + XDBSIZE;
 	ops = (char *) realloc(ops, bufsz * sz);
-	if (ops != 0) {
-		memset(ops + (initcnt*sz), '\0', (bufsz - initcnt)*sz);
+	if (ops == 0) {
+		//bad memory
+
+		return x;
 	}
 	else
 	{
-		//bad memory
+		memset(ops + (initcnt*sz), '\0', (bufsz - initcnt)*sz);
 	}
     }
 
@@ -479,11 +499,14 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 	    oldsz = bufsz;
 	    bufsz *= 2;
 	    ops = (char *) realloc(ops, bufsz * sz);
-		if (ops != 0) {
-			memset(ops + (oldsz*sz), '\0', (bufsz - oldsz)*sz);
-		}
-		else {
+		if (ops == 0)
+		{
 			//bad memory
+			return x;
+		}
+		else
+		{
+			memset(ops + (oldsz*sz), '\0', (bufsz - oldsz)*sz);
 		}
 	}
 	*(xdot_op *) (ops + (x->cnt * sz)) = op;
@@ -1088,6 +1111,10 @@ radGradient (char* cp, xdot_color* clr)
     CHK1(s);
 
     stops = N_NEW(clr->u.ring.n_stops,xdot_color_stop);
+	if (stops == 0) {
+		//bad memory
+		return cp;
+	}
     for (i = 0; i < clr->u.ring.n_stops; i++) {
 	s = parseReal(s, &d);
 	CHK1(s);
@@ -1125,7 +1152,11 @@ linGradient (char* cp, xdot_color* clr)
     CHK1(s);
 
     stops = N_NEW(clr->u.ling.n_stops,xdot_color_stop);
-    for (i = 0; i < clr->u.ling.n_stops; i++) {
+	if (stops == 0) {
+		//bad memory
+		return cp;
+	}
+	for (i = 0; i < clr->u.ling.n_stops; i++) {
 	s = parseReal(s, &d);
 	CHK1(s);
 	stops[i].frac = (float)d;

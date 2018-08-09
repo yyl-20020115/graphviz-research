@@ -2676,7 +2676,7 @@ static int Dijkstra_internal(SparseMatrix A, int root, real *dist, int *nlist, i
   
   assert(heap_ids[root] >= 0);/* by design heap ID from BinaryHeap_insert >=0*/
 
-  while ((ndata_min = BinaryHeap_extract_min(h))){
+  while ((ndata_min = BinaryHeap_extract_min(h))!=0){
     i = ndata_min->id;
     dist[i] = ndata_min->dist;
     list[found++] = i;

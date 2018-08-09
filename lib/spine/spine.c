@@ -106,7 +106,7 @@ reweightEdge (Agedge_t* e, Dt_t* nbr0, Dt_t* nbr1, Agedge_t*** nbrs, int verbose
 	double union_cnt = 0;
 	Agnode_t* n0;
 	Agnode_t* n1;
-	double oldwt;
+	double oldwt=0.0;
 
 	clearSubset(nbr0);
 	clearSubset(nbr1);
@@ -249,8 +249,8 @@ static void setEdgeWeights(Agraph_t * g, int verbose)
 			int quadv = quadcnt[ED_id(e)];
 			if (quadv)
 				ED_wt(e) =
-					quadv /
-					sqrt((double) (que[ND_id(n)] * que[ND_id(aghead(e))]));
+				(float)(quadv /
+					sqrt((double) (que[ND_id(n)] * que[ND_id(aghead(e))])));
 			else
 				ED_wt(e) = 0;
 #if 0
@@ -325,7 +325,7 @@ static void setEdgeWeights(Agraph_t * g, int verbose)
 /* Return number in range [0,nedges] */
 static size_t computeIndex(size_t nedges, float s)
 {
-	size_t r = ceilf(nedges * (1 - s));
+	size_t r = (size_t)ceilf(nedges * (1 - s));
 	return r;
 }
 
@@ -334,7 +334,7 @@ static size_t doBucket(Agedge_t ** edgelist, size_t idx, Dt_t * M)
 	Agedge_t *e;
 	float weight = ED_wt(edgelist[idx]);
 
-	while ((e = edgelist[idx]) && (ED_wt(e) == weight)) {
+	while ((e = edgelist[idx])!=0 && (ED_wt(e) == weight)) {
 		idx++;
 		if (UF_find(agtail(e)) != UF_find(aghead(e)))
 			addSubset(M, e);
@@ -395,7 +395,7 @@ static void cleanGraph (Agraph_t * g, int verbose)
 			}
 			else {
 				preve = e;
-				if ((backe = agedge(g, head, n, 0, 0))) {
+				if ((backe = agedge(g, head, n, 0, 0))!=0) {
 					while (backe && (agtail(backe) == head)) {
 						multicnt++;
 						inexte = agnxtin(g, backe);	
@@ -413,13 +413,13 @@ static void cleanGraph (Agraph_t * g, int verbose)
 
 void genSpine(Agraph_t * g, float sparse_ratio, int verbose)
 {
-	Agraph_t *sg_union;
-	Agnode_t *n;
-	Agedge_t *e;
-	Agedge_t **edgelist;
-	size_t i, index;
-	size_t nedges;
-	float threshold;
+	Agraph_t *sg_union = 0;
+	Agnode_t *n = 0;
+	Agedge_t *e = 0;
+	Agedge_t **edgelist = 0;
+	size_t i, index = 0;
+	size_t nedges = 0;
+	float threshold = 0;
 
 	cleanGraph (g, verbose);
 	nedges = agnedges(g);

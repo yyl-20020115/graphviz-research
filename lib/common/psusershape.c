@@ -60,7 +60,7 @@ static usershape_t *user_init(const char *str)
     if (us)
 	return us;
 
-    if (!(fp = fopen(str, "r"))) {
+    if (0==(fp = fopen(str, "r"))) {
 	agerr(AGWARN, "couldn't open epsf file %s\n", str);
 	return NULL;
     }
@@ -105,7 +105,7 @@ void epsf_init(node_t * n)
     usershape_t *us;
     int dx, dy;
 
-    if ((str = safefile(agget(n, "shapefile")))) {
+    if ((str = safefile(agget(n, "shapefile"))) != 0) {
 	us = user_init(str);
 	if (!us)
 	    return;
@@ -148,7 +148,7 @@ void cat_libfile(GVJ_t * job, const char **arglib, const char **stdlib)
 
     /* check for empty string to turn off stdlib */
     if (arglib) {
-        for (i = 0; use_stdlib && ((p = arglib[i])); i++) {
+        for (i = 0; use_stdlib && ((p = arglib[i])) != 0; i++) {
             if (*p == '\0')
                 use_stdlib = FALSE;
         }
@@ -166,8 +166,8 @@ void cat_libfile(GVJ_t * job, const char **arglib, const char **stdlib)
 	    if (!path) {
 		agerr(AGWARN, "can't find library file %s\n", p);
 	    }
-            else if ((fp = fopen(path, "r"))) {
-                while ((bp = Fgets(fp)))
+            else if ((fp = fopen(path, "r")) != 0) {
+                while ((bp = Fgets(fp)) != 0)
                     gvputs(job, bp);
                 gvputs(job, "\n"); /* append a newline just in case */
 		fclose (fp);
@@ -199,13 +199,13 @@ void epsf_emit_body(GVJ_t *job, usershape_t *us)
 		|| !strncasecmp(&p[2], "TRAILER", 7)
 	)) {
 	    /* check for *p since last line might not end in '\n' */
-	    while ((c = *p) && (c != '\r') && (c != '\n')) p++;
+	    while ((c = *p) != 0 && (c != '\r') && (c != '\n')) p++;
 	    if ((*p == '\r') && (*(p+1) == '\n')) p += 2;
 	    else if (*p) p++;
 	    continue;
 	}
 	/* output line */
-	while ((c = *p) && (c != '\r') && (c != '\n')) {
+	while ((c = *p) != 0 && (c != '\r') && (c != '\n')) {
 	    gvputc(job, c);
 	    p++;
 	}

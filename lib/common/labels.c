@@ -329,12 +329,12 @@ static char *strdup_and_subst_obj0 (char *str, void *obj, int escBackslash)
 	    t_str = agnameof(agtail(((edge_t *)obj)));
 	    t_len = strlen(t_str);
 	    pt = ED_tail_port((edge_t *)obj);
-	    if ((tp_str = pt.name))
+	    if ((tp_str = pt.name) != 0)
 	        tp_len = strlen(tp_str);
 	    h_str = agnameof(aghead(((edge_t *)obj)));
 	    h_len = strlen(h_str);
 	    pt = ED_head_port((edge_t *)obj);
-	    if ((hp_str = pt.name))
+	    if ((hp_str = pt.name) != 0)
 		hp_len = strlen(hp_str);
 	    h_len = strlen(h_str);
 	    tl = ED_label((edge_t *)obj);

@@ -45,6 +45,7 @@ public:
 		, weight(weight)
 		, offset(0)
 		, visited(false)
+		, block(0)
 	{
 	}
 	inline double position() const {

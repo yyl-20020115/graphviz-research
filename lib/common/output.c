@@ -154,9 +154,9 @@ void write_plain(GVJ_t * job, graph_t * g, FILE * f, boolean extend)
 	for (e = agfstout(g, n); e; e = agnxtout(g, e)) {
 
 	    if (extend) {		//assuming these two attrs have already been created by cgraph
-		if (!(tport = agget(e,"tailport")))
+		if (0==(tport = agget(e,"tailport")))
 		    tport = "";
-		if (!(hport = agget(e,"headport")))
+		if (0 == (hport = agget(e,"headport")))
 		    hport = "";
 	    }
 	    else

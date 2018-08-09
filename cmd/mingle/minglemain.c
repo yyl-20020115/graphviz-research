@@ -323,7 +323,7 @@ genBundleColors (pedge edge, agxbuf* xb, real maxwgt)
 	for (j = 0; j < edge->npoints - 1; j++){
 		t = edge->wgts[j]/maxwgt;
 		/* interpolate between red (t = 1) to blue (t = 0) */
-		r = 255*t; g = 0; b = 255*(1-t);
+		r =(int)(255*t); g = 0; b = (int)(255*(1-t));
 		if (j != 0) agxbputc(xb,':');
 		sprintf(buf, "#%02x%02x%02x%02x", r, g, b, 85);
 		agxbput(xb, buf);

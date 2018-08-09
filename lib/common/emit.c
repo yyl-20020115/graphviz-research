@@ -78,7 +78,7 @@ void* init_xdot (Agraph_t* g)
     return xd;
 }
 
-static char *defaultlinestyle[3] = { "solid\0", "setlinewidth\0001\0", 0 };
+static char *defaultlinestyle[3] = { "solid\0", "setlinewidth\0""001\0", 0 };
 
 /* push empty graphic state for current object */
 obj_state_t* push_obj_state(GVJ_t *job)
@@ -510,7 +510,7 @@ parseSegs (char* clrs, int nseg, colorsegs_t** psegs)
 	    left -= v;
 	    if (v > 0) s[cnum].hasFraction = TRUE;
 	    if (*color) s[cnum].color = color;
-	    s[cnum++].t = v;
+	    s[cnum++].t = (float)v;
 	}
 	else {
 	    if (doWarn) {
@@ -538,11 +538,11 @@ parseSegs (char* clrs, int nseg, colorsegs_t** psegs)
 	if (nseg > 0) {
 	    double delta = left/nseg;
 	    for (i = 0; i < cnum; i++) {
-		if (s[i].t == 0) s[i].t = delta;
+		if (s[i].t == 0) s[i].t = (float)delta;
 	    }
 	}
 	else {
-	    s[cnum-1].t += left;
+	    s[cnum-1].t += (float)left;
 	}
     }
     
@@ -1114,6 +1114,7 @@ static int* parse_layerselect(GVC_t *gvc, graph_t * g, char *p)
 {
     int* laylist = N_GNEW(gvc->numLayers+2,int);
     int i, cnt = 0;
+	g;
     for (i = 1; i <=gvc->numLayers; i++) {
 	if (selectedLayer (gvc, i, gvc->numLayers, p)) {
 	    laylist[++cnt] = i;
@@ -1527,7 +1528,7 @@ static void emit_xdot (GVJ_t * job, xdot* xd)
 	case xd_unfilled_bezier :
     	    if (boxf_overlap(op->bb, job->clip)) {
 		pts = copyPts (pts, &ptsize, op->op.u.bezier.pts, op->op.u.bezier.cnt);
-		gvrender_beziercurve(job, pts, op->op.u.bezier.cnt, 0, 0, (op->op.kind == xd_filled_bezier?filled:0));
+		gvrender_beziercurve(job, pts, op->op.u.bezier.cnt, 0, 0, (boolean)(op->op.kind == xd_filled_bezier?filled:0));
 	    }
 	    break;
 	case xd_polyline :
@@ -1665,7 +1666,7 @@ static void emit_background(GVJ_t * job, graph_t *g)
 static void setup_page(GVJ_t * job, graph_t * g)
 {
     point pagesArrayElem = job->pagesArrayElem, pagesArraySize = job->pagesArraySize;
-	
+	g;
     if (job->rotation) {
 	pagesArrayElem = exch_xy(pagesArrayElem);
 	pagesArraySize = exch_xy(pagesArraySize);
@@ -1759,7 +1760,7 @@ static boolean edge_in_layer(GVJ_t *job, graph_t * g, edge_t * e)
 {
     char *pe, *pn;
     int cnt;
-
+	g;
     if (job->numLayers <= 1)
 	return TRUE;
     pe = late_string(e, E_layer, "");
@@ -1795,7 +1796,7 @@ static boolean clust_in_layer(GVJ_t *job, graph_t * sg)
 
 static boolean node_in_box(node_t *n, boxf b)
 {
-    return boxf_overlap(ND_bb(n), b);
+    return (boolean) boxf_overlap(ND_bb(n), b);
 }
 
 static void emit_begin_node(GVJ_t * job, node_t * n)
@@ -1966,7 +1967,7 @@ static void emit_node(GVJ_t * job, node_t * n)
 	    && node_in_box(n, job->clip)             /* and is in page/view */
 	    && (ND_state(n) != gvc->common.viewNum)) /* and not already drawn */
     {
-	ND_state(n) = gvc->common.viewNum; 	     /* mark node as drawn */
+	ND_state(n) =(char) gvc->common.viewNum; 	     /* mark node as drawn */
 
         gvrender_comment(job, agnameof(n));
 	s = late_string(n, N_comment, "");
@@ -2141,7 +2142,7 @@ static void splitBSpline (bezier* bz, float t, bezier* left, bezier* right)
 	right->list[j] = bz->list[k++];
 
     last = lens[i];
-    r = (len - (sum - last))/last;
+    r = (float)((len - (sum - last))/last);
     Bezier (bz->list + 3*i, 3, r, left->list + 3*i, right->list);
 
     free (lens);
@@ -2202,7 +2203,7 @@ static int multicolor (GVJ_t * job, edge_t * e, char** styles, char* colors, int
 	    }
 	    else {
 		bz0 = bz_r;
-		splitBSpline (&bz0, (s->t)/(left+s->t), &bz_l, &bz_r);
+		splitBSpline(&bz0, (float)((s->t) / (left + s->t)), &bz_l, &bz_r);
 		free (bz0.list);
 		gvrender_beziercurve(job, bz_l.list, bz_l.size, FALSE, FALSE, FALSE);
 		free (bz_l.list);
@@ -2252,6 +2253,8 @@ static double revfunc (double curlen, double totallen, double initwid)
 
 static double nonefunc (double curlen, double totallen, double initwid)
 {
+	totallen;
+	curlen;
     return (initwid/2.0);
 }
 
@@ -2770,7 +2773,11 @@ static void nodeIntersect (GVJ_t * job, pointf p,
     boolean explicit_itooltip, char* itooltip,
     boolean explicit_itarget, char* itarget)
 {
+	itarget;
+	explicit_itarget;
+	explicit_itooltip;
     obj_state_t *obj = job->obj;
+	itooltip;
     char* url;
 #if 0
     char* tooltip;
@@ -2850,9 +2857,9 @@ static void emit_end_edge(GVJ_t * job)
 	    p = bz.sp;
 	else /* No arrow at start of splines */
 	    p = bz.list[0];
-	nodeIntersect (job, p, obj->explicit_tailurl, obj->tailurl,
-	    obj->explicit_tailtooltip, obj->tailtooltip, 
-	    obj->explicit_tailtarget, obj->tailtarget); 
+	nodeIntersect (job, p,(boolean) obj->explicit_tailurl, (obj->tailurl),
+		(boolean)obj->explicit_tailtooltip, (obj->tailtooltip),
+		(boolean)obj->explicit_tailtarget, (obj->tailtarget));
         
 	/* process intersection with head node */
 	bz = ED_spl(e)->list[ED_spl(e)->size - 1];
@@ -2860,9 +2867,9 @@ static void emit_end_edge(GVJ_t * job)
 	    p = bz.ep;
 	else /* No arrow at end of splines */
 	    p = bz.list[bz.size - 1];
-	nodeIntersect (job, p, obj->explicit_headurl, obj->headurl,
-	    obj->explicit_headtooltip, obj->headtooltip, 
-	    obj->explicit_headtarget, obj->headtarget); 
+	nodeIntersect (job, p, (boolean)obj->explicit_headurl, obj->headurl,
+	    (boolean)(obj->explicit_headtooltip!=0),( obj->headtooltip),
+	    (boolean)(obj->explicit_headtarget!=0), obj->headtarget); 
     }
 
     emit_edge_label(job, ED_label(e), EMIT_ELABEL,
@@ -3461,6 +3468,7 @@ static void emit_begin_graph(GVJ_t * job, graph_t * g)
 
 static void emit_end_graph(GVJ_t * job, graph_t * g)
 {
+	g;
     gvrender_end_graph(job);
     pop_obj_state(job);
 }
@@ -3602,6 +3610,8 @@ fprintf(stderr,"focus=%g,%g view=%g,%g\n",
 /* support for stderr_once */
 static void free_string_entry(Dict_t * dict, char *key, Dtdisc_t * disc)
 {
+	disc;
+	dict;
     free(key);
 }
 

@@ -479,15 +479,15 @@ static Ppolyline_t *genEllipticPath(ellipse_t * ep, int degree,
     boolean found = FALSE;
     int i, n = 1;
     while ((!found) && (n < 1024)) {
-	double dEta = (ep->eta2 - ep->eta1) / n;
-	if (dEta <= 0.5 * M_PI) {
-	    double etaB = ep->eta1;
+	double _dEta = (ep->eta2 - ep->eta1) / n;
+	if (_dEta <= 0.5 * M_PI) {
+	    double _etaB = ep->eta1;
 	    found = TRUE;
 	    for (i = 0; found && (i < n); ++i) {
-		double etaA = etaB;
-		etaB += dEta;
+		double etaA = _etaB;
+		_etaB += _dEta;
 		found =
-		    (estimateError(ep, degree, etaA, etaB) <= threshold);
+		    (estimateError(ep, degree, etaA, _etaB) <= threshold);
 	    }
 	}
 	n = n << 1;

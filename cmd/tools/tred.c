@@ -173,7 +173,7 @@ static int dfs(Agnode_t * n, nodeinfo_t* ninfo, int warn, estack_t* sp)
     push(sp, &dummy.out, ninfo);
     prev = 0;
 
-    while ((link = top(sp))) {
+    while ((link = top(sp))!=0) {
 	v = aghead(link);
 	if (prev)
 	    next = agnxtout(g, prev);

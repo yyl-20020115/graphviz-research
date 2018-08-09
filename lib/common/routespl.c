@@ -288,7 +288,7 @@ int
 routesplinesinit()
 {
     if (++routeinit > 1) return 0;
-    if (!(ps = N_GNEW(PINC, pointf))) {
+    if (0==(ps = N_GNEW(PINC, pointf))) {
 	agerr(AGERR, "routesplinesinit: cannot allocate ps\n");
 	return 1;
     }
@@ -731,7 +731,7 @@ static int checkpath(int boxn, boxf* boxes, path* thepath)
 	}
 #ifndef DONTFIXPATH
 	if (errs > 0) {
-	    int xy;
+	    int xy = 0;
 
 	    if (l == 1)
 		xy = (int)ba->UR.x, ba->UR.x = bb->LL.x, bb->LL.x = xy, l = 0;
@@ -881,17 +881,17 @@ static void printpath(path * pp)
 
 static pointf get_centroid(Agraph_t *g)
 {
-    int     cnt = 0;
     static pointf   sum = {0.0, 0.0};
     static Agraph_t *save;
-    Agnode_t *n;
 
     sum.x = (GD_bb(g).LL.x + GD_bb(g).UR.x) / 2.0;
     sum.y = (GD_bb(g).LL.y + GD_bb(g).UR.y) / 2.0;
     return sum;
-
-    if (save == g) return sum;
-    save = g;
+#if 0
+	Agnode_t *n;
+	if (save == g) return sum;
+	int     cnt = 0;
+	save = g;
     for (n = agfstnode(g); n; n = agnxtnode(g,n)) {
         sum.x += ND_pos(n)[0];
         sum.y += ND_pos(n)[1];
@@ -900,6 +900,7 @@ static pointf get_centroid(Agraph_t *g)
     sum.x = sum.x / cnt;
     sum.y = sum.y / cnt;
     return sum;
+#endif
 }
 
 static void bend(pointf spl[4], pointf centroid)
@@ -942,7 +943,7 @@ makeStraightEdge(graph_t * g, edge_t * e, int et, splineInfo* sinfo)
 
     e_cnt = 1;
     e0 = e;
-    while ((e0 != ED_to_virt(e0)) && (e0 = ED_to_virt(e0))) e_cnt++;
+    while ((e0 != ED_to_virt(e0)) && (e0 = ED_to_virt(e0)) != 0) e_cnt++;
 
     if (e_cnt <= MAX_EDGE)
 	_edges = elist;

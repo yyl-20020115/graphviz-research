@@ -156,14 +156,14 @@ static char* dotneato_basename (char* path)
      */
     {
 	char c;
-	for (s = ret; (c = *s); s++)
+	for (s = ret; (c = *s) != 0; s++)
 	    *s = (char)tolower(c);
     }
 #endif
     return ret;
 }
 
-static void use_library(GVC_t *gvc, const char *name)
+static void use_library(GVC_t *gvc, char *name)
 {
     static int cnt = 0;
     if (name) {
@@ -181,7 +181,7 @@ static void global_def(agxbuf* xb, char *dcl, int kind,
     char *rhs = "true";
 
     attrsym_t *sym;
-    if ((p = strchr(dcl, '='))) {
+    if ((p = strchr(dcl, '=')) != 0) {
 	agxbput_n (xb, dcl, p-dcl);
         rhs = p+1;
     }
@@ -239,7 +239,7 @@ graph_t* gvInitGraph(GVC_t *gvc, graph_t *g, char *fn, int gidx)
 int dotneato_args_initialize(GVC_t * gvc, int argc, char **argv)
 {
     char c, *rest, *layout;
-    const char *val;
+    char *val;
     int i, v, nfiles;
     unsigned char buf[SMALLBUF];
     agxbuf xb;
@@ -268,7 +268,7 @@ int dotneato_args_initialize(GVC_t * gvc, int argc, char **argv)
 
     /* feed the globals */
     Verbose = (unsigned char)gvc->common.verbose;
-    CmdName = (unsigned char)gvc->common.cmdname;
+    CmdName = gvc->common.cmdname;
 
     nfiles = 0;
     for (i = 1; i < argc; i++)
@@ -467,7 +467,7 @@ static boolean getdoubles2ptf(graph_t * g, char *name, pointf * result)
     char c = '\0';
     boolean rv = FALSE;
 
-    if ((p = agget(g, name))) {
+    if ((p = agget(g, name)) != 0) {
 	i = sscanf(p, "%lf,%lf%c", &xf, &yf, &c);
 	if ((i > 1) && (xf > 0) && (yf > 0)) {
 	    result->x = POINTS(xf);
@@ -564,7 +564,7 @@ graph_t *gvNextInputGraph(GVC_t *gvc)
 		    fp = stdin;
 	    }
 	    else {
-		while ((fn = gvc->input_filenames[fidx++]) && !(fp = fopen(fn, "r")))  {
+		while ((fn = gvc->input_filenames[fidx++]) != 0 && 0==(fp = fopen(fn, "r")))  {
 		    agerr(AGERR, "%s: can't open %s\n", gvc->common.cmdname, fn);
 		    graphviz_errors++;
 		}
@@ -633,7 +633,7 @@ static void setRatio(graph_t * g)
     char *p, c;
     double ratio;
 
-    if ((p = agget(g, "ratio")) && ((c = p[0]))) {
+    if ((p = agget(g, "ratio")) != 0 && ((c = p[0]) != 0)) {
 	switch (c) {
 	case 'a':
 	    if (streq(p, "auto"))
@@ -678,7 +678,7 @@ void graph_init(graph_t * g, boolean use_rankdir)
     GD_drawing(g) = NEW(layout_t);
 
     /* set this up fairly early in case any string sizes are needed */
-    if ((p = agget(g, "fontpath")) || (p = getenv("DOTFONTPATH"))) {
+    if ((p = agget(g, "fontpath")) != 0 || (p = getenv("DOTFONTPATH")) != 0) {
 	/* overide GDFONTPATH in local environment if dot
 	 * wants its own */
 #ifdef HAVE_SETENV
@@ -712,7 +712,7 @@ void graph_init(graph_t * g, boolean use_rankdir)
      * with record shapes, so we store the real rankdir in the next 2 bits.
      */
     rankdir = RANKDIR_TB;
-    if ((p = agget(g, "rankdir"))) {
+    if ((p = agget(g, "rankdir")) != 0) {
 	if (streq(p, "LR"))
 	    rankdir = RANKDIR_LR;
 	else if (streq(p, "BT"))
@@ -754,11 +754,11 @@ void graph_init(graph_t * g, boolean use_rankdir)
 
     GD_drawing(g)->centered = mapbool(agget(g, "center"));
 
-    if ((p = agget(g, "rotate")))
+    if ((p = agget(g, "rotate")) != 0)
 	GD_drawing(g)->landscape = (atoi(p) == 90);
-    else if ((p = agget(g, "orientation")))
+    else if ((p = agget(g, "orientation")) != 0)
 	GD_drawing(g)->landscape = ((p[0] == 'l') || (p[0] == 'L'));
-    else if ((p = agget(g, "landscape")))
+    else if ((p = agget(g, "landscape")) != 0)
 	GD_drawing(g)->landscape = mapbool(p);
 
     p = agget(g, "clusterrank");
@@ -769,8 +769,8 @@ void graph_init(graph_t * g, boolean use_rankdir)
     EdgeLabelsDone = 0;
 
     GD_drawing(g)->dpi = 0.0;
-    if (((p = agget(g, "dpi")) && p[0])
-	|| ((p = agget(g, "resolution")) && p[0]))
+    if (((p = agget(g, "dpi"))!=0 && p[0])
+	|| ((p = agget(g, "resolution")) != 0 && p[0] != 0))
 	GD_drawing(g)->dpi = atof(p);
 
     do_graph_label(g);
@@ -855,7 +855,7 @@ void graph_init(graph_t * g, boolean use_rankdir)
 
     /* initialize id, if any */
 
-    if ((p = agget(g, "id")) && *p)
+    if ((p = agget(g, "id")) != 0 && *p != 0)
 	GD_drawing(g)->id = strdup_and_subst_obj(p, g);
 }
 
@@ -910,7 +910,7 @@ void do_graph_label(graph_t * sg)
     int pos_ix;
 
     /* it would be nice to allow multiple graph labels in the future */
-    if ((str = agget(sg, "label")) && (*str != '\0')) {
+    if ((str = agget(sg, "label")) != 0 && (*str != '\0')) {
 	char pos_flag;
 	pointf dimen;
 

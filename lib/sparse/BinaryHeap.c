@@ -44,7 +44,7 @@ void BinaryHeap_delete(BinaryHeap h, void (*del)(void* item)){
 
 static BinaryHeap BinaryHeap_realloc(BinaryHeap h){
   int max_len0 = h->max_len, max_len = h->max_len, i;
-  max_len = max_len + MAX(0.2*max_len, 10);
+  max_len = max_len +(int) MAX(0.2*max_len, 10);
   h->max_len = max_len;
 
   h->heap = REALLOC(h->heap, sizeof(void*)*max_len);
@@ -266,7 +266,7 @@ void BinaryHeap_sanity_check(BinaryHeap h){
   }
 
   /* all IDs, spare or in use, are ccounted for and give a contiguous set */
-  for (i = 0; i < h->len + IntStack_get_length(h->id_stack); i++) assert(mask[i] =- 1);
+  for (i = 0;( i < h->len + IntStack_get_length(h->id_stack)); i++) assert(mask[i] =- 1);
 
   FREE(mask);
 }

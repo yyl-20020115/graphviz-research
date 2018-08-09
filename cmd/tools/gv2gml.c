@@ -88,10 +88,10 @@ typedef struct Agnodeinfo_t {
 
 #define ID(n)  (((Agnodeinfo_t*)(n->base.data))->id)
 
-static void indent (int ix, FILE* outFile)
+static void indent (int ix, FILE* _outFile)
 {
     while (ix--)
-	fprintf (outFile, "  ");
+	fprintf (_outFile, "  ");
 }
 
 /* isNumber:
@@ -140,24 +140,24 @@ parseStyle (char* s)
 }
 
 static void 
-emitInt (char* name, int value, FILE* outFile, int ix)
+emitInt (char* name, int value, FILE* _outFile, int ix)
 {
-    indent (ix, outFile);
-    fprintf (outFile, "%s %d\n", name, value);
+    indent (ix, _outFile);
+    fprintf (_outFile, "%s %d\n", name, value);
 }
 
 static void 
-emitReal (char* name, double value, FILE* outFile, int ix)
+emitReal (char* name, double value, FILE* _outFile, int ix)
 {
-    indent (ix, outFile);
-    fprintf (outFile, "%s %g\n", name, value);
+    indent (ix, _outFile);
+    fprintf (_outFile, "%s %g\n", name, value);
 }
 
 static void
-emitPoint (double x, double y, FILE* outFile, int ix)
+emitPoint (double x, double y, FILE* _outFile, int ix)
 {
-    indent (ix, outFile);
-    fprintf (outFile, "point [ x %g y %g ]\n", x, y);
+    indent (ix, _outFile);
+    fprintf (_outFile, "point [ x %g y %g ]\n", x, y);
 }
 
 static char*
@@ -201,7 +201,7 @@ arrowEnd (char* s0, char* pfx, int* fp, double* xp, double* yp)
 }
 
 static void
-emitSpline (char* s, FILE* outFile, int ix)
+emitSpline (char* s, FILE* _outFile, int ix)
 {
     double sx, sy, ex, ey;
     int sarrow = 0;
@@ -209,27 +209,27 @@ emitSpline (char* s, FILE* outFile, int ix)
 
     s = arrowEnd (s, "e,", &earrow, &ex, &ey); 
     s = arrowEnd (s, "s,", &sarrow, &sx, &sy); 
-    indent (ix, outFile);
-    fprintf (outFile, "Line [\n");
+    indent (ix, _outFile);
+    fprintf (_outFile, "Line [\n");
     if (sarrow)
-	emitPoint (sx, sy, outFile, ix+1);
-    while ((s = readPoint (s, &sx, &sy)))
-	emitPoint (sx, sy, outFile, ix+1);
+	emitPoint (sx, sy, _outFile, ix+1);
+    while ((s = readPoint (s, &sx, &sy))!=0)
+	emitPoint (sx, sy, _outFile, ix+1);
     if (earrow)
-	emitPoint (ex, ey, outFile, ix+1);
-    indent (ix, outFile);
-    fprintf (outFile, "]\n");
+	emitPoint (ex, ey, _outFile, ix+1);
+    indent (ix, _outFile);
+    fprintf (_outFile, "]\n");
 
 }
 
 static void 
-emitAttr (char* name, char* value, FILE* outFile, int ix)
+emitAttr (char* name, char* value, FILE* _outFile, int ix)
 {
-    indent (ix, outFile);
+    indent (ix, _outFile);
     if (isNumber (value))
-	fprintf (outFile, "%s %s\n", name, value);
+	fprintf (_outFile, "%s %s\n", name, value);
     else  
-	fprintf (outFile, "%s \"%s\"\n", name, value);
+	fprintf (_outFile, "%s \"%s\"\n", name, value);
 }
 
 /* node attributes:
@@ -238,7 +238,7 @@ emitAttr (char* name, char* value, FILE* outFile, int ix)
  * LabelGraphics
  */
 static void 
-emitNodeAttrs (Agraph_t* G, Agnode_t* np, FILE* outFile, int ix)
+emitNodeAttrs (Agraph_t* G, Agnode_t* np, FILE* _outFile, int ix)
 {
     Agsym_t*  s;
     char* v;
@@ -272,12 +272,12 @@ emitNodeAttrs (Agraph_t* G, Agnode_t* np, FILE* outFile, int ix)
 	    v = agxget (np, s);
 	    if (streq("\\N", v)) {
 		label = agnameof(np);
-		emitAttr (s->name, label, outFile, ix);
+		emitAttr (s->name, label, _outFile, ix);
 		doLabelGraphics = 1;
 	    }
 	    else if (*v) {
 		label = v;
-		emitAttr (s->name, label, outFile, ix);
+		emitAttr (s->name, label, _outFile, ix);
 		doLabelGraphics = 1;
 	    }
 	}
@@ -357,63 +357,63 @@ emitNodeAttrs (Agraph_t* G, Agnode_t* np, FILE* outFile, int ix)
 	}
 	else {
 	    v = agxget (np, s);
-	    emitAttr (s->name, v, outFile, ix);
+	    emitAttr (s->name, v, _outFile, ix);
 	}
     }
 
     /* Then, print them, if any */
     if (doGraphics) {
-	fprintf (outFile, "    graphics [\n");
+	fprintf (_outFile, "    graphics [\n");
 	if (attrs.flags & POS_SET) {
-	    emitReal ("x", attrs.x, outFile, ix+1);
-	    emitReal ("y", attrs.y, outFile, ix+1);
+	    emitReal ("x", attrs.x, _outFile, ix+1);
+	    emitReal ("y", attrs.y, _outFile, ix+1);
 	}
 	if (attrs.flags & W_SET) {
-	    emitReal ("w", attrs.w, outFile, ix+1);
+	    emitReal ("w", attrs.w, _outFile, ix+1);
 	}
 	if (attrs.flags & H_SET) {
-	    emitReal ("H", attrs.h, outFile, ix+1);
+	    emitReal ("H", attrs.h, _outFile, ix+1);
 	}
 	if (attrs.flags & INVIS) {
-	    emitInt ("visible", 0, outFile, ix+1);
+	    emitInt ("visible", 0, _outFile, ix+1);
 	}
 	if (attrs.flags & FILL) {
-	    emitInt ("hasFill", 1, outFile, ix+1);
+	    emitInt ("hasFill", 1, _outFile, ix+1);
 	}
 	if (attrs.type) {
-	    emitAttr ("type", attrs.type, outFile, ix+1);
+	    emitAttr ("type", attrs.type, _outFile, ix+1);
 	}
 	if (attrs.image) {
-	    emitAttr ("image", attrs.image, outFile, ix+1);
+	    emitAttr ("image", attrs.image, _outFile, ix+1);
 	}
 	if (attrs.fill) {
-	    emitAttr ("fill", attrs.fill, outFile, ix+1);
+	    emitAttr ("fill", attrs.fill, _outFile, ix+1);
 	}
 	if (attrs.outline) {
-	    emitAttr ("outline", attrs.outline, outFile, ix+1);
+	    emitAttr ("outline", attrs.outline, _outFile, ix+1);
 	}
 	if (attrs.width) {
-	    emitAttr ("width", attrs.width, outFile, ix+1);
+	    emitAttr ("width", attrs.width, _outFile, ix+1);
 	}
 	if (attrs.outlineStyle) {
-	    emitAttr ("outlineStyle", attrs.outlineStyle, outFile, ix+1);
+	    emitAttr ("outlineStyle", attrs.outlineStyle, _outFile, ix+1);
 	}
-	fprintf (outFile, "    ]\n");
+	fprintf (_outFile, "    ]\n");
     }
 
     if (doLabelGraphics) {
-	fprintf (outFile, "    LabelGraphics [\n");
-	if (label) emitAttr ("text", label, outFile, ix+1);
+	fprintf (_outFile, "    LabelGraphics [\n");
+	if (label) emitAttr ("text", label, _outFile, ix+1);
 	if (attrs.fontColor) {
-	    emitAttr ("fontColor", attrs.fontColor, outFile, ix+1);
+	    emitAttr ("fontColor", attrs.fontColor, _outFile, ix+1);
 	}
 	if (attrs.fontSize) {
-	    emitAttr ("fontSize", attrs.fontSize, outFile, ix+1);
+	    emitAttr ("fontSize", attrs.fontSize, _outFile, ix+1);
 	}
 	if (attrs.fontName) {
-	    emitAttr ("fontName", attrs.fontName, outFile, ix+1);
+	    emitAttr ("fontName", attrs.fontName, _outFile, ix+1);
 	}
-	fprintf (outFile, "    ]\n");
+	fprintf (_outFile, "    ]\n");
     }
 }
 
@@ -422,13 +422,13 @@ emitNodeAttrs (Agraph_t* G, Agnode_t* np, FILE* outFile, int ix)
  * label, width height, x, y, type fillcolor
  */
 static void 
-emitNode (Agraph_t* G, Agnode_t* n, FILE* outFile)
+emitNode (Agraph_t* G, Agnode_t* n, FILE* _outFile)
 {
     agbindrec (n, "nodeinfo", sizeof(Agnodeinfo_t), TRUE);
-    fprintf (outFile, "  node [\n    id %lu\n    name \"%s\"\n", id, agnameof(n));
+    fprintf (_outFile, "  node [\n    id %lu\n    name \"%s\"\n", id, (unsigned long)agnameof(n));
     ID(n) = id++;
-    emitNodeAttrs (G, n, outFile, 2);
-    fprintf (outFile, "  ]\n");
+    emitNodeAttrs (G, n, _outFile, 2);
+    fprintf (_outFile, "  ]\n");
 
 }
 
@@ -438,7 +438,7 @@ emitNode (Agraph_t* G, Agnode_t* n, FILE* outFile)
  * LabelGraphics
  */
 static void 
-emitEdgeAttrs (Agraph_t* G, Agedge_t* ep, FILE* outFile, int ix)
+emitEdgeAttrs (Agraph_t* G, Agedge_t* ep, FILE* _outFile, int ix)
 {
     Agsym_t*  s;
     char* v;
@@ -470,7 +470,7 @@ emitEdgeAttrs (Agraph_t* G, Agedge_t* ep, FILE* outFile, int ix)
 	else if (streq(s->name, "label")) {
 	    if (*(v = agxget (ep, s))) {
 		label = v;
-		emitAttr (s->name, label, outFile, ix);
+		emitAttr (s->name, label, _outFile, ix);
 		doLabelGraphics = 1;
 	    }
 	}
@@ -536,120 +536,120 @@ emitEdgeAttrs (Agraph_t* G, Agedge_t* ep, FILE* outFile, int ix)
 	}
 	else {
 	    v = agxget (ep, s);
-	    emitAttr (s->name, v, outFile, ix);
+	    emitAttr (s->name, v, _outFile, ix);
 	}
     }
 
     /* Then, print them, if any */
     if (doGraphics) {
-	fprintf (outFile, "    graphics [\n");
+	fprintf (_outFile, "    graphics [\n");
 	if (attrs.pos) {
-	    emitSpline (attrs.pos, outFile, ix+1);
+	    emitSpline (attrs.pos, _outFile, ix+1);
 	}
 	if (attrs.flags & INVIS) {
-	    emitInt ("visible", 0, outFile, ix+1);
+	    emitInt ("visible", 0, _outFile, ix+1);
 	}
 	if (attrs.fill) {
-	    emitAttr ("fill", attrs.fill, outFile, ix+1);
+	    emitAttr ("fill", attrs.fill, _outFile, ix+1);
 	}
 	if (attrs.width) {
-	    emitAttr ("width", attrs.width, outFile, ix+1);
+	    emitAttr ("width", attrs.width, _outFile, ix+1);
 	}
 	if (attrs.arrowhead) {
-	    emitAttr ("targetArrow", attrs.arrowhead, outFile, ix+1);
+	    emitAttr ("targetArrow", attrs.arrowhead, _outFile, ix+1);
 	}
 	if (attrs.arrowtail) {
-	    emitAttr ("sourceArrow", attrs.arrowtail, outFile, ix+1);
+	    emitAttr ("sourceArrow", attrs.arrowtail, _outFile, ix+1);
 	}
 	if (attrs.flags & DASH) {
-	    emitAttr ("style", "dashed", outFile, ix+1);
+	    emitAttr ("style", "dashed", _outFile, ix+1);
 	}
 	else if (attrs.flags & DOT) {
-	    emitAttr ("style", "dotted", outFile, ix+1);
+	    emitAttr ("style", "dotted", _outFile, ix+1);
 	}
 	else if (attrs.flags & LINE) {
-	    emitAttr ("style", "line", outFile, ix+1);
+	    emitAttr ("style", "line", _outFile, ix+1);
 	}
 	if (attrs.arrow) {
 	    if (streq(attrs.arrow,"forward"))
-		emitAttr ("arrow", "first", outFile, ix+1);
+		emitAttr ("arrow", "first", _outFile, ix+1);
 	    else if (streq(attrs.arrow,"back"))
-		emitAttr ("arrow", "last", outFile, ix+1);
+		emitAttr ("arrow", "last", _outFile, ix+1);
 	    else if (streq(attrs.arrow,"both"))
-		emitAttr ("arrow", "both", outFile, ix+1);
+		emitAttr ("arrow", "both", _outFile, ix+1);
 	    else if (streq(attrs.arrow,"none"))
-		emitAttr ("arrow", "none", outFile, ix+1);
+		emitAttr ("arrow", "none", _outFile, ix+1);
 	}
-	fprintf (outFile, "    ]\n");
+	fprintf (_outFile, "    ]\n");
     }
 
     if (doLabelGraphics) {
-	fprintf (outFile, "    LabelGraphics [\n");
-	if (label) emitAttr ("text", label, outFile, ix+1);
+	fprintf (_outFile, "    LabelGraphics [\n");
+	if (label) emitAttr ("text", label, _outFile, ix+1);
 	if (attrs.fontColor) {
-	    emitAttr ("fontColor", attrs.fontColor, outFile, ix+1);
+	    emitAttr ("fontColor", attrs.fontColor, _outFile, ix+1);
 	}
 	if (attrs.fontSize) {
-	    emitAttr ("fontSize", attrs.fontSize, outFile, ix+1);
+	    emitAttr ("fontSize", attrs.fontSize, _outFile, ix+1);
 	}
 	if (attrs.fontName) {
-	    emitAttr ("fontName", attrs.fontName, outFile, ix+1);
+	    emitAttr ("fontName", attrs.fontName, _outFile, ix+1);
 	}
-	fprintf (outFile, "    ]\n");
+	fprintf (_outFile, "    ]\n");
     }
 }
 
 /* emitEdge:
  */
 static void 
-emitEdge (Agraph_t* G, Agedge_t* e, FILE* outFile)
+emitEdge (Agraph_t* G, Agedge_t* e, FILE* _outFile)
 {
-    fprintf (outFile, "  edge [\n    id %lu\n", (uint64_t)AGSEQ(e));
-    fprintf (outFile, "    source %lu\n", ID(agtail(e)));
-    fprintf (outFile, "    target %lu\n", ID(aghead(e)));
-    emitEdgeAttrs (G, e, outFile, 2);
-    fprintf (outFile, "  ]\n");
+    fprintf (_outFile, "  edge [\n    id %lu\n", (unsigned long)(uint64_t)AGSEQ(e));
+    fprintf (_outFile, "    source %lu\n", (unsigned long)ID(agtail(e)));
+    fprintf (_outFile, "    target %lu\n", (unsigned long)ID(aghead(e)));
+    emitEdgeAttrs (G, e, _outFile, 2);
+    fprintf (_outFile, "  ]\n");
 }
 
 static void 
-emitGraphAttrs (Agraph_t* G, FILE* outFile)
+emitGraphAttrs (Agraph_t* G, FILE* _outFile)
 {
     Agsym_t*  s;
     char* v;
 
     for (s = agnxtattr (G, AGRAPH, NULL); s; s = agnxtattr (G, AGRAPH, s)) {
 	if (*(v = agxget (G, s))) {
-	    emitAttr (s->name, v, outFile, 1);
+	    emitAttr (s->name, v, _outFile, 1);
 	}
     }
 }
 
 static void 
-gv_to_gml(Agraph_t* G, FILE* outFile)
+gv_to_gml(Agraph_t* G, FILE* _outFile)
 {
     Agnode_t* n;
     Agedge_t* e;
 
-    fprintf (outFile, "graph [\n  version 2\n");
+    fprintf (_outFile, "graph [\n  version 2\n");
     if (agisdirected(G))
-	fprintf (outFile, "  directed 1\n");
+	fprintf (_outFile, "  directed 1\n");
     else
-	fprintf (outFile, "  directed 0\n");
+	fprintf (_outFile, "  directed 0\n");
 	
-    emitGraphAttrs (G, outFile);
+    emitGraphAttrs (G, _outFile);
 
     /* FIX: Not sure how to handle default attributes or subgraphs */
 
     for (n = agfstnode(G); n; n = agnxtnode (G, n)) {
-	emitNode (G, n, outFile);
+	emitNode (G, n, _outFile);
     } 
     
     for (n = agfstnode(G); n; n = agnxtnode (G, n)) {
 	for (e = agfstout(G, n); e; e = agnxtout (G, e)) {
-	    emitEdge (G, e, outFile);
+	    emitEdge (G, e, _outFile);
 	}
     }
-    fprintf (outFile, "]\n");
+    fprintf (_outFile, "]\n");
 }
 
 static FILE *openFile(char *name, char *mode)
@@ -747,7 +747,7 @@ int main(int argc, char **argv)
     initargs(argc, argv);
     newIngraph(&ig, Files, gread);
 
-    while ((G = nextGraph(&ig))) {
+    while ((G = nextGraph(&ig))!=0) {
 	if (prev) {
 	    id = 0;
 	    agclose(prev);
