@@ -262,7 +262,7 @@ static void doBorder(GVJ_t * job, htmldata_t * dp, boxf b)
 
     if (dp->style & ROUNDED)
 	round_corners(job, mkPts(AF, b, dp->border), 4, ROUNDED, 0);
-    else if ((sides = (dp->flags & BORDER_MASK))) {
+    else if ((sides = (dp->flags & BORDER_MASK))!=0) {
 	mkPts (AF+1, b, dp->border);  /* AF[1-4] has LL=SW,SE,UR=NE,NW */
 	switch (sides) {
 	case BORDER_BOTTOM :
@@ -498,7 +498,7 @@ emit_html_rules(GVJ_t * job, htmlcell_t * cp, htmlenv_t * env, char *color, html
 		base *= 2;
 	    /* incomplete row of cells; extend line to end */
 	    else if (nextc && (nextc->row != cp->row)) {
-		base += (cp->parent->data.box.UR.x + pos.x) - (pts.UR.x + cp->parent->data.space / 2);
+		base += (unsigned char)((cp->parent->data.box.UR.x + pos.x) - (pts.UR.x + cp->parent->data.space / 2));
 	    }
 	} else if (cp->col + cp->cspan == cp->parent->cc) {	// last column
 	    // extend to center of table border and add half cell spacing
@@ -509,7 +509,7 @@ emit_html_rules(GVJ_t * job, htmlcell_t * cp, htmlenv_t * env, char *color, html
 	    rule_pt.x = pts.LL.x - cp->parent->data.space / 2;
 	    /* incomplete row of cells; extend line to end */
 	    if (nextc && (nextc->row != cp->row)) {
-		base += (cp->parent->data.box.UR.x + pos.x) - (pts.UR.x + cp->parent->data.space / 2);
+		base += (unsigned char)((cp->parent->data.box.UR.x + pos.x) - (pts.UR.x + cp->parent->data.space / 2));
 	    }
 	}
 	rule_pt.y = pts.LL.y - cp->parent->data.space / 2;
@@ -911,7 +911,7 @@ static htmldata_t *portToTbl(htmltbl_t * tp, char *id)
 	rv = NULL;
 	cells = tp->u.n.cells;
 	while ((cp = *cells++)) {
-	    if ((rv = portToCell(cp, id)))
+	    if ((rv = portToCell(cp, id))!=0)
 		break;
 	}
     }
@@ -958,6 +958,7 @@ boxf *html_port(node_t * n, char *pname, int *sides)
  */
 int html_path(node_t * n, port * p, int side, boxf * rv, int *k)
 {
+	side;
 	k;
 	rv;
 	p;
@@ -1017,7 +1018,7 @@ static int size_html_txt(GVC_t *gvc, htmltxt_t * ftxt, htmlenv_t * env)
     double width;
     textspan_t lp;
     textfont_t tf = {NULL,NULL,NULL,0.0,0,0};
-    double maxoffset, mxysize;
+    double maxoffset = 1.0, mxysize = 1.0;
     int simple = 1;              /* one item per span, same font size/face, no flags */
     double prev_fsize = -1;
     char* prev_fname = NULL;
@@ -1349,15 +1350,15 @@ void sizeLinearArray(htmltbl_t * tbl)
     for (cells = tbl->u.n.cells; *cells; cells++) {
 	cp = *cells;
 	if (cp->rspan == 1)
-	    ht = cp->data.box.UR.y;
+	    ht = (int)cp->data.box.UR.y;
 	else {
-	    ht = SPLIT(cp->data.box.UR.y, cp->rspan, tbl->data.space);
+	    ht = (int)SPLIT(cp->data.box.UR.y, cp->rspan, tbl->data.space);
 	    ht = MAX(ht, 1);
 	}
 	if (cp->cspan == 1)
-	    wd = cp->data.box.UR.x;
+	    wd = (int)cp->data.box.UR.x;
 	else {
-	    wd = SPLIT(cp->data.box.UR.x, cp->cspan, tbl->data.space);
+	    wd = (int)SPLIT(cp->data.box.UR.x, cp->cspan, tbl->data.space);
 	    wd = MAX(wd, 1);
 	}
 	for (i = cp->row; i < cp->row + cp->rspan; i++) {
@@ -1438,11 +1439,11 @@ checkEdge (graph_t* g, node_t* t, node_t* h, int sz)
 
     e = agfindedge (g, t, h);
     if (e)
-	ED_minlen(e) = MAX(ED_minlen(e), sz);
+	ED_minlen(e) =(unsigned short) MAX(ED_minlen(e), sz);
     else {
 	e = agedge(g, t, h, NULL, 1);
 	agbindrec(e, "Agedgeinfo_t", sizeof(Agedgeinfo_t), TRUE);
-	ED_minlen(e) = sz;
+	ED_minlen(e) = (unsigned short)sz;
 	elist_append(e, ND_out(t));
 	elist_append(e, ND_in(h));
     }
@@ -1497,11 +1498,11 @@ void makeGraphs(htmltbl_t * tbl, graph_t * rowg, graph_t * colg)
 	cp = *cells;
 	t = agfindnode(colg, nToName(cp->col));
 	h = agfindnode(colg, nToName(cp->col + cp->cspan));
-	checkEdge (colg, t, h, cp->data.box.UR.x);
+	checkEdge (colg, t, h, (int)cp->data.box.UR.x);
 
 	t = agfindnode(rowg, nToName(cp->row));
 	h = agfindnode(rowg, nToName(cp->row + cp->rspan));
-	checkEdge (rowg, t, h, cp->data.box.UR.y);
+	checkEdge (rowg, t, h, (int)cp->data.box.UR.y);
     }
 
     /* Make sure that 0 <= 1 <= 2 ...k. This implies graph connected. */
@@ -1646,7 +1647,7 @@ static void pos_html_cell(htmlcell_t * cp, boxf pos, int sides)
 	}
     }
     cp->data.box = pos;
-    cp->data.sides = sides;
+    cp->data.sides = (unsigned char)sides;
 
     /* set up child's position */
     cbox.LL.x = pos.LL.x + cp->data.border + cp->data.pad;
@@ -1760,11 +1761,11 @@ static void pos_html_tbl(htmltbl_t * tbl, boxf pos, int sides)
 	&& !tbl->data.pencolor)
 	tbl->data.pencolor = strdup(tbl->u.n.parent->data.pencolor);
 
-    oldsz = tbl->data.box.UR.x;
-    delx = (pos.UR.x - pos.LL.x) - oldsz;
+    oldsz = (int)tbl->data.box.UR.x;
+    delx = (int)((pos.UR.x - pos.LL.x) - oldsz);
     assert(delx >= 0);
-    oldsz = tbl->data.box.UR.y;
-    dely = (pos.UR.y - pos.LL.y) - oldsz;
+    oldsz = (int)tbl->data.box.UR.y;
+    dely = (int)((pos.UR.y - pos.LL.y) - oldsz);
     assert(dely >= 0);
 
     /* If fixed, align box */
@@ -1804,7 +1805,7 @@ static void pos_html_tbl(htmltbl_t * tbl, boxf pos, int sides)
     }
 
     /* change sizes to start positions and distribute extra space */
-    x = pos.LL.x + tbl->data.border + tbl->data.space;
+    x = (int)(pos.LL.x + tbl->data.border + tbl->data.space);
     extra = delx / (tbl->cc);
     plus = ROUND(delx - extra * (tbl->cc));
     for (i = 0; i <= tbl->cc; i++) {
@@ -1812,7 +1813,7 @@ static void pos_html_tbl(htmltbl_t * tbl, boxf pos, int sides)
 	tbl->widths[i] = x;
 	x += delx + tbl->data.space;
     }
-    y = pos.UR.y - tbl->data.border - tbl->data.space;
+    y = (int)(pos.UR.y - tbl->data.border - tbl->data.space);
     extra = dely / (tbl->rc);
     plus = ROUND(dely - extra * (tbl->rc));
     for (i = 0; i <= tbl->rc; i++) {
@@ -1840,7 +1841,7 @@ static void pos_html_tbl(htmltbl_t * tbl, boxf pos, int sides)
 	pos_html_cell(cp, cbox, sides & mask);
     }
 
-    tbl->data.sides = sides;
+    tbl->data.sides = (unsigned char)sides;
     tbl->data.box = pos;
 }
 

@@ -60,8 +60,13 @@ static int agxbmore(agxbuf * xb, unsigned int ssz)
 	nbuf = realloc(xb->buf, nsize);
     } else {
 	nbuf = N_NEW(nsize, unsigned char);
-	memcpy(nbuf, xb->buf, cnt);
-	xb->dyna = 1;
+	if (nbuf != 0) {
+		memcpy(nbuf, xb->buf, cnt);
+		xb->dyna = 1;
+	}
+	else {
+		//bad memory
+	}
     }
     xb->buf = nbuf;
     xb->ptr = xb->buf + cnt;
@@ -460,7 +465,13 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 	ops = (char*)(x->ops);
 	bufsz = initcnt + XDBSIZE;
 	ops = (char *) realloc(ops, bufsz * sz);
-	memset(ops + (initcnt*sz), '\0', (bufsz - initcnt)*sz);
+	if (ops != 0) {
+		memset(ops + (initcnt*sz), '\0', (bufsz - initcnt)*sz);
+	}
+	else
+	{
+		//bad memory
+	}
     }
 
     while ((s = parseOp(&op, s, fns, &error))!=0) {
@@ -468,7 +479,12 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 	    oldsz = bufsz;
 	    bufsz *= 2;
 	    ops = (char *) realloc(ops, bufsz * sz);
-	    memset(ops + (oldsz*sz), '\0', (bufsz - oldsz)*sz);
+		if (ops != 0) {
+			memset(ops + (oldsz*sz), '\0', (bufsz - oldsz)*sz);
+		}
+		else {
+			//bad memory
+		}
 	}
 	*(xdot_op *) (ops + (x->cnt * sz)) = op;
 	x->cnt++;

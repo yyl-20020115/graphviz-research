@@ -43,8 +43,7 @@ static long idmap(void *state, int objtype, char *str, IDTYPE *id,
     }
     return TRUE;
 }
-
-	/* we don't allow users to explicitly set IDs, either */
+//NOTUSED function:	/* we don't allow users to explicitly set IDs, either */
 static long idalloc(void *state, int objtype, IDTYPE request)
 {
     NOTUSED(state);
@@ -52,22 +51,24 @@ static long idalloc(void *state, int objtype, IDTYPE request)
     NOTUSED(request);
     return FALSE;
 }
-
+//NOTUSED function:
 static void idfree(void *state, int objtype, IDTYPE id)
 {
     NOTUSED(objtype);
-    if (id % 2 == 0)
-	agstrfree((Agraph_t *) state, (char *) id);
+	if (id % 2 == 0)
+	{
+		agstrfree((Agraph_t *)state, "id"/*(char *)id*/);
+	}
 }
-
+//NOTUSED function:
 static char *idprint(void *state, int objtype, IDTYPE id)
 {
     NOTUSED(state);
     NOTUSED(objtype);
-    if (id % 2 == 0)
-	return (char *) id;
+	if (id % 2 == 0)
+		return "id";// (char *)id;
     else
-	return NILstr;
+		return NILstr;
 }
 
 static void idclose(void *state)

@@ -3824,7 +3824,7 @@ static shape_desc *user_shape(char *name)
     p = UserShape[i] = NEW(shape_desc);
     *p = Shapes[0];
     p->name = strdup(name);
-    if (Lib == NULL && !streq(name, "custom")) {
+    if (Lib == NULL && 0==streq(name, "custom")) {
 	agerr(AGWARN, "using %s for unknown shape %s\n", Shapes[0].name,
 	      p->name);
 	p->usershape = FALSE;

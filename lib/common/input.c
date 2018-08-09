@@ -267,8 +267,8 @@ int dotneato_args_initialize(GVC_t * gvc, int argc, char **argv)
     }
 
     /* feed the globals */
-    Verbose = gvc->common.verbose;
-    CmdName = gvc->common.cmdname;
+    Verbose = (unsigned char)gvc->common.verbose;
+    CmdName = (unsigned char)gvc->common.cmdname;
 
     nfiles = 0;
     for (i = 1; i < argc; i++)
@@ -492,7 +492,7 @@ void getdouble(graph_t * g, char *name, double *result)
     char *p;
     double f;
 
-    if ((p = agget(g, name))) {
+    if ((p = agget(g, name))!=0) {
 	if (sscanf(p, "%lf", &f) >= 1)
 	    *result = f;
     }
@@ -559,7 +559,7 @@ graph_t *gvNextInputGraph(GVC_t *gvc)
 
     while (!g) {
 	if (!fp) {
-    	    if (!(fn = gvc->input_filenames[0])) {
+    	    if (0==(fn = gvc->input_filenames[0])) {
 		if (fidx++ == 0)
 		    fp = stdin;
 	    }
@@ -693,7 +693,7 @@ void graph_init(graph_t * g, boolean use_rankdir)
 #endif
     }
 
-    GD_charset(g) = findCharset (g);
+    GD_charset(g) = (unsigned char)findCharset (g);
 
     if (!HTTPServerEnVar) {
 	Gvimagepath = agget (g, "imagepath");

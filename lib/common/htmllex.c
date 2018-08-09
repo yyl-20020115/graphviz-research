@@ -598,7 +598,7 @@ static htmlimg_t *mkImg(char **atts)
 static textfont_t *mkFont(GVC_t *gvc, char **atts, int flags, int ul)
 {
     textfont_t tf = {NULL,NULL,NULL,0.0,0,0};
-
+	ul;
     tf.size = -1.0;		/* unassigned */
     tf.flags = flags;
     if (atts)
@@ -688,6 +688,7 @@ static void startElement(void *user, const char *name, char **atts)
 
 static void endElement(void *user, const char *name)
 {
+	user;
     if (strcasecmp(name, "TABLE") == 0) {
 	state.tok = T_end_table;
 	state.inCell = 1;
@@ -749,6 +750,7 @@ static void endElement(void *user, const char *name)
  */
 static void characterData(void *user, const char *s, int length)
 {
+	user;
     int i, cnt = 0;
     unsigned char c;
 
@@ -859,7 +861,7 @@ static char *findNext(char *s, agxbuf* xb)
 	    t++;
     } else {
 	t = s;
-	while ((c = *t) && (c != '<')) {
+	while ((c = *t) != 0 && (c != '<') != 0) {
 	    if ((c == '&') && (*(t+1) != '#')) {
 		t = scanEntity(t + 1, xb);
 	    }
@@ -1050,7 +1052,7 @@ int htmllex()
 	state.prevtoklen = state.currtoklen;
 	state.currtok = s;
 	state.currtoklen = len;
-	if ((llen = agxblen(&state.lb)))
+	if ((llen = agxblen(&state.lb))!=0)
 	    rv = XML_Parse(state.parser, agxbuse(&state.lb),llen, 0);
 	else
 	    rv = XML_Parse(state.parser, s, len, (len ? 0 : 1));
