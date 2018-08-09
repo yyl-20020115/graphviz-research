@@ -60,9 +60,9 @@ static void addCluster(clist_t * clist, graph_t * subg)
 static void
 mkClusters (graph_t * g, clist_t* pclist, graph_t* parent)
 {
-    graph_t* subg;
-    clist_t  list;
-    clist_t* clist;
+    graph_t* subg = 0;
+	clist_t  list = { 0 };
+    clist_t* clist = 0;
 
     if (pclist == NULL) {
         clist = &list;

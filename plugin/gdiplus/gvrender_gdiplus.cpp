@@ -100,7 +100,7 @@ static void gdiplusgen_begin_page(GVJ_t *job)
 		IStream *stream = NULL;
 		CreateStreamOnHGlobal(buffer, FALSE, &stream);	/* FALSE means don't deallocate buffer when releasing stream */
 		
-		Image *image;
+		Image *image = 0;
 		switch (job->device.id) {
 		
 		case FORMAT_EMF:

@@ -308,7 +308,7 @@ static void unrecognized(node_t * n, char *p)
 static double quant(double val, double q)
 {
     int i;
-    i = val / q;
+    i = (int)( val / q);
     if (i * q + .00001 < val)
 	i++;
     return i * q;
@@ -590,7 +590,7 @@ void round_corners(GVJ_t * job, pointf * AF, int sides, int style, int filled)
 	}
 	pts[i++] = pts[0];
 	pts[i++] = pts[1];
-	gvrender_beziercurve(job, pts+1, i-1, FALSE, FALSE, filled);
+	gvrender_beziercurve(job, pts+1, i-1, FALSE, FALSE,(boolean) filled);
 	free (pts);
 	
 #if 0
@@ -2709,9 +2709,9 @@ compassPort(node_t * n, boxf * bp, port * pp, char *compass, int sides,
     }
     p = cwrotatepf(p, 90 * GD_rankdir(agraphof(n)));
     if (dyna)
-	pp->side = side;
+	pp->side =(unsigned char) side;
     else
-	pp->side = invflip_side(side, GD_rankdir(agraphof(n)));
+	pp->side = (unsigned char)invflip_side(side, GD_rankdir(agraphof(n)));
     pp->bp = bp;
     PF2P(p, pp->p);
     pp->theta = invflip_angle(theta, GD_rankdir(agraphof(n)));
@@ -2722,7 +2722,7 @@ compassPort(node_t * n, boxf * bp, port * pp, char *compass, int sides,
 	double angle = atan2(p.y, p.x) + 1.5 * M_PI;
 	if (angle >= 2 * M_PI)
 	    angle -= 2 * M_PI;
-	pp->order = (int) ((MC_SCALE * angle) / (2 * M_PI));
+	pp->order = (unsigned char)(int) ((MC_SCALE * angle) / (2 * M_PI));
     }
     pp->constrained = constrain;
     pp->defined = defined;
@@ -3250,7 +3250,7 @@ static field_t *parse_reclbl(node_t * n, int LR, int flag, char *text)
 	    break;
     }
     rv->fld = N_NEW(maxf, field_t *);
-    rv->LR = LR;
+    rv->LR = (unsigned char)LR;
     mode = 0;
     fi = 0;
     hstsp = tsp = text;
@@ -3463,7 +3463,7 @@ static void pos_reclbl(field_t * f, pointf ul, int sides)
 {
     int i, last, mask;
 
-    f->sides = sides;
+    f->sides = (unsigned char)sides;
     f->b.LL = pointfof(ul.x, ul.y - f->size.y);
     f->b.UR = pointfof(ul.x + f->size.x, ul.y);
     last = f->n_flds - 1;
@@ -3669,11 +3669,11 @@ static int record_path(node_t * n, port * prt, int side, boxf rv[],
 
     for (i = 0; i < info->n_flds; i++) {
 	if (!GD_flip(agraphof(n))) {
-	    ls = info->fld[i]->b.LL.x;
-	    rs = info->fld[i]->b.UR.x;
+	    ls = (int) info->fld[i]->b.LL.x;
+	    rs = (int)info->fld[i]->b.UR.x;
 	} else {
-	    ls = info->fld[i]->b.LL.y;
-	    rs = info->fld[i]->b.UR.y;
+	    ls = (int)info->fld[i]->b.LL.y;
+	    rs = (int)info->fld[i]->b.UR.y;
 	}
 	if (BETWEEN(ls, p.x, rs)) {
 	    /* FIXME: I don't understand this code */
@@ -4060,7 +4060,7 @@ static void cylinder_draw(GVJ_t * job, pointf * AF, int sides, int style, int fi
     pointf vertices[7];
     double y0 = AF[0].y;
     double y02 = y0+y0;
-
+	style;
     vertices[0] = AF[0];
     vertices[1].x = AF[1].x;
     vertices[1].y = y02 - AF[1].y;
@@ -4074,7 +4074,7 @@ static void cylinder_draw(GVJ_t * job, pointf * AF, int sides, int style, int fi
     vertices[5].y = y02 - AF[5].y;
     vertices[6] = AF[6];
 
-    gvrender_beziercurve(job, AF, sides, FALSE, FALSE, filled);
+    gvrender_beziercurve(job, AF, sides, FALSE, FALSE, (boolean)filled);
     gvrender_beziercurve(job, vertices, 7, FALSE, FALSE, FALSE);
 }
 
@@ -4166,20 +4166,20 @@ static char *closestSide(node_t * n, node_t * other, port * oldport)
 	    continue;
 	switch (i) {
 	case 0:
-	    p.y = b.LL.y;
-	    p.x = (b.LL.x + b.UR.x) / 2;
+	    p.y = (int)b.LL.y;
+	    p.x = (int)((b.LL.x + b.UR.x) / 2);
 	    break;
 	case 1:
-	    p.x = b.UR.x;
-	    p.y = (b.LL.y + b.UR.y) / 2;
+	    p.x = (int)b.UR.x;
+	    p.y = (int)((b.LL.y + b.UR.y) / 2);
 	    break;
 	case 2:
-	    p.y = b.UR.y;
-	    p.x = (b.LL.x + b.UR.x) / 2;
+	    p.y = (int)b.UR.y;
+	    p.x = (int)((b.LL.x + b.UR.x) / 2);
 	    break;
 	case 3:
-	    p.x = b.LL.x;
-	    p.y = (b.LL.y + b.UR.y) / 2;
+	    p.x = (int)b.LL.x;
+	    p.y = (int)((b.LL.y + b.UR.y) / 2);
 	    break;
 	}
 	p.x += pt.x;

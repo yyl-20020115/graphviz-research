@@ -70,16 +70,16 @@ void Block::setUpInConstraints() {
 void Block::setUpOutConstraints() {
 	setUpConstraintHeap(out,false);
 }
-void Block::setUpConstraintHeap(PairingHeap<Constraint*>* &h,bool in) {
+void Block::setUpConstraintHeap(PairingHeap<Constraint*>* &h,bool _in) {
 	delete h;
 	h = new PairingHeap<Constraint*>(&compareConstraints);
 	for (vector<Variable*>::iterator i=vars->begin();i!=vars->end();i++) {
 		Variable *v=*i;
-		vector<Constraint*> *cs=in?&(v->in):&(v->out);
+		vector<Constraint*> *cs=_in?&(v->in):&(v->out);
 		for (vector<Constraint*>::iterator j=cs->begin();j!=cs->end();j++) {
 			Constraint *c=*j;
 			c->timeStamp=blockTimeCtr;
-			if (c->left->block != this && in || c->right->block != this && !in) {
+			if (c->left->block != this && _in || c->right->block != this && !_in) {
 				h->insert(c);
 			}
 		}

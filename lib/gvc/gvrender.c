@@ -158,7 +158,7 @@ pointf gvrender_ptf(GVJ_t * job, pointf p)
 /* transform an array of n points */
 /*  *AF and *af must be preallocated */
 /*  *AF can be the same as *af for inplace transforms */
-pointf *gvrender_ptf_A(GVJ_t * job, pointf * af, pointf * AF, int n)
+pointf *gvrender_ptf_A(GVJ_t * job, pointf * af, pointf * _AF, int n)
 {
     int i;
     double t;
@@ -171,16 +171,16 @@ pointf *gvrender_ptf_A(GVJ_t * job, pointf * af, pointf * AF, int n)
     if (job->rotation) {
 	for (i = 0; i < n; i++) {
 	    t = -(af[i].y + translation.y) * scale.x;
-	    AF[i].y = (af[i].x + translation.x) * scale.y;
-	    AF[i].x = t;
+	    _AF[i].y = (af[i].x + translation.x) * scale.y;
+	    _AF[i].x = t;
 	}
     } else {
 	for (i = 0; i < n; i++) {
-	    AF[i].x = (af[i].x + translation.x) * scale.x;
-	    AF[i].y = (af[i].y + translation.y) * scale.y;
+	    _AF[i].x = (af[i].x + translation.x) * scale.x;
+	    _AF[i].y = (af[i].y + translation.y) * scale.y;
 	}
     }
-    return AF;
+    return _AF;
 }
 
 static int gvrender_comparestr(const void *s1, const void *s2)
@@ -230,7 +230,7 @@ void gvrender_begin_graph(GVJ_t * job, graph_t * g)
     /* GVC_t *gvc = job->gvc; */
     gvrender_engine_t *gvre = job->render.engine;
     /* char *s; */
-
+	(void)g;
     if (gvre) {
 	/* render specific init */
 	if (gvre->begin_graph)
@@ -304,7 +304,7 @@ void gvrender_end_layer(GVJ_t * job)
 void gvrender_begin_cluster(GVJ_t * job, graph_t * sg)
 {
     gvrender_engine_t *gvre = job->render.engine;
-
+	sg;
     if (gvre) {
 	if (gvre->begin_cluster)
 	    gvre->begin_cluster(job);
@@ -314,7 +314,7 @@ void gvrender_begin_cluster(GVJ_t * job, graph_t * sg)
 void gvrender_end_cluster(GVJ_t * job, graph_t * g)
 {
     gvrender_engine_t *gvre = job->render.engine;
-
+	g;
     if (gvre) {
 	if (gvre->end_cluster)
 	    gvre->end_cluster(job);
@@ -364,7 +364,7 @@ void gvrender_end_edges(GVJ_t * job)
 void gvrender_begin_node(GVJ_t * job, node_t * n)
 {
     gvrender_engine_t *gvre = job->render.engine;
-
+	n;
     if (gvre) {
 	if (gvre->begin_node)
 	    gvre->begin_node(job);
@@ -384,7 +384,7 @@ void gvrender_end_node(GVJ_t * job)
 void gvrender_begin_edge(GVJ_t * job, edge_t * e)
 {
     gvrender_engine_t *gvre = job->render.engine;
-
+	e;
     if (gvre) {
 	if (gvre->begin_edge)
 	    gvre->begin_edge(job);
@@ -467,7 +467,7 @@ void gvrender_set_pencolor(GVJ_t * job, char *name)
     gvcolor_t *color = &(job->obj->pencolor);
     char *cp = NULL;
 
-    if ((cp = strstr(name, ":")))	/* if its a color list, then use only first */
+    if ((cp = strstr(name, ":")) != 0)	/* if its a color list, then use only first */
 	*cp = '\0';
     if (gvre) {
 	gvrender_resolve_color(job->render.features, name, color);
@@ -484,7 +484,7 @@ void gvrender_set_fillcolor(GVJ_t * job, char *name)
     gvcolor_t *color = &(job->obj->fillcolor);
     char *cp = NULL;
 
-    if ((cp = strstr(name, ":")))	/* if its a color list, then use only first */
+    if ((cp = strstr(name, ":")) != 0)	/* if its a color list, then use only first */
 	*cp = '\0';
     if (gvre) {
 	gvrender_resolve_color(job->render.features, name, color);
@@ -551,7 +551,7 @@ void gvrender_set_style(GVJ_t * job, char **s)
 void gvrender_ellipse(GVJ_t * job, pointf * pf, int n, int filled)
 {
     gvrender_engine_t *gvre = job->render.engine;
-
+	n;
     if (gvre) {
 	if (gvre->ellipse && job->obj->pen != PEN_NONE) {
 	    pointf af[2];
@@ -572,7 +572,7 @@ void gvrender_ellipse(GVJ_t * job, pointf * pf, int n, int filled)
 void gvrender_polygon(GVJ_t * job, pointf * af, int n, int filled)
 {
     int noPoly = 0;
-    gvcolor_t save_pencolor;
+	gvcolor_t save_pencolor = { 0 };
 
     gvrender_engine_t *gvre = job->render.engine;
     if (gvre) {
@@ -731,7 +731,7 @@ void gvrender_usershape(GVJ_t * job, char *name, pointf * a, int n,
     assert(name);
     assert(name[0]);
 
-    if (!(us = gvusershape_find(name))) {
+    if (0==(us = gvusershape_find(name))) {
 	if (find_user_shape(name)) {
 	    if (gvre && gvre->library_shape)
 		gvre->library_shape(job, name, a, n, filled);

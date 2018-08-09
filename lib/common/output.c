@@ -36,7 +36,7 @@ static void agputs (const char* s, FILE* fp)
 static void agputc (int c, FILE* fp)
 {
     static char buf[2] = {'\0','\0'};
-    buf[0] = c;
+    buf[0] =(char) c;
     putstr ((void*)fp, buf);
 }
 
@@ -301,7 +301,7 @@ void attach_attrs_and_arrows(graph_t* g, int* sp, int* ep)
 	    agset(n, "rects", agxbuse(&xb));
 	} else {
 	    polygon_t *poly;
-	    int i;
+	    int _i;
 	    if (N_vertices && isPolygon(n)) {
 		poly = (polygon_t *) ND_shape_info(n);
 		sides = poly->sides;
@@ -314,17 +314,17 @@ void attach_attrs_and_arrows(graph_t* g, int* sp, int* ep)
 		    if (sides < 3)
 			sides = 8;
 		}
-		for (i = 0; i < sides; i++) {
-		    if (i > 0)
+		for (_i = 0; _i < sides; _i++) {
+		    if (_i > 0)
 			agxbputc(&xb, ' ');
 		    if (poly->sides >= 3)
 			sprintf(buf, "%.5g %.5g",
-				PS2INCH(poly->vertices[i].x),
-				YFDIR(PS2INCH(poly->vertices[i].y)));
+				PS2INCH(poly->vertices[_i].x),
+				YFDIR(PS2INCH(poly->vertices[_i].y)));
 		    else
 			sprintf(buf, "%.5g %.5g",
-				ND_width(n) / 2.0 * cos(i / (double) sides * M_PI * 2.0),
-				YFDIR(ND_height(n) / 2.0 * sin(i / (double) sides * M_PI * 2.0)));
+				ND_width(n) / 2.0 * cos(_i / (double) sides * M_PI * 2.0),
+				YFDIR(ND_height(n) / 2.0 * sin(_i / (double) sides * M_PI * 2.0)));
 		    agxbput(&xb, buf);
 		}
 		agxset(n, N_vertices, agxbuse(&xb));

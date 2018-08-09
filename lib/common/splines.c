@@ -1174,7 +1174,7 @@ selfRightSpace (edge_t* e)
 	sw = SELF_EDGE_SIZE;
 	if (l) {
 	    label_width = GD_flip(agraphof(aghead(e))) ? l->dimen.y : l->dimen.x;
-	    sw += label_width;
+	    sw += (int)label_width;
 	}
     }
     else sw = 0;
@@ -1194,7 +1194,7 @@ makeSelfEdge(path * P, edge_t * edges[], int ind, int cnt, double sizex,
     edge_t *e;
 
     e = edges[ind];
-
+	P;
     /* self edge without ports or
      * self edge with all ports inside, on the right, or at most 1 on top 
      * and at most 1 on bottom 
@@ -1410,6 +1410,9 @@ void addEdgeLabels(graph_t* g, edge_t * e, pointf rp, pointf rq)
 	updateBB(agraphof(agtail(e)), ED_label(e));
     }
 #endif
+	rq;
+	rp;
+	g;
     makePortLabels(e);
 }
 

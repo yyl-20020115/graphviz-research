@@ -22,7 +22,7 @@ LeafList_t *RTreeNewLeafList(Leaf_t * lp)
 {
     LeafList_t *llp;
 
-    if ((llp = NEW(LeafList_t))) {
+    if ((llp = NEW(LeafList_t)) != 0) {
 	llp->leaf = lp;
 	llp->next = 0;
     }
@@ -73,8 +73,8 @@ static void RTreeFreeListNode(struct ListNode *p)
 static int RTreeReInsert(RTree_t * rtp, Node_t * n, struct ListNode **ee)
 {
     register struct ListNode *l;
-
-    if (!(l = RTreeNewListNode()))
+	rtp;
+    if (0==(l = RTreeNewListNode()))
 	return -1;
     l->node = n;
     l->next = *ee;
@@ -86,7 +86,7 @@ RTree_t *RTreeOpen()
 {
     RTree_t *rtp;
 
-    if ((rtp = NEW(RTree_t)))
+    if ((rtp = NEW(RTree_t)) != 0)
 	rtp->root = RTreeNewIndex(rtp);
     return rtp;
 }
@@ -405,7 +405,7 @@ int RTreeDelete(RTree_t * rtp, Rect_t * r, void *data, Node_t ** nn)
 		rtp->ElimCount++;
 	    rtp->EntryCount--;
 	    for (i = 0; i < NODECARD; i++) {
-		if ((t = (*nn)->branch[i].child))
+		if ((t = (*nn)->branch[i].child) != 0)
 		    break;
 	    }
 	    RTreeFreeNode(rtp, *nn);

@@ -49,11 +49,11 @@ static int agxbmore(agxbuf * xb, unsigned int ssz)
     int cnt;			/* current no. of characters in buffer */
     int size;			/* current buffer size */
     int nsize;			/* new buffer size */
-    unsigned char *nbuf;	/* new buffer */
+    unsigned char *nbuf = 0;	/* new buffer */
 
     size = xb->eptr - xb->buf;
     nsize = 2 * size;
-    if (size + ssz > nsize)
+    if (size + (int)ssz > nsize)
 	nsize = size + ssz;
     cnt = xb->ptr - xb->buf;
     if (xb->dyna) {
@@ -262,7 +262,7 @@ static char *parseOp(xdot_op * op, char *s, drawfunc_t ops[], int* error)
     xdot_color clr;
 
     *error = 0;
-    while (isspace(*s))
+    while (isspace((int)*s))
 	s++;
     switch (*s++) {
     case 'E':
@@ -433,7 +433,7 @@ static char *parseOp(xdot_op * op, char *s, drawfunc_t ops[], int* error)
 xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 {
     xdot_op op;
-    char *ops;
+    char *ops=0;
     int oldsz, bufsz;
     int error;
     int initcnt;
@@ -463,7 +463,7 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 	memset(ops + (initcnt*sz), '\0', (bufsz - initcnt)*sz);
     }
 
-    while ((s = parseOp(&op, s, fns, &error))) {
+    while ((s = parseOp(&op, s, fns, &error))!=0) {
 	if (x->cnt == bufsz) {
 	    oldsz = bufsz;
 	    bufsz *= 2;
@@ -508,7 +508,7 @@ static void trim (char* buf)
     char* dotp;
     char* p;
 
-    if ((dotp = strchr (buf,'.'))) {
+    if ((dotp = strchr (buf,'.'))!=0) {
         p = dotp+1;
         while (*p) p++;  // find end of string
         p--;
@@ -613,21 +613,21 @@ toGradString (agxbuf* xb, xdot_color* cp)
 
     if (cp->type == xd_linear) {
 	agxbputc (xb, '[');
-	printFloat (cp->u.ling.x0, gradprint, xb, 0);
-	printFloat (cp->u.ling.y0, gradprint, xb, 1);
-	printFloat (cp->u.ling.x1, gradprint, xb, 1);
-	printFloat (cp->u.ling.y1, gradprint, xb, 1);
+	printFloat ((float)cp->u.ling.x0, gradprint, xb, 0);
+	printFloat ((float)cp->u.ling.y0, gradprint, xb, 1);
+	printFloat ((float)cp->u.ling.x1, gradprint, xb, 1);
+	printFloat ((float)cp->u.ling.y1, gradprint, xb, 1);
 	n_stops = cp->u.ling.n_stops;
 	stops = cp->u.ling.stops;
     }
     else {
 	agxbputc (xb, '(');
-	printFloat (cp->u.ring.x0, gradprint, xb, 0);
-	printFloat (cp->u.ring.y0, gradprint, xb, 1);
-	printFloat (cp->u.ring.r0, gradprint, xb, 1);
-	printFloat (cp->u.ring.x1, gradprint, xb, 1);
-	printFloat (cp->u.ring.y1, gradprint, xb, 1);
-	printFloat (cp->u.ring.r1, gradprint, xb, 1);
+	printFloat ((float)cp->u.ring.x0, gradprint, xb, 0);
+	printFloat ((float)cp->u.ring.y0, gradprint, xb, 1);
+	printFloat ((float)cp->u.ring.r0, gradprint, xb, 1);
+	printFloat ((float)cp->u.ring.x1, gradprint, xb, 1);
+	printFloat ((float)cp->u.ring.y1, gradprint, xb, 1);
+	printFloat ((float)cp->u.ring.r1, gradprint, xb, 1);
 	n_stops = cp->u.ring.n_stops;
 	stops = cp->u.ring.stops;
     }
@@ -700,15 +700,15 @@ static void printXDot_Op(xdot_op * op, pf print, void *info, int more)
 	break;
     case xd_text:
 	print("T", info);
-	printInt(op->u.text.x, print, info);
-	printInt(op->u.text.y, print, info);
+	printInt((int)op->u.text.x, print, info);
+	printInt((int)op->u.text.y, print, info);
 	printAlign(op->u.text.align, print, info);
-	printInt(op->u.text.width, print, info);
+	printInt((int)op->u.text.width, print, info);
 	printString(op->u.text.text, print, info);
 	break;
     case xd_font:
 	print("F", info);
-	printFloat(op->u.font.size, print, info, 1);
+	printFloat((float)op->u.font.size, print, info, 1);
 	printString(op->u.font.name, print, info);
 	break;
     case xd_fontchar:
@@ -825,13 +825,13 @@ static void jsonXDot_Op(xdot_op * op, pf print, void *info, int more)
 	break;
     case xd_text:
 	print("{T : [", info);
-	printInt(op->u.text.x, print, info);
+	printInt((int)op->u.text.x, print, info);
 	print(",", info);
-	printInt(op->u.text.y, print, info);
+	printInt((int)op->u.text.y, print, info);
 	print(",", info);
 	printAlign(op->u.text.align, print, info);
 	print(",", info);
-	printInt(op->u.text.width, print, info);
+	printInt((int)op->u.text.width, print, info);
 	print(",", info);
 	jsonString(op->u.text.text, print, info);
 	print("]", info);
@@ -839,7 +839,7 @@ static void jsonXDot_Op(xdot_op * op, pf print, void *info, int more)
     case xd_font:
 	print("{F : [", info);
 	op->kind = xd_font;
-	printFloat(op->u.font.size, print, info, 1);
+	printFloat((float)op->u.font.size, print, info, 1);
 	print(",", info);
 	jsonString(op->u.font.name, print, info);
 	print("]", info);
@@ -1075,7 +1075,7 @@ radGradient (char* cp, xdot_color* clr)
     for (i = 0; i < clr->u.ring.n_stops; i++) {
 	s = parseReal(s, &d);
 	CHK1(s);
-	stops[i].frac = d;
+	stops[i].frac = (float)d;
 	s = parseString(s, &stops[i].color);
 	CHK1(s);
     }
@@ -1112,7 +1112,7 @@ linGradient (char* cp, xdot_color* clr)
     for (i = 0; i < clr->u.ling.n_stops; i++) {
 	s = parseReal(s, &d);
 	CHK1(s);
-	stops[i].frac = d;
+	stops[i].frac = (float)d;
 	s = parseString(s, &stops[i].color);
 	CHK1(s);
     }
@@ -1145,7 +1145,7 @@ parseXDotColor (char* cp, xdot_color* clr)
 	return cp;
 	break;
     default :
-	if (isalnum(c)) {
+	if (isalnum((int)c)) {
 	    clr->type = xd_none; 
 	    clr->u.clr = cp;
 	    return cp;

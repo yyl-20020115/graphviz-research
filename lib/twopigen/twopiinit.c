@@ -99,12 +99,12 @@ void twopi_layout(Agraph_t * g)
 	    setRoot = 1;
 	}
     }
-    if ((rootattr = agattr(g, AGNODE, "root", 0))) {
+    if ((rootattr = agattr(g, AGNODE, "root", 0))!=0) {
 	setLocalRoot = 1;
     }
 
-    if ((s = agget(g, "scale")) && *s) {
-	if ((r = sscanf (s, "%lf,%lf",&sc.x,&sc.y))) {
+    if ((s = agget(g, "scale")) != 0 && *s != 0) {
+	if ((r = sscanf (s, "%lf,%lf",&sc.x,&sc.y)) != 0) {
 	    if (r == 1) sc.y = sc.x;
 	    doScale = 1;
 	}
@@ -123,7 +123,7 @@ void twopi_layout(Agraph_t * g)
 	if (ncc == 1) {
 	    if (ctr)
 		lctr = ctr;
-	    else if (!rootattr || !(lctr = findRootNode(g, rootattr)))
+	    else if (!rootattr || 0==(lctr = findRootNode(g, rootattr)))
 		lctr = 0;
 	    c = circleLayout(g, lctr);
 	    if (setRoot && !ctr)
@@ -144,7 +144,7 @@ void twopi_layout(Agraph_t * g)
 		sg = ccs[i];
 		if (ctr && agcontains(sg, ctr))
 		    lctr = ctr;
-		else if (!rootattr || !(lctr = findRootNode(sg, rootattr)))
+		else if (!rootattr || 0==(lctr = findRootNode(sg, rootattr)))
 		    lctr = 0;
 		nodeInduce(sg);
 		c = circleLayout(sg, lctr);

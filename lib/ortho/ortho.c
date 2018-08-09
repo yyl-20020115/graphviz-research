@@ -597,7 +597,7 @@ assignTrackNo (Dt_t* chans)
 	    cp = (channel*)l2;
 	    if (cp->cnt) {
 #ifdef DEBUG
-    if (odb_flags & ODB_CHANG) dumpChanG (cp, ((chanItem*)l1)->v);
+    if (odb_flags & ODB_CHANG) dumpChanG (cp,(int) ((chanItem*)l1)->v);
 #endif
 		top_sort (cp->G);
 		for (k=0;k<cp->cnt;k++)
@@ -627,8 +627,8 @@ create_graphs(Dt_t* chans)
 static int
 eqEndSeg (bend S1l2, bend S2l2, bend T1, bend T2)
 {
-    if (((S1l2==T2)&&(S2l2=!T2))
-     || ((S1l2==B_NODE)&&(S2l2==T1)))
+    if (((S1l2==T2) != 0 &&(S2l2=!T2) != 0)
+     || ((S1l2==B_NODE)!=0&&(S2l2==T1) != 0))
 	return(0);
     else
 	return(-1);
@@ -731,8 +731,8 @@ segCmp (segment* S1, segment* S2, bend T1, bend T2)
 	else if(S1->l1==T2) return(1);
 	else return(-1);
     }
-    assert(0);
-    return 0;
+    //assert(0);
+    //return 0;
 }
 
 /* Function seg_cmp returns
@@ -1104,6 +1104,8 @@ add_p_edges (Dt_t* chans, maze* mp)
 static void
 assignTracks (int nrtes, route* route_list, maze* mp)
 {
+	nrtes = 0;
+	route_list = 0;
     /* Create the graphs for each channel */
     create_graphs(mp->hchans);
     create_graphs(mp->vchans);
@@ -1138,7 +1140,7 @@ htrack (segment* seg, maze* m)
   double f = 1.0 - ((double)seg->track_no)/(chp->cnt+1); 
   double lo = chp->cp->bb.LL.y;
   double hi = chp->cp->bb.UR.y;
-  return lo + f*(hi-lo);
+  return (int)(lo + f*(hi-lo));
 }
 
 static pointf
@@ -1230,11 +1232,13 @@ static int edgecmp(epair_t* e0, epair_t* e1)
 
 static boolean spline_merge(node_t * n)
 {
+	n = 0;
     return FALSE;
 }
 
 static boolean swap_ends_p(edge_t * e)
 {
+	e = 0;
     return FALSE;
 }
 
@@ -1429,20 +1433,20 @@ coordOf (cell* cp, snode* np)
 {
 	point p = { 0 };
     if (cp->sides[M_TOP] == np) {
-	p.x = (cp->bb.LL.x + cp->bb.UR.x)/2;
-	p.y = cp->bb.UR.y;
+	p.x = (int)((cp->bb.LL.x + cp->bb.UR.x)/2);
+	p.y = (int)cp->bb.UR.y;
     }
     else if (cp->sides[M_BOTTOM] == np) {
-	p.x = (cp->bb.LL.x + cp->bb.UR.x)/2;
-	p.y = cp->bb.LL.y;
+	p.x = (int)((cp->bb.LL.x + cp->bb.UR.x)/2);
+	p.y = (int)cp->bb.LL.y;
     }
     else if (cp->sides[M_LEFT] == np) {
-	p.y = (cp->bb.LL.y + cp->bb.UR.y)/2;
-	p.x = cp->bb.LL.x;
+	p.y = (int)((cp->bb.LL.y + cp->bb.UR.y)/2);
+	p.x = (int)cp->bb.LL.x;
     }
     else if (cp->sides[M_RIGHT] == np) {
-	p.y = (cp->bb.LL.y + cp->bb.UR.y)/2;
-	p.x = cp->bb.UR.x;
+	p.y = (int)((cp->bb.LL.y + cp->bb.UR.y)/2);
+	p.x = (int)cp->bb.UR.x;
     }
     return p;
 }
@@ -1451,15 +1455,16 @@ static boxf
 emitEdge (FILE* fp, Agedge_t* e, route rte, maze* m, int ix, boxf bb)
 {
     int i, x, y;
-    boxf n = CELL(agtail(e))->bb;
+	ix = 0;
+	boxf n = CELL(agtail(e))->bb;
     segment* seg = rte.segs;
     if (seg->isVert) {
-	x = vtrack(seg, m);
-	y = (n.UR.y + n.LL.y)/2;
+	x = (int)vtrack(seg, m);
+	y = (int)((n.UR.y + n.LL.y)/2);
     }
     else {
 	y = htrack(seg, m);
-	x = (n.UR.x + n.LL.x)/2;
+	x = (int)((n.UR.x + n.LL.x)/2);
     }
     bb.LL.x = MIN(bb.LL.x, SC*x);
     bb.LL.y = MIN(bb.LL.y, SC*y);
@@ -1470,7 +1475,7 @@ emitEdge (FILE* fp, Agedge_t* e, route rte, maze* m, int ix, boxf bb)
     for (i = 1;i<rte.n;i++) {
 	seg = rte.segs+i;
 	if (seg->isVert) {
-	    x = vtrack(seg, m);
+	    x = (int)vtrack(seg, m);
 	}
 	else {
 	    y = htrack(seg, m);
@@ -1484,12 +1489,12 @@ emitEdge (FILE* fp, Agedge_t* e, route rte, maze* m, int ix, boxf bb)
 
     n = CELL(aghead(e))->bb;
     if (seg->isVert) {
-	x = vtrack(seg, m);
-	y = (n.UR.y + n.LL.y)/2;
+	x = (int)vtrack(seg, m);
+	y = (int)((n.UR.y + n.LL.y)/2);
     }
     else {
 	y = htrack(seg, m);
-	x = (n.LL.x + n.UR.x)/2;
+	x = (int)((n.LL.x + n.UR.x)/2);
     }
     bb.LL.x = MIN(bb.LL.x, SC*x);
     bb.LL.y = MIN(bb.LL.y, SC*y);
@@ -1515,8 +1520,8 @@ emitSearchGraph (FILE* fp, sgraph* sg)
 	cp = np->cells[0];
 	if (cp == np->cells[1]) {
 	    pointf pf = midPt (cp);
-	    p.x = pf.x;
-	    p.y = pf.y;
+	    p.x = (int)pf.x;
+	    p.y = (int)pf.y;
 	}
 	else {
 	    if (IsNode(cp)) cp = np->cells[1];
@@ -1564,10 +1569,10 @@ emitGraph (FILE* fp, maze* mp, int n_edges, route* route_list, epair_t es[])
       absbb.UR.y = MAX(absbb.UR.y, bb.UR.y);
     }
 
-    bbox.LL.x = absbb.LL.x + TRANS;
-    bbox.LL.y = absbb.LL.y + TRANS;
-    bbox.UR.x = absbb.UR.x + TRANS;
-    bbox.UR.y = absbb.UR.y + TRANS;
+    bbox.LL.x = (int)absbb.LL.x + TRANS;
+    bbox.LL.y = (int)absbb.LL.y + TRANS;
+    bbox.UR.x = (int)absbb.UR.x + TRANS;
+    bbox.UR.y = (int)absbb.UR.y + TRANS;
     fprintf (fp, epilog2, bbox.LL.x, bbox.LL.y,  bbox.UR.x, bbox.UR.y);
 }
 #endif

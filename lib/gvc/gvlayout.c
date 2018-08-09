@@ -63,7 +63,7 @@ int gvLayoutJobs(GVC_t * gvc, Agraph_t * g)
     if (g != agroot(g))
 	GD_gvc(agroot(g)) = gvc;
 
-    if ((p = agget(g, "layout"))) {
+    if ((p = agget(g, "layout")) != 0) {
         gvc->layout.engine = NULL;
 	rc = gvlayout_select(gvc, p);
 	if (rc == NO_SUPPORT) {
@@ -101,6 +101,7 @@ int gvLayoutJobs(GVC_t * gvc, Agraph_t * g)
  */
 int gvFreeLayout(GVC_t * gvc, Agraph_t * g)
 {
+	gvc;
     /* skip if no Agraphinfo_t yet */
     if (! agbindrec(g, "Agraphinfo_t", 0, TRUE))
 	    return 0;

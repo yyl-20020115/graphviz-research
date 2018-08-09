@@ -734,26 +734,26 @@ static int checkpath(int boxn, boxf* boxes, path* thepath)
 	    int xy;
 
 	    if (l == 1)
-		xy = ba->UR.x, ba->UR.x = bb->LL.x, bb->LL.x = xy, l = 0;
+		xy = (int)ba->UR.x, ba->UR.x = bb->LL.x, bb->LL.x = xy, l = 0;
 	    else if (r == 1)
-		xy = ba->LL.x, ba->LL.x = bb->UR.x, bb->UR.x = xy, r = 0;
+		xy = (int)ba->LL.x, ba->LL.x = bb->UR.x, bb->UR.x = xy, r = 0;
 	    else if (d == 1)
-		xy = ba->UR.y, ba->UR.y = bb->LL.y, bb->LL.y = xy, d = 0;
+		xy = (int)ba->UR.y, ba->UR.y = bb->LL.y, bb->LL.y = xy, d = 0;
 	    else if (u == 1)
-		xy = ba->LL.y, ba->LL.y = bb->UR.y, bb->UR.y = xy, u = 0;
+		xy = (int)ba->LL.y, ba->LL.y = bb->UR.y, bb->UR.y = xy, u = 0;
 	    for (i = 0; i < errs - 1; i++) {
 		if (l == 1)
-		    xy = (ba->UR.x + bb->LL.x) / 2.0 + 0.5, ba->UR.x =
-			bb->LL.x = xy, l = 0;
+		    xy = (int)((ba->UR.x + bb->LL.x) / 2.0 + 0.5, ba->UR.x =
+			bb->LL.x = xy, l = 0);
 		else if (r == 1)
-		    xy = (ba->LL.x + bb->UR.x) / 2.0 + 0.5, ba->LL.x =
-			bb->UR.x = xy, r = 0;
+		    xy = (int)((ba->LL.x + bb->UR.x) / 2.0 + 0.5, ba->LL.x =
+			bb->UR.x = xy, r = 0);
 		else if (d == 1)
-		    xy = (ba->UR.y + bb->LL.y) / 2.0 + 0.5, ba->UR.y =
-			bb->LL.y = xy, d = 0;
+		    xy = (int)((ba->UR.y + bb->LL.y) / 2.0 + 0.5, ba->UR.y =
+			bb->LL.y = xy, d = 0);
 		else if (u == 1)
-		    xy = (ba->LL.y + bb->UR.y) / 2.0 + 0.5, ba->LL.y =
-			bb->UR.y = xy, u = 0;
+		    xy = (int)((ba->LL.y + bb->UR.y) / 2.0 + 0.5, ba->LL.y =
+			bb->UR.y = xy, u = 0);
 	    }
 	}
 #else
@@ -761,8 +761,8 @@ static int checkpath(int boxn, boxf* boxes, path* thepath)
 #endif
 #ifndef DONTFIXPATH
 	/* check for overlapping boxes */
-	xoverlap = overlap(ba->LL.x, ba->UR.x, bb->LL.x, bb->UR.x);
-	yoverlap = overlap(ba->LL.y, ba->UR.y, bb->LL.y, bb->UR.y);
+	xoverlap = overlap((int)ba->LL.x, (int)ba->UR.x, (int)bb->LL.x, (int)bb->UR.x);
+	yoverlap = overlap((int)ba->LL.y, (int)ba->UR.y, (int)bb->LL.y, (int)bb->UR.y);
 	if (xoverlap && yoverlap) {
 	    if (xoverlap < yoverlap) {
 		if (ba->UR.x - ba->LL.x > bb->UR.x - bb->LL.x) {
@@ -936,7 +936,7 @@ void
 makeStraightEdge(graph_t * g, edge_t * e, int et, splineInfo* sinfo)
 {
     edge_t *e0;
-    edge_t** edges;
+    edge_t** _edges;
     edge_t* elist[MAX_EDGE];
     int i, e_cnt;
 
@@ -945,21 +945,21 @@ makeStraightEdge(graph_t * g, edge_t * e, int et, splineInfo* sinfo)
     while ((e0 != ED_to_virt(e0)) && (e0 = ED_to_virt(e0))) e_cnt++;
 
     if (e_cnt <= MAX_EDGE)
-	edges = elist;
+	_edges = elist;
     else
-	edges = N_NEW(e_cnt,edge_t*);
+	_edges = N_NEW(e_cnt,edge_t*);
     e0 = e;
     for (i = 0; i < e_cnt; i++) {
-	edges[i] = e0;
+	_edges[i] = e0;
 	e0 = ED_to_virt(e0);
     }
-    makeStraightEdges (g, edges, e_cnt, et, sinfo);
-    if (e_cnt > MAX_EDGE) free (edges);
+    makeStraightEdges (g, _edges, e_cnt, et, sinfo);
+    if (e_cnt > MAX_EDGE) free (_edges);
 
 }
 
 void 
-makeStraightEdges(graph_t * g, edge_t** edges, int e_cnt, int et, splineInfo* sinfo)
+makeStraightEdges(graph_t * g, edge_t** _edges, int e_cnt, int et, splineInfo* sinfo)
 {
     pointf dumb[4];
     node_t *n;
@@ -974,7 +974,7 @@ makeStraightEdges(graph_t * g, edge_t** edges, int e_cnt, int et, splineInfo* si
     pointf dumber[4];
     pointf p, q;
 
-    e = edges[0];
+    e = _edges[0];
     n = agtail(e);
     head = aghead(e);
     p = dumb[1] = dumb[0] = add_pointf(ND_coord(n), ED_tail_port(e).p);
@@ -1009,7 +1009,7 @@ makeStraightEdges(graph_t * g, edge_t** edges, int e_cnt, int et, splineInfo* si
     }
 
     for (i = 0; i < e_cnt; i++) {
-	e0 = edges[i];
+	e0 = _edges[i];
 	if (aghead(e0) == head) {
 	    p = dumb[0];
 	    q = dumb[3];

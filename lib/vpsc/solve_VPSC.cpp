@@ -238,8 +238,8 @@ void IncVPSC::splitBlocks() {
 	splitCnt=0;
 	// Split each block if necessary on min LM
 	for(set<Block*>::const_iterator i(bs->begin());i!=bs->end();i++) {
-		Block* b = *i;
-		Constraint* v=b->findMinLM();
+		Block* _b = *i;
+		Constraint* v=_b->findMinLM();
 		if(v!=NULL && v->lm < -0.0000001) {
 #ifdef RECTANGLE_OVERLAP_LOGGING
 			f<<"    found split point: "<<*v<<" lm="<<v->lm<<endl;

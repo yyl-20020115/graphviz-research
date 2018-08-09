@@ -137,7 +137,7 @@ char *late_nnstring(void *obj, attrsym_t * attr, char *def)
 boolean late_bool(void *obj, attrsym_t * attr, int def)
 {
     if (attr == NULL)
-	return def;
+	return (boolean)def;
 
     return mapbool(agxget(obj, attr));
 }
@@ -347,13 +347,13 @@ static char** mkDirlist (const char* list, int* maxdirlen)
     for (dir = strtok (s, PATHSEP); dir; dir = strtok (NULL, PATHSEP)) {
 	dirs = ALLOC (cnt+2,dirs,char*);
 	dirs[cnt++] = dir;
-	maxlen = MAX(maxlen, strlen (dir));
+	maxlen = MAX(maxlen, (int)strlen (dir));
     }
     dirs[cnt] = NULL;
     *maxdirlen = maxlen;
     return dirs;
 }
-
+int access(const   char   *filename, int   amode);
 static char* findPath (char** dirs, int maxdirlen, const char* str)
 {
     static char *safefilename = NULL;
@@ -406,11 +406,11 @@ const char *safefile(const char *filename)
 	}
 
 	str = filename;
-	if ((p = strrchr(str, '/')))
+	if ((p = strrchr(str, '/'))!=0)
 	    str = ++p;
-	if ((p = strrchr(str, '\\')))
+	if ((p = strrchr(str, '\\')) != 0)
 	    str = ++p;
-	if ((p = strrchr(str, ':')))
+	if ((p = strrchr(str, ':')) != 0)
 	    str = ++p;
 
 	if (onetime && str != filename) {
@@ -464,7 +464,7 @@ boolean mapBool(char *p, boolean dflt)
     if (!strcasecmp(p, "yes"))
 	return TRUE;
     if (isdigit(*p))
-	return atoi(p);
+	return (boolean)atoi(p);
     else
 	return dflt;
 }
@@ -609,6 +609,7 @@ pointf neato_closest(splines * spl, pointf p)
 static int Tflag;
 void gvToggle(int s)
 {
+	s;
     Tflag = !Tflag;
 #if !defined(_WIN32)
     signal(SIGUSR1, gvToggle);
@@ -643,13 +644,13 @@ void common_init_node(node_t * n)
     ND_label(n) = make_label((void*)n, str,
 	        ((aghtmlstr(str) ? LT_HTML : LT_NONE) | ( (shapeOf(n) == SH_RECORD) ? LT_RECD : LT_NONE)),
 		fi.fontsize, fi.fontname, fi.fontcolor);
-    if (N_xlabel && (str = agxget(n, N_xlabel)) && (str[0])) {
+    if (N_xlabel != 0 && (str = agxget(n, N_xlabel)) != 0 && (str[0]) != 0) {
 	ND_xlabel(n) = make_label((void*)n, str, (aghtmlstr(str) ? LT_HTML : LT_NONE),
 				fi.fontsize, fi.fontname, fi.fontcolor);
 	GD_has_labels(agraphof(n)) |= NODE_XLABEL;
     }
 
-    ND_showboxes(n) = late_int(n, N_showboxes, 0, 0);
+    ND_showboxes(n) = (unsigned char)late_int(n, N_showboxes, 0, 0);
     ND_shape(n)->fns->initfn(n);
 }
 
@@ -715,13 +716,13 @@ int common_init_edge(edge_t * e)
 {
 	char *str;
 	int r = 0;
-	struct fontinfo fi;
-	struct fontinfo lfi;
+	struct fontinfo fi = { 0 };
+	struct fontinfo lfi = { 0 };
 	graph_t *sg = agraphof(agtail(e));
 
 	fi.fontname = NULL;
 	lfi.fontname = NULL;
-	if (E_label && (str = agxget(e, E_label)) && (str[0])) {
+	if (E_label != 0 && (str = agxget(e, E_label)) != 0 && (str[0]) != 0) {
 		r = 1;
 		initFontEdgeAttr(e, &fi);
 		ED_label(e) = make_label((void*)e, str, (aghtmlstr(str) ? LT_HTML : LT_NONE),
@@ -731,7 +732,7 @@ int common_init_edge(edge_t * e)
 			mapbool(late_string(e, E_label_float, "false"));
 	}
 
-	if (E_xlabel && (str = agxget(e, E_xlabel)) && (str[0])) {
+	if (E_xlabel != 0 && (str = agxget(e, E_xlabel)) != 0 && (str[0]) != 0) {
 		if (!fi.fontname)
 			initFontEdgeAttr(e, &fi);
 		ED_xlabel(e) = make_label((void*)e, str, (aghtmlstr(str) ? LT_HTML : LT_NONE),
@@ -741,13 +742,13 @@ int common_init_edge(edge_t * e)
 
 
 	/* vladimir */
-	if (E_headlabel && (str = agxget(e, E_headlabel)) && (str[0])) {
+	if (E_headlabel != 0 && (str = agxget(e, E_headlabel)) != 0 && (str[0]) != 0) {
 		initFontLabelEdgeAttr(e, &fi, &lfi);
 		ED_head_label(e) = make_label((void*)e, str, (aghtmlstr(str) ? LT_HTML : LT_NONE),
 			lfi.fontsize, lfi.fontname, lfi.fontcolor);
 		GD_has_labels(sg) |= HEAD_LABEL;
 	}
-	if (E_taillabel && (str = agxget(e, E_taillabel)) && (str[0])) {
+	if (E_taillabel != 0 && (str = agxget(e, E_taillabel)) != 0 && (str[0]) != 0) {
 		if (!lfi.fontname)
 			initFontLabelEdgeAttr(e, &fi, &lfi);
 		ED_tail_label(e) = make_label((void*)e, str, (aghtmlstr(str) ? LT_HTML : LT_NONE),
@@ -1007,8 +1008,8 @@ static int cmpItem(Dt_t * d, void *p1[], void *p2[], Dtdisc_t * disc)
 static void *newItem(Dt_t * d, item * objp, Dtdisc_t * disc)
 {
     item *newp = NEW(item);
-
-    NOTUSED(disc);
+	d;
+	disc;
     newp->p[0] = objp->p[0];
     newp->p[1] = objp->p[1];
     newp->t = objp->t;
@@ -1021,6 +1022,8 @@ static void *newItem(Dt_t * d, item * objp, Dtdisc_t * disc)
  */
 static void freeItem(Dt_t * d, item * obj, Dtdisc_t * disc)
 {
+	disc;
+	d;
     free(obj);
 }
 
@@ -1247,7 +1250,7 @@ static node_t *mapN(node_t * n, graph_t * clg)
     name = strchr(agnameof(n), ':');
     assert(name);
     name++;
-    if ((nn = agfindnode(g, name)))
+    if ((nn = agfindnode(g, name)) != 0)
 	return nn;
     nn = agnode(g, name, 1);
     agbindrec(nn, "Agnodeinfo_t", sizeof(Agnodeinfo_t), TRUE);
@@ -1438,7 +1441,7 @@ htmlEntity (char** s)
 		}
 		break;
 	    }
-	    *p++ = byte;
+	    *p++ = (char)byte;
 	}
     }
     *s = (char*)str;
@@ -1520,7 +1523,7 @@ char* htmlEntityUTF8 (char* s, graph_t* g)
 	        v = htmlEntity (&s);
 	        if (v) {
 		    if (v < 0x7F) /* entity needs 1 byte in UTF8 */
-			c = v;
+			c = (unsigned char)v;
 		    else if (v < 0x07FF) { /* entity needs 2 bytes in UTF8 */
 			agxbputc(&xb, (v >> 6) | 0xC0);
 			c = (v & 0x3F) | 0x80;
@@ -1986,9 +1989,9 @@ void gv_nodesize(node_t * n, boolean flip)
 #ifdef _WIN32
 void fix_fc(void)
 {
-    char buf[28192];
-    char buf2[28192];
-    int cur=0;
+//    char buf[28192];
+//    char buf2[28192];
+//    int cur=0;
     FILE* fp;
 
     if((fp = fopen("fix-fc.exe", "r")) == NULL)
@@ -2018,6 +2021,8 @@ typedef struct {
 
 static void free_clust (Dt_t* dt, clust_t* clp, Dtdisc_t* disc)
 {
+	disc;
+	dt;
     free (clp);
 }
 

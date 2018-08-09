@@ -229,6 +229,7 @@ CMDS_orthog(vtx_data* graph, int n, int dim, double** eigs, double tol,
 	double* evals= N_GNEW(dim, double);
 	
 	double * orthog_aux = NULL;
+	graph;
 	if (orthog!=NULL) {
 		orthog_aux = N_GNEW(n, double);
 		for (i=0; i<n; i++) {

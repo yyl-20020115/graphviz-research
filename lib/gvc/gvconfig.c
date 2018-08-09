@@ -115,11 +115,11 @@ static void separator(int *nest, char **tokens)
     char c, *s;
 
     s = *tokens;
-    while ((c = *s)) {
+    while ((c = *s) != 0) {
 	/* #->eol = comment */
 	if (c == '#') {
 	    s++;
-	    while ((c = *s)) {
+	    while ((c = *s) != 0) {
 		s++;
 		if (c == '\n')
 		    break;
@@ -154,7 +154,7 @@ static char *token(int *nest, char **tokens)
     char c, *s, *t;
 
     s = t = *tokens;
-    while ((c = *s)) {
+    while ((c = *s) != 0) {
 	if (c == '#'
 	    || c == ' ' || c == '\t' || c == '\n' || c == '{' || c == '}')
 	    break;
@@ -215,7 +215,7 @@ void gvconfig_plugin_install_from_library(GVC_t * gvc, char *path, gvplugin_libr
     int i;
 
     package = gvplugin_package_record(gvc, path, library->packagename);
-    for (apis = library->apis; (types = apis->types); apis++) {
+    for (apis = library->apis; (types = apis->types) != 0; apis++) {
 	for (i = 0; types[i].type; i++) {
 	    gvplugin_install(gvc, apis->api, types[i].type,
 			types[i].quality, package, &types[i]);
@@ -230,7 +230,7 @@ static void gvconfig_plugin_install_builtins(GVC_t * gvc)
 
     if (gvc->common.builtins == NULL) return;
 
-    for (s = gvc->common.builtins; (name = s->name); s++)
+    for (s = gvc->common.builtins; (name = s->name) != 0; s++)
 	if (name[0] == 'g' && strstr(name, "_LTX_library")) 
 	    gvconfig_plugin_install_from_library(gvc, NULL,
 		    (gvplugin_library_t *)(s->address));
@@ -244,7 +244,7 @@ static void gvconfig_write_library_config(GVC_t *gvc, char *path, gvplugin_libra
     int i;
 
     fprintf(f, "%s %s {\n", path, library->packagename);
-    for (apis = library->apis; (types = apis->types); apis++) {
+    for (apis = library->apis; (types = apis->types) != 0; apis++) {
         fprintf(f, "\t%s {\n", gvplugin_api_name(apis->api));
 	for (i = 0; types[i].type; i++) {
 	    /* verify that dependencies are available */
@@ -266,7 +266,7 @@ char * gvconfig_libdir(GVC_t * gvc)
     static char line[BSZ];
     static char *libdir;
     static boolean dirShown = 0; 
-    char *tmp;
+    //char *tmp = 0;
 
     if (!libdir) {
         libdir=getenv("GVBINDIR");
@@ -276,7 +276,7 @@ char * gvconfig_libdir(GVC_t * gvc)
 	    char* s;
 		
 		MEMORY_BASIC_INFORMATION mbi;
-		if (VirtualQuery (&gvconfig_libdir, &mbi, sizeof(mbi)) == 0) {
+		if (VirtualQuery ((LPCVOID)&gvconfig_libdir, &mbi, sizeof(mbi)) == 0) {
 		agerr(AGERR,"failed to get handle for executable.\n");
 		return 0;
 	    }
@@ -300,7 +300,7 @@ char * gvconfig_libdir(GVC_t * gvc)
 	    const char* path;
 	    for (i = 0; i < c; ++i) {
 		path = _dyld_get_image_name(i);
-		tmp = strstr(path, "/libgvc.");
+		char * tmp = strstr(path, "/libgvc.");
 		if (tmp) {
 		    if (tmp > path) {
 			/* Check for real /lib dir. Don't accept pre-install /.libs */
@@ -581,10 +581,10 @@ glob (GVC_t* gvc, char* pattern, int flags, int (*errfunc)(const char *, int), g
     char** str=0;
     int arrsize=0;
     int cnt = 0;
-    
+	errfunc = 0;
     pglob->gl_pathc = 0;
     pglob->gl_pathv = NULL;
-    
+	flags;
     h = FindFirstFile (pattern, &wfd);
     if (h == INVALID_HANDLE_VALUE) return GLOB_NOMATCH;
     libdir = gvconfig_libdir(gvc);

@@ -36,6 +36,7 @@ static int
 cmpItem(Dt_t * d, Agnode_t ** key1, Agnode_t ** key2, Dtdisc_t * disc)
 {
 	(void)d;
+	disc;
     if (*key1 > *key2)
 	return 1;
     else if (*key1 < *key2)

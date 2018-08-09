@@ -28,7 +28,7 @@ GVC_t *gvContext(void)
 
     agattr(NULL, AGNODE, "label", NODENAME_ESC);
     /* default to no builtins, demand loading enabled */
-    gvc = gvNEWcontext(NULL, TRUE,TRUE);
+    gvc = gvNEWcontext(NULL, TRUE,(void*)1/*TRUE*/);
     gvconfig(gvc, FALSE); /* configure for available plugins */
     return gvc;
 }
@@ -204,7 +204,7 @@ int gvRenderData(GVC_t *gvc, graph_t *g, const char *format, char **result, unsi
 /* page size on Linux, Mac OS X and Windows */
 #define OUTPUT_DATA_INITIAL_ALLOCATION 4096
 
-    if(!result || !(*result = malloc(OUTPUT_DATA_INITIAL_ALLOCATION))) {
+    if(!result || 0==(*result = malloc(OUTPUT_DATA_INITIAL_ALLOCATION))) {
 	agerr(AGERR, "failure malloc'ing for result string");
 	return -1;
     }

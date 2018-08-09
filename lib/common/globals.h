@@ -54,7 +54,7 @@ extern "C" {
 
     EXTERN char *Version;
     EXTERN char **Files;	/* from command line */
-    EXTERN const char **Lib;		/* from command line */
+    EXTERN /*const*/ char **Lib;		/* from command line */
     EXTERN char *CmdName;
     EXTERN char *specificFlags;
     EXTERN char *specificItems;

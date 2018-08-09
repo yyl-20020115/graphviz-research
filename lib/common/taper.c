@@ -201,7 +201,7 @@ static vararr_t* pathtolines (bezier* bez, double initwid)
     pointf p0, p1, V[4];
     int n = bez->size;
     pointf* A = bez->list;
-
+	initwid;
     insertArr (arr, A[0], 0);
     V[3] = A[0];
     for (i = 0; i + 3 < n; i += 3) {
@@ -289,8 +289,8 @@ stroke_t* taper (bezier* bez, radfunc_t radfunc, double initwid, int linejoin, i
 
     /* determine miter and bevel points and directions */
     for (i = 0; i < pathcount; i++) {
-	l = mymod(i-1,pathcount);
-	n = mymod(i+1,pathcount);
+	l = (int)mymod(i-1,pathcount);
+	n = (int)mymod(i+1,pathcount);
 
 	cur_point = pathpoints[i];
 	x = cur_point.x;

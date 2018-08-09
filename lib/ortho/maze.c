@@ -62,8 +62,8 @@ psdump (cell* gcells, int n_gcells, boxf BB, boxf* rects, int nrect)
     box absbb;
 
     absbb.LL.y = absbb.LL.x = 10;
-    absbb.UR.x = absbb.LL.x + BB.UR.x - BB.LL.x;
-    absbb.UR.y = absbb.LL.y + BB.UR.y - BB.LL.y;
+    absbb.UR.x = absbb.LL.x + (int)(BB.UR.x - BB.LL.x);
+    absbb.UR.y = absbb.LL.y + (int)(BB.UR.y - BB.LL.y);
     fputs (pre, stderr);
     fprintf (stderr, "%%%%Page: 1 1\n%%%%PageBoundingBox: %d %d %d %d\n",
        absbb.LL.x, absbb.LL.y, absbb.UR.x, absbb.UR.y);
@@ -89,6 +89,8 @@ psdump (cell* gcells, int n_gcells, boxf BB, boxf* rects, int nrect)
 static int
 vcmpid(Dt_t* d, pointf* key1, pointf* key2, Dtdisc_t* disc)
 {
+	d = 0;
+	disc = 0;
   if (key1->x > key2->x) return 1;
   else if (key1->x < key2->x) return -1;
   else if (key1->y > key2->y) return 1;
@@ -99,6 +101,8 @@ vcmpid(Dt_t* d, pointf* key1, pointf* key2, Dtdisc_t* disc)
 static int
 hcmpid(Dt_t* d, pointf* key1, pointf* key2, Dtdisc_t* disc)
 {
+	d = 0;
+	disc = 0;
   if (key1->y > key2->y) return 1;
   else if (key1->y < key2->y) return -1;
   else if (key1->x > key2->x) return 1;
@@ -153,6 +157,7 @@ static Dtdisc_t hdictDisc = {
 static void
 updateWt (cell* cp, sedge* ep, int sz)
 {
+	cp = 0;
     ep->cnt++;
     if (ep->cnt > sz) {
 	ep->cnt = 0;
@@ -172,8 +177,8 @@ updateWts (sgraph* g, cell* cp, sedge* ep)
     int i;
     sedge* e;
     int isBend = BEND(g,ep);
-    int hsz = CHANSZ (cp->bb.UR.y - cp->bb.LL.y);
-    int vsz = CHANSZ (cp->bb.UR.x - cp->bb.LL.x);
+    int hsz = (int)CHANSZ (cp->bb.UR.y - cp->bb.LL.y);
+    int vsz = (int)CHANSZ (cp->bb.UR.x - cp->bb.LL.x);
     int minsz = MIN(hsz, vsz);
 
     /* Bend edges are added first */
@@ -199,7 +204,7 @@ markSmall (cell* cp, sgraph* g)
     int i;
     snode* onp;
     cell* ocp;
-
+	g = 0;
     if (IS_SMALL(cp->bb.UR.y-cp->bb.LL.y)) {
 	for (i = 0; i < cp->nsides; i++) {
 	    onp = cp->sides[i];

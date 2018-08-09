@@ -20,6 +20,8 @@
 static void*
 mkIntItem(Dt_t* d,intitem* obj,Dtdisc_t* disc)
 { 
+	disc;
+	d;
     intitem* np = NEW(intitem);
     np->id = obj->id;
     return (void*)np;
@@ -28,12 +30,16 @@ mkIntItem(Dt_t* d,intitem* obj,Dtdisc_t* disc)
 static void
 freeIntItem(Dt_t* d,intitem* obj,Dtdisc_t* disc)
 {
+	d;
+	disc;
     free (obj);
 }
 
 static int
 cmpid(Dt_t* d, int* key1, int* key2, Dtdisc_t* disc)
 {
+	disc;
+	d;
   if (*key1 > *key2) return 1;
   else if (*key1 < *key2) return -1;
   else return 0;

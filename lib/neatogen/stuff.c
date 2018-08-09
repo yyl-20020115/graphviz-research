@@ -302,7 +302,7 @@ void free_scan_graph(graph_t * g)
 	GD_t(g) = NULL;
     }
 }
-
+double drand48(void);
 void jitter_d(node_t * np, int nG, int n)
 {
     int k;

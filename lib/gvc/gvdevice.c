@@ -80,7 +80,7 @@ static size_t gvwrite_no_z (GVJ_t * job, const char *s, size_t len)
     }
     else
 	return fwrite(s, sizeof(char), len, job->output_file);
-    return 0;
+//    return 0;
 }
 
 static void auto_output_filename(GVJ_t *job)
@@ -95,7 +95,7 @@ static void auto_output_filename(GVJ_t *job)
         sprintf(gidx, ".%d", job->graph_index + 1);
     else
         gidx[0] = '\0';
-    if (!(fn = job->input_filename))
+    if (0==(fn = job->input_filename))
         fn = "noname.gv";
     len = strlen(fn)                    /* typically "something.gv" */
         + strlen(gidx)                  /* "", ".2", ".3", ".4", ... */
@@ -110,7 +110,7 @@ static void auto_output_filename(GVJ_t *job)
     strcat(buf, gidx);
     strcat(buf, ".");
     p = strdup(job->output_langname);
-    while ((q = strrchr(p, ':'))) {
+    while ((q = strrchr(p, ':')) != 0) {
         strcat(buf, q+1);
         strcat(buf, ".");
 	*q = '\0';
@@ -215,7 +215,7 @@ size_t gvwrite (GVJ_t * job, const char *s, size_t len)
 	    }
 	}
 
-	crc = crc32(crc, (unsigned char*)s, len);
+	crc = crc32((uLong)crc, (unsigned char*)s, len);
 
 	z->next_in = (unsigned char*)s;
 	z->avail_in = len;
@@ -228,7 +228,7 @@ size_t gvwrite (GVJ_t * job, const char *s, size_t len)
 	        exit(1);
 	    }
 
-	    if ((olen = z->next_out - df)) {
+	    if ((olen = z->next_out - df) != 0) {
 		ret = gvwrite_no_z (job, (char*)df, olen);
 	        if (ret != olen) {
                     (job->common->errorfn) ("gvwrite_no_z problem %d\n", ret);
@@ -264,7 +264,7 @@ int gvferror (FILE* stream)
 
 size_t gvfwrite (const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
-    assert(size = sizeof(char));
+    assert((size = sizeof(char)) != 0);
     return gvwrite((GVJ_t*)stream, ptr, nmemb);
 }
 
@@ -280,7 +280,7 @@ int gvputs(GVJ_t * job, const char *s)
 
 int gvputc(GVJ_t * job, int c)
 {
-    const char cc = c;
+    const char cc = (char)c;
 
     if (gvwrite (job, &cc, 1) != 1) {
 	return EOF;
@@ -354,14 +354,14 @@ void gvdevice_finalize(GVJ_t * job)
 	    (job->common->errorfn) ("deflation end problem %d\n", ret);
 	    exit(1);
 	}
-	out[0] = crc;
-	out[1] = crc >> 8;
-	out[2] = crc >> 16;
-	out[3] = crc >> 24;
-	out[4] = z->total_in;
-	out[5] = z->total_in >> 8;
-	out[6] = z->total_in >> 16;
-	out[7] = z->total_in >> 24;
+	out[0] = (unsigned char)(crc & 0xff);
+	out[1] = (unsigned char)(crc >> 8)&0xff;
+	out[2] = (unsigned char)(crc >> 16)&0xff;
+	out[3] = (unsigned char)(crc >> 24)&0xff;
+	out[4] = (unsigned char)(z->total_in &0xff);
+	out[5] = (unsigned char)(z->total_in >> 8)&0xff;
+	out[6] = (unsigned char)(z->total_in >> 16)&0xff;
+	out[7] = (unsigned char)(z->total_in >> 24)&0xff;
 	gvwrite_no_z(job, (char*)out, sizeof(out));
 #else
 	(job->common->errorfn) ("No libz support\n");
@@ -468,14 +468,14 @@ static char * gvprintnum (size_t *len, double number)
     }
     number *= DECPLACES_SCALE;		/* scale by DECPLACES_SCALE */
     if (number < 0.0)			/* round towards zero */
-        N = number - 0.5;
+        N = (long)(number - 0.5);
     else
-        N = number + 0.5;
+        N = (long)(number + 0.5);
     if (N == 0) {			/* special case for exactly 0 */
 	*len = 1;
 	return "0";
     }
-    if ((negative = (N < 0)))		/* avoid "-0" by testing rounded int */
+    if ((negative = (N < 0)) != 0)		/* avoid "-0" by testing rounded int */
         N = -N;				/* make number +ve */
 #ifdef TERMINATED_NUMBER_STRING
     *--result = '\0';			/* terminate the result string */
@@ -487,7 +487,7 @@ static char * gvprintnum (size_t *len, double number)
         N /= 10;
         if (digit || showzeros) {	/* if digit is non-zero,
 						or if we are printing zeros */
-            *--result = digit | '0';	/* convert digit to ascii */
+            *--result = (char)digit | '0';	/* convert digit to ascii */
             showzeros = TRUE;		/* from now on we must print zeros */
         }
         if (i == 1) {			/* if completed fractional part */
@@ -540,9 +540,9 @@ int main (int argc, char *argv[])
 static void gv_trim_zeros(char* buf, int addSpace)
 {
     char* dotp;
-    char* p;
+    char* p = 0;
 
-    if ((dotp = strchr(buf, '.'))) {
+    if ((dotp = strchr(buf, '.')) != 0) {
         p = dotp + 1;
         while (*p) p++;  // find end of string
         p--;

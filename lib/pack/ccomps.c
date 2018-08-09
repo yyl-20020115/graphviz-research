@@ -116,7 +116,7 @@ static int dfs(Agraph_t * g, Agnode_t * n, void *state, stk_t* stk)
     int cnt = 0;
 
     push (stk, n);
-    while ((n = pop(stk))) {
+    while ((n = pop(stk))!=0) {
 	cnt++;
 	if (stk->actionfn) stk->actionfn(n, state);
         for (e = agfstedge(g, n); e; e = agnxtedge(g, e, n)) {
@@ -155,7 +155,7 @@ static int markFn (Agnode_t* n, int v)
     int ret;
     if (v < 0) return ND_mark(n);
     ret = ND_mark(n);
-    ND_mark(n) = v;
+    ND_mark(n) = (char)v;
     return ret;
 }
 
@@ -174,7 +174,7 @@ setPrefix (char* pfx, int* lenp, char* buf, int buflen)
     if (len + 25 <= buflen)
         name = buf;
     else {
-        if (!(name = (char *) gmalloc(len + 25))) return NULL;
+        if (0 == (name = (char *) gmalloc(len + 25))) return NULL;
     }
     strcpy(name, pfx);
     *lenp = len;
@@ -488,7 +488,7 @@ static int clMarkFn (Agnode_t* n, int v)
     int ret;
     if (v < 0) return clMark(n);
     ret = clMark(n);
-    clMark(n) = v;
+    clMark(n) = (char)v;
     return ret;
 }
 
@@ -546,7 +546,7 @@ static Agraph_t *projectG(Agraph_t * subg, Agraph_t * g, int inCluster)
     orig_t *op;
 
     for (n = agfstnode(subg); n; n = agnxtnode(subg, n)) {
-	if ((m = agfindnode(g, agnameof(n)))) {
+	if ((m = agfindnode(g, agnameof(n)))!=0) {
 	    if (proj == 0) {
 		proj = agsubg(g, agnameof(subg), 1);
 	    }
@@ -583,7 +583,7 @@ subgInduce(Agraph_t * root, Agraph_t * g, int inCluster)
     for (subg = agfstsubg(root); subg; subg = agnxtsubg(subg)) {
 	if (GD_cc_subg(subg))
 	    continue;
-	if ((proj = projectG(subg, g, inCluster))) {
+	if ((proj = projectG(subg, g, inCluster))!=0) {
 	    in_cluster = (inCluster || isCluster(subg));
 	    subgInduce(subg, proj, in_cluster);
 	}

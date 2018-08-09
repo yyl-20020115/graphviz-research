@@ -31,6 +31,8 @@ Dtdisc_t Hdisc = { offsetof(HDict_t, key), sizeof(int), -1, 0, 0,
 
 static int icompare(Dt_t * dt, void * v1, void * v2, Dtdisc_t * disc)
 {
+	disc;
+	dt;
     int k1 = *((int *) v1), k2 = *((int *) v2);
     return k1 - k2;
 }
@@ -44,13 +46,13 @@ static XLabels_t *xlnew(object_t * objs, int n_objs,
     xlp = NEW(XLabels_t);
 
     /* used to load the rtree in hilbert space filling curve order */
-    if (!(xlp->hdx = dtopen(&Hdisc, Dtobag))) {
+    if (0==(xlp->hdx = dtopen(&Hdisc, Dtobag))) {
 	fprintf(stderr, "out of memory\n");
 	goto bad;
     }
 
     /* for querying intersection candidates */
-    if (!(xlp->spdx = RTreeOpen())) {
+    if (0==(xlp->spdx = RTreeOpen())) {
 	fprintf(stderr, "out of memory\n");
 	goto bad;
     }
@@ -122,7 +124,7 @@ static int floorLog2(unsigned int n)
 unsigned int xlhorder(XLabels_t * xlp)
 {
     double maxx = xlp->params->bb.UR.x, maxy = xlp->params->bb.UR.y;
-    return floorLog2(maxx > maxy ? maxx : maxy) + 1;
+    return (unsigned int)floorLog2((unsigned int)(maxx > maxy ? maxx : maxy)) + 1;
 }
 
 /* from http://www.hackersdelight.org/ site for the book by Henry S Warren */
@@ -229,10 +231,10 @@ static int lblenclosing(object_t * objp, object_t * objp1)
 /*fill in rectangle from the object */
 static void objp2rect(object_t * op, Rect_t * r)
 {
-    r->boundary[0] = op->pos.x;
-    r->boundary[1] = op->pos.y;
-    r->boundary[2] = op->pos.x + op->sz.x;
-    r->boundary[3] = op->pos.y + op->sz.y;
+    r->boundary[0] =(int) op->pos.x;
+    r->boundary[1] = (int)op->pos.y;
+    r->boundary[2] = (int)(op->pos.x + op->sz.x);
+    r->boundary[3] = (int)(op->pos.y + op->sz.y);
     return;
 }
 
@@ -240,10 +242,10 @@ static void objp2rect(object_t * op, Rect_t * r)
 static void objplp2rect(object_t * objp, Rect_t * r)
 {
     xlabel_t *lp = objp->lbl;
-    r->boundary[0] = lp->pos.x;
-    r->boundary[1] = lp->pos.y;
-    r->boundary[2] = lp->pos.x + lp->sz.x;
-    r->boundary[3] = lp->pos.y + lp->sz.y;
+    r->boundary[0] = (int)lp->pos.x;
+    r->boundary[1] = (int)lp->pos.y;
+    r->boundary[2] = (int)(lp->pos.x + lp->sz.x);
+    r->boundary[3] = (int)(lp->pos.y + lp->sz.y);
     return;
 }
 
@@ -252,7 +254,7 @@ static Rect_t objplpmks(XLabels_t * xlp, object_t * objp)
 {
     Rect_t rect;
     pointf p;
-
+	xlp;
     p.x = p.y = 0.0;
     if (objp->lbl)
 	p = objp->lbl->sz;
@@ -274,7 +276,7 @@ static int getintrsxi(XLabels_t * xlp, object_t * op, object_t * cp)
     int i = -1;
     xlabel_t *lp = op->lbl, *clp = cp->lbl;
     assert(lp != clp);
-
+	xlp;
     if (lp->set == 0 || clp->set == 0)
 	return i;
     if ((op->pos.x == 0.0 && op->pos.y == 0.0) ||

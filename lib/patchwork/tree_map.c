@@ -42,7 +42,7 @@ static void squarify(int n, real *area, rectangle *recs, int nadded, real maxare
     totalarea = area[0];
     squarify(n, area, recs, nadded, maxarea, minarea, totalarea, asp, fillrec);
   } else {
-    real newmaxarea, newminarea, s, h, maxw, minw, newasp, hh, ww, xx, yy;
+    real newmaxarea = 0.0, newminarea = 0.0, s = 0.0, h = 0.0, maxw = 0.0, minw = 0.0, newasp = 0.0, hh = 0.0, ww = 0.0, xx = 0.0,yy = 0.0;
     if (nadded < n){
       newmaxarea = MAX(maxarea, area[nadded]);
       newminarea = MIN(minarea, area[nadded]);

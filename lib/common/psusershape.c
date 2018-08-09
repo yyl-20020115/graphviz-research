@@ -25,6 +25,9 @@ static Dict_t *EPSF_contents;
 
 static void ps_image_free(Dict_t * dict, usershape_t * p, Dtdisc_t * disc)
 {
+	disc;
+	dict;
+
     free(p->data);
 }
 
@@ -86,7 +89,7 @@ static usershape_t *user_init(const char *str)
 	rc = fread(contents, statbuf.st_size, 1, fp);
 	contents[statbuf.st_size] = '\0';
 	dtinsert(EPSF_contents, us);
-	us->must_inline = must_inline;
+	us->must_inline =(boolean) must_inline;
     } else {
 	agerr(AGWARN, "BoundingBox not found in epsf file %s\n", str);
 	us = NULL;

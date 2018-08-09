@@ -140,7 +140,7 @@ unsigned int RectArea(Rect_t * r)
 	agerr (AGERR, "label: area too large for rtree\n");
 	return UINT_MAX;
       }
-      area = a_test;
+      area =(unsigned int) a_test;
     }
     return area;
 }

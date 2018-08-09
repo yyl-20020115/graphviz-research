@@ -88,7 +88,7 @@ boolean gvplugin_install(GVC_t * gvc, api_t api, const char *typestr,
     char *p, pins[TYPSIZ + 1], pnxt[TYPSIZ + 1];
 
     strncpy(pins, typestr, TYPSIZ);
-    if ((p = strchr(pins, ':')))
+    if ((p = strchr(pins, ':')) != 0)
         *p = '\0';
 
     /* point to the beginning of the linked list of plugins for this api */
@@ -97,7 +97,7 @@ boolean gvplugin_install(GVC_t * gvc, api_t api, const char *typestr,
     /* keep alpha-sorted and insert new duplicates ahead of old */
     while (*pnext) {
         strncpy(pnxt, (*pnext)->typestr, TYPSIZ);
-        if ((p = strchr(pnxt, ':')))
+        if ((p = strchr(pnxt, ':')) != 0)
             *p = '\0';
         if (strcmp(pins, pnxt) <= 0)
             break;
@@ -107,7 +107,7 @@ boolean gvplugin_install(GVC_t * gvc, api_t api, const char *typestr,
     /* keep quality sorted within type and insert new duplicates ahead of old */
     while (*pnext) {
         strncpy(pnxt, (*pnext)->typestr, TYPSIZ);
-        if ((p = strchr(pnxt, ':')))
+        if ((p = strchr(pnxt, ':')) != 0)
             *p = '\0';
         if (strcmp(pins, pnxt) != 0)
             break;
@@ -212,7 +212,7 @@ gvplugin_library_t *gvplugin_library_load(GVC_t * gvc, char *path)
     s = strrchr(p, DIRSEP[0]);
     len = strlen(s);
 #if defined(_WIN32) && !defined(__MINGW32__) && !defined(__CYGWIN__)
-    if (len < strlen("/gvplugin_x")) {
+    if (len < (int)strlen("/gvplugin_x")) {
 #else
     if (len < strlen("/libgvplugin_x")) {
 #endif
@@ -313,7 +313,7 @@ gvplugin_available_t *gvplugin_load(GVC_t * gvc, api_t api, const char *str)
         if (library) {
 
             /* Now activate the library with real type ptrs */
-            for (apis = library->apis; (types = apis->types); apis++) {
+            for (apis = library->apis; (types = apis->types) != 0; apis++) {
                 for (i = 0; types[i].type; i++) {
                     /* NB. quality is not checked or replaced
                      *   in case user has manually edited quality in config */
@@ -370,7 +370,7 @@ char *gvplugin_list(GVC_t * gvc, api_t api, const char *str)
                                    then just list the alternative paths for the plugin */
         for (pnext = plugin; *pnext; pnext = &((*pnext)->next)) {
             q = strdup((*pnext)->typestr);
-            if ((p = strchr(q, ':')))
+            if ((p = strchr(q, ':')) != 0)
                 *p++ = '\0';
             /* list only the matching type, or all types if s is an empty string */
             if (!s[0] || strcasecmp(s, q) == 0) {
@@ -391,7 +391,7 @@ char *gvplugin_list(GVC_t * gvc, api_t api, const char *str)
         for (pnext = plugin; *pnext; pnext = &((*pnext)->next)) {
             /* list only one instance of type */
             q = strdup((*pnext)->typestr);
-            if ((p = strchr(q, ':')))
+            if ((p = strchr(q, ':')) != 0)
                 *p++ = '\0';
             if (!typestr_last || strcasecmp(typestr_last, q) != 0) {
                 /* list it as "type"  i.e. w/o ":path" */
@@ -431,7 +431,7 @@ char **gvPluginList(GVC_t * gvc, const char *kind, int *sz, const char *str)
     int cnt = 0;
     char **list = NULL;
     char *p, *q, *typestr_last;
-
+	str;
     if (!kind)
         return NULL;
     for (api = 0; api < ARRAY_SIZE(api_names); api++) {
@@ -449,7 +449,7 @@ char **gvPluginList(GVC_t * gvc, const char *kind, int *sz, const char *str)
     for (pnext = plugin; *pnext; pnext = &((*pnext)->next)) {
         /* list only one instance of type */
         q = strdup((*pnext)->typestr);
-        if ((p = strchr(q, ':')))
+        if ((p = strchr(q, ':')) != 0)
             *p++ = '\0';
         if (!typestr_last || strcasecmp(typestr_last, q) != 0) {
             list = RALLOC(cnt + 1, list, char *);
@@ -539,7 +539,7 @@ Agraph_t *gvplugin_graph(GVC_t * gvc)
             for (pnext = &(gvc->apis[api]); *pnext; pnext = &((*pnext)->next)) {
                 if ((*pnext)->package == package) {
                     t = q = strdup((*pnext)->typestr);
-                    if ((p = strchr(q, ':')))
+                    if ((p = strchr(q, ':')) != 0)
                         *p++ = '\0';
                     /* Now p = renderer, e.g. "gd"
                      * and q = device, e.g. "png"
@@ -715,7 +715,7 @@ Agraph_t *gvplugin_graph(GVC_t * gvc)
             for (pnext = &(gvc->apis[api]); *pnext; pnext = &((*pnext)->next)) {
                 if ((*pnext)->package == package) {
                     t = q = strdup((*pnext)->typestr);
-                    if ((p = strchr(q, ':')))
+                    if ((p = strchr(q, ':')) != 0)
                         *p++ = '\0';
                     /* Now p = renderer, e.g. "gd"
                      * and q = device, e.g. "png"

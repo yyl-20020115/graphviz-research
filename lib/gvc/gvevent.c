@@ -67,7 +67,7 @@ static void gv_graph_state(GVJ_t *job, graph_t *g)
 
     list = &(job->selected_obj_attributes);
     a = NULL;
-    while ((a = agnxtattr(g, AGRAPH, a))) {
+    while ((a = agnxtattr(g, AGRAPH, a)) != 0) {
         gv_argvlist_set_item(list, j++, a->name);
         gv_argvlist_set_item(list, j++, agxget(g, a));
         gv_argvlist_set_item(list, j++, (char*)GVATTR_STRING);
@@ -97,7 +97,7 @@ static void gv_node_state(GVJ_t *job, node_t *n)
     list = &(job->selected_obj_attributes);
     g = agroot(agraphof(n));
     a = NULL;
-    while ((a = agnxtattr(g, AGNODE, a))) {
+    while ((a = agnxtattr(g, AGNODE, a)) != 0) {
         gv_argvlist_set_item(list, j++, a->name);
         gv_argvlist_set_item(list, j++, agxget(n, a));
     }
@@ -135,7 +135,7 @@ static void gv_edge_state(GVJ_t *job, edge_t *e)
     alist = &(job->selected_obj_attributes);
     g = agroot(agraphof(aghead(e)));
     a = NULL;
-    while ((a = agnxtattr(g, AGEDGE, a))) {
+    while ((a = agnxtattr(g, AGEDGE, a)) != 0) {
 
 	/* tailport and headport can be shown as part of the name, but they
 	 * are not identifying properties of the edge so we 
@@ -387,18 +387,18 @@ static void gvevent_button_press(GVJ_t * job, int button, pointf pointer)
 	gvevent_find_current_obj(job, pointer);
 	gvevent_select_current_obj(job);
         job->click = 1;
-	job->button = button;
+	job->button =(unsigned char) button;
 	job->needs_refresh = 1;
 	break;
     case 2: /* pan */
         job->click = 1;
-	job->button = button;
+	job->button = (unsigned char)button;
 	job->needs_refresh = 1;
 	break;
     case 3: /* insert node or edge */
 	gvevent_find_current_obj(job, pointer);
         job->click = 1;
-	job->button = button;
+	job->button = (unsigned char)button;
 	job->needs_refresh = 1;
 	break;
     case 4:
@@ -443,6 +443,8 @@ static void gvevent_button_press(GVJ_t * job, int button, pointf pointer)
 
 static void gvevent_button_release(GVJ_t *job, int button, pointf pointer)
 {
+	button;
+	pointer;
     job->click = 0;
     job->button = 0;
 }
@@ -482,6 +484,7 @@ static void gvevent_motion(GVJ_t * job, pointf pointer)
 
 static int quit_cb(GVJ_t * job)
 {
+	job;
     return 1;
 }
 
@@ -559,11 +562,15 @@ static int toggle_fit_cb(GVJ_t * job)
 
 static void gvevent_modify (GVJ_t * job, const char *name, const char *value)
 {
+	value;
+	name;
+	job;
     /* FIXME */
 }
 
 static void gvevent_delete (GVJ_t * job)
 {
+	job;
     /* FIXME */
 }
 
@@ -624,8 +631,8 @@ static void gvevent_render (GVJ_t * job, const char *format, const char *filenam
  * this, we null out these values for rendering the file, and restore them
  * afterwards. John may have a better way around this.
  */
-    GVJ_t* save_jobs;
-    GVJ_t* save_active;
+    GVJ_t* save_jobs = 0;
+    GVJ_t* save_active = 0;
     if (job->gvc->jobs && (job->gvc->job == NULL)) {
 	save_jobs = job->gvc->jobs;
 	save_active = job->gvc->active_jobs;

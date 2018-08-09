@@ -116,7 +116,7 @@ static void *newCell(Dt_t * d, void *obj, Dtdisc_t * disc)
 {
     cell *cellp = (cell *) obj;
     cell *newp;
-
+	d;
     NOTUSED(disc);
     newp = getCell(_grid);
     newp->p.i = cellp->p.i;

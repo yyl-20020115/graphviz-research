@@ -85,12 +85,12 @@ int gvFreeContext(GVC_t * gvc)
 
     emit_once_reset();
     gvg_next = gvc->gvgs;
-    while ((gvg = gvg_next)) {
+    while ((gvg = gvg_next) != 0) {
 	gvg_next = gvg->next;
 	free(gvg);
     }
     package_next = gvc->packages;
-    while ((package = package_next)) {
+    while ((package = package_next) != 0) {
 	package_next = package->next;
 	free(package->path);
 	free(package->name);

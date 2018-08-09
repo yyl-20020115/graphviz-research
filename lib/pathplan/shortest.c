@@ -302,62 +302,62 @@ int Pshortestpath(Ppoly_t * polyp, Ppoint_t * eps, Ppolyline_t * output)
 }
 
 /* triangulate polygon */
-static void triangulate(pointnlink_t ** pnlps, int pnln)
+static void triangulate(pointnlink_t ** _pnlps, int _pnln)
 {
     int pnli, pnlip1, pnlip2;
 
-	if (pnln > 3) 
+	if (_pnln > 3) 
 	{
-		for (pnli = 0; pnli < pnln; pnli++) 
+		for (pnli = 0; pnli < _pnln; pnli++) 
 		{
-			pnlip1 = (pnli + 1) % pnln;
-			pnlip2 = (pnli + 2) % pnln;
-			if (isdiagonal(pnli, pnlip2, pnlps, pnln)) 
+			pnlip1 = (pnli + 1) % _pnln;
+			pnlip2 = (pnli + 2) % _pnln;
+			if (isdiagonal(pnli, pnlip2, _pnlps, _pnln)) 
 			{
-				loadtriangle(pnlps[pnli], pnlps[pnlip1], pnlps[pnlip2]);
-				for (pnli = pnlip1; pnli < pnln - 1; pnli++)
-					pnlps[pnli] = pnlps[pnli + 1];
-				triangulate(pnlps, pnln - 1);
+				loadtriangle(_pnlps[pnli], _pnlps[pnlip1], _pnlps[pnlip2]);
+				for (pnli = pnlip1; pnli < _pnln - 1; pnli++)
+					_pnlps[pnli] = _pnlps[pnli + 1];
+				triangulate(_pnlps, _pnln - 1);
 				return;
 			}
 		}
 		prerror("triangulation failed");
     } 
 	else
-		loadtriangle(pnlps[0], pnlps[1], pnlps[2]);
+		loadtriangle(_pnlps[0], _pnlps[1], _pnlps[2]);
 }
 
 /* check if (i, i + 2) is a diagonal */
-static int isdiagonal(int pnli, int pnlip2, pointnlink_t ** pnlps,
-		      int pnln)
+static int isdiagonal(int pnli, int pnlip2, pointnlink_t ** _pnlps,
+		      int _pnln)
 {
     int pnlip1, pnlim1, pnlj, pnljp1, res;
 
     /* neighborhood test */
-    pnlip1 = (pnli + 1) % pnln;
-    pnlim1 = (pnli + pnln - 1) % pnln;
+    pnlip1 = (pnli + 1) % _pnln;
+    pnlim1 = (pnli + _pnln - 1) % _pnln;
     /* If P[pnli] is a convex vertex [ pnli+1 left of (pnli-1,pnli) ]. */
-    if (ccw(pnlps[pnlim1]->pp, pnlps[pnli]->pp, pnlps[pnlip1]->pp) ==
+    if (ccw(_pnlps[pnlim1]->pp, _pnlps[pnli]->pp, _pnlps[pnlip1]->pp) ==
 	ISCCW)
 	res =
-	    (ccw(pnlps[pnli]->pp, pnlps[pnlip2]->pp, pnlps[pnlim1]->pp) ==
+	    (ccw(_pnlps[pnli]->pp, _pnlps[pnlip2]->pp, _pnlps[pnlim1]->pp) ==
 	     ISCCW)
-	    && (ccw(pnlps[pnlip2]->pp, pnlps[pnli]->pp, pnlps[pnlip1]->pp)
+	    && (ccw(_pnlps[pnlip2]->pp, _pnlps[pnli]->pp, _pnlps[pnlip1]->pp)
 		== ISCCW);
     /* Assume (pnli - 1, pnli, pnli + 1) not collinear. */
     else
-	res = (ccw(pnlps[pnli]->pp, pnlps[pnlip2]->pp,
-		   pnlps[pnlip1]->pp) == ISCW);
+	res = (ccw(_pnlps[pnli]->pp, _pnlps[pnlip2]->pp,
+		   _pnlps[pnlip1]->pp) == ISCW);
     if (!res)
 	return FALSE;
 
     /* check against all other edges */
-    for (pnlj = 0; pnlj < pnln; pnlj++) {
-	pnljp1 = (pnlj + 1) % pnln;
+    for (pnlj = 0; pnlj < _pnln; pnlj++) {
+	pnljp1 = (pnlj + 1) % _pnln;
 	if (!((pnlj == pnli) || (pnljp1 == pnli) ||
 	      (pnlj == pnlip2) || (pnljp1 == pnlip2)))
-	    if (intersects(pnlps[pnli]->pp, pnlps[pnlip2]->pp,
-			   pnlps[pnlj]->pp, pnlps[pnljp1]->pp))
+	    if (intersects(_pnlps[pnli]->pp, _pnlps[pnlip2]->pp,
+			   _pnlps[pnlj]->pp, _pnlps[pnljp1]->pp))
 		return FALSE;
     }
     return TRUE;
@@ -519,21 +519,21 @@ static void growpnls(int newpnln)
     if (newpnln <= pnln)
 	return;
     if (!pnls) {
-	if (!(pnls = (pointnlink_t *) malloc(POINTNLINKSIZE * newpnln))) {
+	if (0 == (pnls = (pointnlink_t *) malloc(POINTNLINKSIZE * newpnln))) {
 	    prerror("cannot malloc pnls");
 	    longjmp(jbuf,1);
 	}
-	if (!(pnlps = (pointnlink_t **) malloc(POINTNLINKPSIZE * newpnln))) {
+	if (0 == (pnlps = (pointnlink_t **) malloc(POINTNLINKPSIZE * newpnln))) {
 	    prerror("cannot malloc pnlps");
 	    longjmp(jbuf,1);
 	}
     } else {
-	if (!(pnls = (pointnlink_t *) realloc((void *) pnls,
+	if (0 == (pnls = (pointnlink_t *) realloc((void *) pnls,
 					      POINTNLINKSIZE * newpnln))) {
 	    prerror("cannot realloc pnls");
 	    longjmp(jbuf,1);
 	}
-	if (!(pnlps = (pointnlink_t **) realloc((void *) pnlps,
+	if (0 == (pnlps = (pointnlink_t **) realloc((void *) pnlps,
 						POINTNLINKPSIZE *
 						newpnln))) {
 	    prerror("cannot realloc pnlps");
@@ -548,12 +548,12 @@ static void growtris(int newtrin)
     if (newtrin <= trin)
 	return;
     if (!tris) {
-	if (!(tris = (triangle_t *) malloc(TRIANGLESIZE * newtrin))) {
+	if (0 == (tris = (triangle_t *) malloc(TRIANGLESIZE * newtrin))) {
 	    prerror("cannot malloc tris");
 	    longjmp(jbuf,1);
 	}
     } else {
-	if (!(tris = (triangle_t *) realloc((void *) tris,
+	if (0 == (tris = (triangle_t *) realloc((void *) tris,
 					    TRIANGLESIZE * newtrin))) {
 	    prerror("cannot realloc tris");
 	    longjmp(jbuf,1);
@@ -567,14 +567,14 @@ static void growdq(int newdqn)
     if (newdqn <= dq.pnlpn)
 	return;
     if (!dq.pnlps) {
-	if (!
+	if (0 ==
 	    (dq.pnlps =
 	     (pointnlink_t **) malloc(POINTNLINKPSIZE * newdqn))) {
 	    prerror("cannot malloc dq.pnls");
 	    longjmp(jbuf,1);
 	}
     } else {
-	if (!(dq.pnlps = (pointnlink_t **) realloc((void *) dq.pnlps,
+	if (0 == (dq.pnlps = (pointnlink_t **) realloc((void *) dq.pnlps,
 						   POINTNLINKPSIZE *
 						   newdqn))) {
 	    prerror("cannot realloc dq.pnls");
@@ -589,12 +589,12 @@ static void growops(int newopn)
     if (newopn <= opn)
 	return;
     if (!ops) {
-	if (!(ops = (Ppoint_t *) malloc(POINTSIZE * newopn))) {
+	if (0 == (ops = (Ppoint_t *) malloc(POINTSIZE * newopn))) {
 	    prerror("cannot malloc ops");
 	    longjmp(jbuf,1);
 	}
     } else {
-	if (!(ops = (Ppoint_t *) realloc((void *) ops,
+	if (0 == (ops = (Ppoint_t *) realloc((void *) ops,
 					 POINTSIZE * newopn))) {
 	    prerror("cannot realloc ops");
 	    longjmp(jbuf,1);

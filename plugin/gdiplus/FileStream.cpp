@@ -130,6 +130,7 @@ HRESULT FileStream::Seek(
 HRESULT FileStream::SetSize( 
     ULARGE_INTEGER libNewSize)
 {
+	libNewSize;
 	return E_NOTIMPL;
 }
 
@@ -139,6 +140,10 @@ HRESULT FileStream::CopyTo(
     ULARGE_INTEGER *pcbRead,
     ULARGE_INTEGER *pcbWritten)
 {
+	pcbWritten;
+	pcbRead;
+	cb;
+	
 	return E_NOTIMPL;
 }
 
@@ -166,6 +171,9 @@ HRESULT FileStream::UnlockRegion(
     ULARGE_INTEGER cb,
     DWORD dwLockType)
 {
+	libOffset;
+	cb;
+	dwLockType;
 	return E_NOTIMPL;
 }
 
@@ -209,6 +217,7 @@ HRESULT FileStream::Stat(
 HRESULT FileStream::Clone( 
     IStream **ppstm)
 {
+	ppstm;
 	return E_NOTIMPL;
 }
     

@@ -343,8 +343,8 @@ genPoly(Agraph_t * root, Agraph_t * g, ginfo * info,
 	    PF2P(ptf, pt);
 	    MOVEPT(pt);
 	    if (!ND_clust(n)) {	/* n is not in a top-level cluster */
-		s2.x = margin + ND_xsize(n) / 2;
-		s2.y = margin + ND_ysize(n) / 2;
+		s2.x = margin + (int)(ND_xsize(n) / 2);
+		s2.y = margin + (int)(ND_ysize(n) / 2);
 		LL = sub_point(pt, s2);
 		UR = add_point(pt, s2);
 		CELL(LL, ssize);
@@ -379,8 +379,8 @@ genPoly(Agraph_t * root, Agraph_t * g, ginfo * info,
 	    ptf = coord(n);
 	    PF2P(ptf, pt);
 	    MOVEPT(pt);
-	    s2.x = margin + ND_xsize(n) / 2;
-	    s2.y = margin + ND_ysize(n) / 2;
+	    s2.x = margin + (int)(ND_xsize(n) / 2);
+	    s2.y = margin + (int)(ND_ysize(n) / 2);
 	    LL = sub_point(pt, s2);
 	    UR = add_point(pt, s2);
 	    CELL(LL, ssize);
@@ -504,8 +504,8 @@ placeGraph(int i, ginfo * info, PointSet * ps, point * place, int step,
 
     if (fits(0, 0, info, ps, place, step, bbs))
 	return;
-    W = ceil(bb.UR.x - bb.LL.x);
-    H = ceil(bb.UR.y - bb.LL.y);
+    W = (int)ceil(bb.UR.x - bb.LL.x);
+    H = (int)ceil(bb.UR.y - bb.LL.y);
     if (W >= H) {
 	for (bnd = 1;; bnd++) {
 	    x = 0;
@@ -631,7 +631,7 @@ arrayRects (int ng, boxf* gs, pack_info* pinfo)
 	    nc = (ng + (nr-1))/nr;
 	}
 	else {
-	    nr = ceil(sqrt(ng));
+	    nr = (int)ceil(sqrt(ng));
 	    nc = (ng + (nr-1))/nr;
 	}
     }
@@ -642,7 +642,7 @@ arrayRects (int ng, boxf* gs, pack_info* pinfo)
 	    nr = (ng + (nc-1))/nc;
 	}
 	else {
-	    nc = ceil(sqrt(ng));
+	    nc = (int)ceil(sqrt(ng));
 	    nr = (ng + (nc-1))/nc;
 	}
     }
@@ -705,17 +705,17 @@ arrayRects (int ng, boxf* gs, pack_info* pinfo)
 	idx = ip->index;
 	bb = gs[idx];
 	if (pinfo->flags & PK_LEFT_ALIGN)
-	    places[idx].x = widths[c];
+	    places[idx].x = (int)widths[c];
 	else if (pinfo->flags & PK_RIGHT_ALIGN)
-	    places[idx].x = widths[c+1] - (bb.UR.x - bb.LL.x);
+	    places[idx].x = (int)(widths[c+1] - (bb.UR.x - bb.LL.x));
 	else
-	    places[idx].x = (widths[c] + widths[c+1] - bb.UR.x - bb.LL.x)/2.0;
+	    places[idx].x = (int)((widths[c] + widths[c+1] - bb.UR.x - bb.LL.x)/2.0);
 	if (pinfo->flags & PK_TOP_ALIGN)
-	    places[idx].y = heights[r] - (bb.UR.y - bb.LL.y);
+	    places[idx].y = (int)(heights[r] - (bb.UR.y - bb.LL.y));
 	else if (pinfo->flags & PK_BOT_ALIGN)
-	    places[idx].y = heights[r+1];
+	    places[idx].y = (int)heights[r+1];
 	else
-	    places[idx].y = (heights[r] + heights[r+1] - bb.UR.y - bb.LL.y)/2.0;
+	    places[idx].y = (int)((heights[r] + heights[r+1] - bb.UR.y - bb.LL.y)/2.0);
 	INC(rowMajor,c,r);
     }
 
@@ -1212,7 +1212,7 @@ chkFlags (char* p, pack_info* pinfo)
     if (*p != '_') return p;
     p++;
     more = 1;
-    while (more && (c = *p)) {
+    while (more && (c = *p)!=0) {
 	switch (c) {
 	case 'c' :
 	    pinfo->flags |= PK_COL_MAJOR;
@@ -1384,7 +1384,7 @@ int getPack(Agraph_t * g, int not_def, int dflt)
     int i;
     int v = not_def;
 
-    if ((p = agget(g, "pack"))) {
+    if ((p = agget(g, "pack"))!=0) {
 	if ((sscanf(p, "%d", &i) == 1) && (i >= 0))
 	    v = i;
 	else if ((*p == 't') || (*p == 'T'))

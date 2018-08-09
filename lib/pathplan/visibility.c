@@ -240,7 +240,7 @@ static int clear(Ppoint_t pti, Ppoint_t ptj,
 		 int V, Ppoint_t pts[], int nextPt[], int prevPt[])
 {
     int k;
-
+	prevPt;
     for (k = 0; k < start; k++) {
 	if (INTERSECT(pti, ptj, pts[k], pts[nextPt[k]], pts[prevPt[k]]))
 	    return 0;

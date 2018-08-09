@@ -23,7 +23,7 @@ const char* lt_dlerror()
         NULL,
         dLastError,
         0,
-        (LPWSTR) &strErrorMessage,
+        /*(LPWSTR)*/(LPSTR) &strErrorMessage,
         0,
         NULL
     );
@@ -37,7 +37,7 @@ lt_dlhandle lt_dlopen(char* p)
 
 void* lt_dlsym(lt_dlhandle hndl, char* s)
 {
-    return GetProcAddress(hndl, s);
+    return (void*)GetProcAddress((HMODULE)hndl, (LPCSTR)s);
 }
 
 #endif /* !LTDL_H */

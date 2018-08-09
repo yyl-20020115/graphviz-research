@@ -165,7 +165,7 @@ initLayout(vtx_data * graph, int n, int dim, double **coords,
     double *pt;
     int i, d;
     int pinned = 0;
-
+	graph;
     xp = coords[0];
     yp = coords[1];
     for (i = 0; i < n; i++) {
@@ -325,7 +325,7 @@ static int sparse_stress_subspace_majorization_kD(vtx_data * graph,	/* Input gra
     double L_ij;
     double old_stress, new_stress;
     boolean converged;
-
+	nedges_graph;
     for (i = 0; i < subspace_dim; i++) {
 	subspace[i] = d_storage + i * n;
     }
@@ -543,7 +543,7 @@ static int sparse_stress_subspace_majorization_kD(vtx_data * graph,	/* Input gra
 	} else {
 	    for (j = 1; j < lap[i].nedges; j++) {
 		edges[j] = distances[i].edges[j - 1];
-		ewgts[j] = -1.0 / (float) dist_list[j];
+		ewgts[j] = -1.0f / (float) dist_list[j];
 		degree -= ewgts[j];
 	    }
 	}
@@ -790,9 +790,9 @@ float *compute_apsp_packed(vtx_data * graph, int n)
     freeQueue(&Q);
     return Dij;
 }
-
+#ifndef max
 #define max(x,y) ((x)>(y)?(x):(y))
-
+#endif
 float *compute_apsp_artifical_weights_packed(vtx_data * graph, int n)
 {
     /* compute all-pairs-shortest-path-length while weighting the graph */
@@ -1090,7 +1090,7 @@ int stress_majorization_kD_mkernel(vtx_data * graph,	/* Input graph in sparse re
 	degrees[i] -= degree;
     }
     for (step = n, count = 0, i = 0; i < n; i++, count += step, step--) {
-	lap2[count] = degrees[i];
+	lap2[count] =(float) degrees[i];
     }
 
 #ifdef NONCORE
@@ -1206,7 +1206,7 @@ int stress_majorization_kD_mkernel(vtx_data * graph,	/* Input graph in sparse re
 	    degrees[i] -= degree;
 	}
 	for (step = n, count = 0, i = 0; i < n; i++, count += step, step--) {
-	    lap1[count] = degrees[i];
+	    lap1[count] = (float)degrees[i];
 	}
 
 	/* Now compute b[] */

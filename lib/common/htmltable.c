@@ -385,7 +385,7 @@ initAnchor(GVJ_t * job, htmlenv_t * env, htmldata_t * data, boxf b,
     save->tooltip = obj->tooltip;
     save->target = obj->target;
     save->id = obj->id;
-    save->explicit_tooltip = obj->explicit_tooltip;
+    save->explicit_tooltip =(boolean) obj->explicit_tooltip;
     id = data->id;
     if (!id || !*id) {		/* no external id, so use the internal one */
 	agxbinit(&xb, SMALLBUF, buf);
@@ -958,6 +958,10 @@ boxf *html_port(node_t * n, char *pname, int *sides)
  */
 int html_path(node_t * n, port * p, int side, boxf * rv, int *k)
 {
+	k;
+	rv;
+	p;
+	n;
 #ifdef UNIMPL
     point p;
     tbl_t *info;
@@ -1054,7 +1058,7 @@ static int size_html_txt(GVC_t *gvc, htmltxt_t * ftxt, htmlenv_t * env)
 	    break;
 	}
     }
-    ftxt->simple = simple;
+    ftxt->simple = (char)simple;
 
     for (i = 0; i < ftxt->nspans; i++) {
 	width = 0;
@@ -1301,8 +1305,8 @@ static int processTbl(graph_t * g, htmltbl_t * tbl, htmlenv_t * env)
 	    *cells++ = cellp;
 	    rv |= size_html_cell(g, cellp, tbl, env);
 	    c = findCol(ps, r, c, cellp);
-	    cellp->row = r;
-	    cellp->col = c;
+	    cellp->row = (unsigned char)r;
+	    cellp->col = (unsigned char)c;
 	    c += cellp->cspan;
 	    n_cols = MAX(c, n_cols);
 	    n_rows = MAX(r + cellp->rspan, n_rows);

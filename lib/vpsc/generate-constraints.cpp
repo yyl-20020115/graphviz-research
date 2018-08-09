@@ -65,12 +65,12 @@ struct Node {
 		leftNeighbours=left;
 		rightNeighbours=right;
 		for(NodeSet::iterator i=left->begin();i!=left->end();i++) {
-			Node *v=*(i);
-			v->addRightNeighbour(this);
+			Node *_v=*(i);
+			_v->addRightNeighbour(this);
 		}
 		for(NodeSet::iterator i=right->begin();i!=right->end();i++) {
-			Node *v=*(i);
-			v->addLeftNeighbour(this);
+			Node *_v=*(i);
+			_v->addLeftNeighbour(this);
 		}
 	}
 };
@@ -185,34 +185,34 @@ int generateXConstraints(const int n, Rectangle** rs, Variable** vars, Constrain
 			// Close event
 			int r;
 			if(useNeighbourLists) {
-				for(NodeSet::iterator i=v->leftNeighbours->begin();
-					i!=v->leftNeighbours->end();i++
+				for(NodeSet::iterator _i=v->leftNeighbours->begin();
+					_i!=v->leftNeighbours->end();_i++
 				) {
-					Node *u=*i;
+					Node *u=*_i;
 					double sep = (v->r->width()+u->r->width())/2.0;
 					constraints.push_back(new Constraint(u->v,v->v,sep));
 					r=u->rightNeighbours->erase(v);
 				}
 				
-				for(NodeSet::iterator i=v->rightNeighbours->begin();
-					i!=v->rightNeighbours->end();i++
+				for(NodeSet::iterator _i=v->rightNeighbours->begin();
+					_i!=v->rightNeighbours->end();_i++
 				) {
-					Node *u=*i;
+					Node *u=*_i;
 					double sep = (v->r->width()+u->r->width())/2.0;
 					constraints.push_back(new Constraint(v->v,u->v,sep));
 					r=u->leftNeighbours->erase(v);
 				}
 			} else {
-				Node *l=v->firstAbove, *r=v->firstBelow;
+				Node *l=v->firstAbove, *_r=v->firstBelow;
 				if(l!=NULL) {
 					double sep = (v->r->width()+l->r->width())/2.0;
 					constraints.push_back(new Constraint(l->v,v->v,sep));
 					l->firstBelow=v->firstBelow;
 				}
-				if(r!=NULL) {
-					double sep = (v->r->width()+r->r->width())/2.0;
-					constraints.push_back(new Constraint(v->v,r->v,sep));
-					r->firstAbove=v->firstAbove;
+				if(_r!=NULL) {
+					double sep = (v->r->width()+_r->r->width())/2.0;
+					constraints.push_back(new Constraint(v->v,_r->v,sep));
+					_r->firstAbove=v->firstAbove;
 				}
 			}
 			r=scanline.erase(v);
@@ -246,15 +246,15 @@ int generateYConstraints(const int n, Rectangle** rs, Variable** vars, Constrain
 		Node *v=e->v;
 		if(e->type==Open) {
 			scanline.insert(v);
-			NodeSet::iterator i=scanline.find(v);
-			if(i!=scanline.begin()) {
-				Node *u=*--i;
+			NodeSet::iterator _i=scanline.find(v);
+			if(_i !=scanline.begin()) {
+				Node *u=*--_i;
 				v->firstAbove=u;
 				u->firstBelow=v;
 			}
-			i=scanline.find(v);
-			if(++i!=scanline.end())	 {
-				Node *u=*i;
+			_i =scanline.find(v);
+			if(++_i !=scanline.end())	 {
+				Node *u=*_i;
 				v->firstBelow=u;
 				u->firstAbove=v;
 			}

@@ -27,7 +27,7 @@ void voronoi(int triangulate, Site * (*nextsite) (void))
     char pm;
     Halfedge *lbnd, *rbnd, *llbnd, *rrbnd, *bisector;
     Edge *e;
-
+	triangulate;
     edgeinit();
     siteinit();
     PQinitialize();

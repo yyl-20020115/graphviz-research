@@ -401,6 +401,7 @@ static void endnode()
 static void getedgeitems(int x)
 {
 	item	*v = 0;
+	x=0;
 
 	if (S->nodelist.first) {
 		v = cons_list(S->nodelist.first);

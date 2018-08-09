@@ -125,7 +125,7 @@ static boolean get_int_lsb_first (FILE *f, unsigned int sz, unsigned int *val)
     int ch, i;
 
     *val = 0;
-    for (i = 0; i < sz; i++) {
+    for (i = 0; i < (int)sz; i++) {
 	ch = fgetc(f);
 	if (feof(f))
 	    return FALSE;
@@ -139,7 +139,7 @@ static boolean get_int_msb_first (FILE *f, unsigned int sz, unsigned int *val)
     int ch, i;
 
     *val = 0;
-    for (i = 0; i < sz; i++) {
+    for (i = 0; i <(int) sz; i++) {
 	ch = fgetc(f);
 	if (feof(f))
 	    return FALSE;
@@ -224,8 +224,8 @@ static void svg_size (usershape_t *us)
 	    }
 	    else if (strcmp(attribute,"viewBox") == 0
 	      && sscanf(value, "%lf %lf %lf %lf", &x0,&y0,&x1,&y1) == 4) {
-		w = x1 - x0 + 1;
-		h = y1 - y0 + 1;
+		w =(unsigned int)(x1 - x0 + 1);
+		h =(unsigned int)(y1 - y0 + 1);
 	        wFlag = TRUE;
 	        hFlag = TRUE;
 	        break;
@@ -419,7 +419,7 @@ static void ps_size (usershape_t *us)
 	 * typically near the beginning, and so should be read within the first
 	 * BUFSIZ bytes (even on Windows where this is 512).
 	 */
-	if (!(linep = strstr (line, "%%BoundingBox:")))
+	if (0 == (linep = strstr (line, "%%BoundingBox:")))
 	    continue;
         if (sscanf (linep, "%%%%BoundingBox: %d %d %d %d", &lx, &ly, &ux, &uy) == 4) {
             saw_bb = TRUE;
@@ -460,7 +460,7 @@ static void
 skipWS (stream_t* str)
 {
     unsigned char c;
-    while ((c = strc(str))) {
+    while ((c = strc(str)) != 0) {
 	if (isspace(c)) stradv(str);
 	else return;
     }
@@ -483,7 +483,7 @@ getNum (stream_t* str, char* buf)
     int len = 0;
     char c;
     skipWS(str);
-    while ((c = strc(str)) && (isdigit(c) || (c == '.'))) {
+    while ((c = strc(str)) != 0 && (isdigit(c) != 0 || (c == '.'))) {
 	buf[len++] = c;
 	stradv(str);
 	if (len == BUFSIZ-1) break;
@@ -519,7 +519,7 @@ bboxPDF (FILE* fp, boxf* bp)
 	char* s;
 	char buf[BUFSIZ];
 	while (fgets(buf, BUFSIZ, fp)) {
-		if ((s = strstr(buf,KEY))) {
+		if ((s = strstr(buf,KEY))!=0) {
 			str.buf = buf;
 			str.s = s+(sizeof(KEY)-1);
 			str.fp = fp;
@@ -536,17 +536,18 @@ static void pdf_size (usershape_t *us)
     us->dpi = 0;
     fseek(us->f, 0, SEEK_SET);
     if ( ! bboxPDF (us->f, &bb)) {
-	us->x = bb.LL.x;
-	us->y = bb.LL.y;
-        us->w = bb.UR.x - bb.LL.x;
-        us->h = bb.UR.y - bb.LL.y;
+	us->x = (int)bb.LL.x;
+	us->y = (int)bb.LL.y;
+        us->w = (int)(bb.UR.x - bb.LL.x);
+        us->h = (int)(bb.UR.y - bb.LL.y);
     }
 }
 
 static void usershape_close (Dict_t * dict, void * p, Dtdisc_t * disc)
 {
     usershape_t *us = (usershape_t *)p;
-
+	disc;
+	dict;
     if (us->f)
 	fclose(us->f);
     if (us->data && us->datafree)
@@ -593,7 +594,7 @@ boolean gvusershape_file_access(usershape_t *us)
     if (us->f)
 	fseek(us->f, 0, SEEK_SET);
     else {
-        if (! (fn = safefile(us->name))) {
+        if (0== (fn = safefile(us->name))) {
 	    agerr(AGWARN, "Filename \"%s\" is unsafe\n", us->name);
 	    return FALSE;
 	}
@@ -640,8 +641,8 @@ static usershape_t *gvusershape_open (const char *name)
     if (!ImageDict)
         ImageDict = dtopen(&ImageDictDisc, Dttree);
 
-    if (! (us = gvusershape_find(name))) {
-        if (! (us = zmalloc(sizeof(usershape_t))))
+    if (0== (us = gvusershape_find(name))) {
+        if (0 == (us = zmalloc(sizeof(usershape_t))))
 	    return NULL;
 
 	us->name = agstrdup (0, (char*)name);
@@ -654,7 +655,7 @@ static usershape_t *gvusershape_open (const char *name)
 
         switch(imagetype(us)) {
 	    case FT_NULL:
-		if (!(us->data = (void*)find_user_shape(us->name))) {
+		if (0 == (us->data = (void*)find_user_shape(us->name))) {
 		    agerr(AGWARN, "\"%s\" was not found as a file or as a shape library member\n", us->name);
 		    freeUsershape (us);
 		    return NULL;
@@ -717,8 +718,8 @@ gvusershape_size_dpi (usershape_t* us, pointf dpi)
 	if (us->dpi != 0) {
 	    dpi.x = dpi.y = us->dpi;
 	}
-	rv.x = us->w * POINTS_PER_INCH / dpi.x;
-	rv.y = us->h * POINTS_PER_INCH / dpi.y;
+	rv.x = (int)(us->w * POINTS_PER_INCH / dpi.x);
+	rv.y = (int)(us->h * POINTS_PER_INCH / dpi.y);
     }
     return rv;
 }

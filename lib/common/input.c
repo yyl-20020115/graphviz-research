@@ -157,7 +157,7 @@ static char* dotneato_basename (char* path)
     {
 	char c;
 	for (s = ret; (c = *s); s++)
-	    *s = tolower(c);
+	    *s = (char)tolower(c);
     }
 #endif
     return ret;
@@ -167,7 +167,7 @@ static void use_library(GVC_t *gvc, const char *name)
 {
     static int cnt = 0;
     if (name) {
-	Lib = ALLOC(cnt + 2, Lib, const char *);
+	Lib = ALLOC(cnt + 2, Lib, /*const*/ char *);
 	Lib[cnt++] = name;
 	Lib[cnt] = NULL;
     }
@@ -743,7 +743,7 @@ void graph_init(graph_t * g, boolean use_rankdir)
 	xf = DEFAULT_RANKSEP;
     GD_ranksep(g) = POINTS(xf);
 
-    GD_showboxes(g) = late_int(g, agfindgraphattr(g, "showboxes"), 0, 0);
+    GD_showboxes(g) = (unsigned char)late_int(g, agfindgraphattr(g, "showboxes"), 0, 0);
     p = late_string(g, agfindgraphattr(g, "fontnames"), NULL);
     GD_fontnames(g) = maptoken(p, fontnamenames, fontnamecodes);
 

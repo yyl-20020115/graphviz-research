@@ -137,7 +137,7 @@ void gvjobs_delete(GVC_t * gvc)
     GVJ_t *job, *j;
 
     job = gvc->jobs;
-    while ((j = job)) {
+    while ((j = job) != 0) {
 	job = job->next;
 	gv_argvlist_reset(&(j->selected_obj_attributes));
 	gv_argvlist_reset(&(j->selected_obj_type_name));
@@ -152,5 +152,5 @@ void gvjobs_delete(GVC_t * gvc)
     gvc->common.viewNum = 0;
 }
 gvw_function gvGetWriteFunction(GVJ_t* job) {
-	return job!=0 && job->gvc!=0 ? job->gvc->gvw : 0;
+	return job!=0 && job->gvc!=0 ? (gvw_function)job->gvc->gvw : 0;
 }
