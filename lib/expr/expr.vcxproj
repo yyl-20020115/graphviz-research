@@ -96,7 +96,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4244;4245;4706;</DisableSpecificWarnings>
     </ClCompile>
     <Lib />
     <PreBuildEvent>
@@ -117,7 +117,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4244;4245;4706;</DisableSpecificWarnings>
     </ClCompile>
     <Lib />
     <PreBuildEvent>
@@ -133,7 +133,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level4</WarningLevel>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4244;4245;4706;</DisableSpecificWarnings>
     </ClCompile>
     <Lib />
     <PreBuildEvent>
@@ -150,7 +150,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4244;4245;4706;</DisableSpecificWarnings>
     </ClCompile>
     <Lib />
     <PreBuildEvent>

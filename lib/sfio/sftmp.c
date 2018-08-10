@@ -46,6 +46,7 @@ static File_t *File;		/* list pf temp files   */
 
 static int _tmprmfile(Sfio_t * f, int type, void * val, Sfdisc_t * disc)
 {
+	disc;
     reg File_t *ff, *last;
 
     NOTUSED(val);

@@ -258,6 +258,9 @@ static void
 tkgen_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start,
 	      int arrow_at_end, int filled)
 {
+	filled;
+	arrow_at_start;
+	arrow_at_end;
     obj_state_t *obj = job->obj;
 
     if (obj->pen != PEN_NONE) {

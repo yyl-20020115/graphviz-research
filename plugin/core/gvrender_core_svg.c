@@ -230,6 +230,8 @@ static void svg_end_graph(GVJ_t * job)
 static void svg_begin_layer(GVJ_t * job, char *layername, int layerNum,
 			    int numLayers)
 {
+	layerNum;
+	numLayers;
     obj_state_t *obj = job->obj;
 
     svg_print_id_class(job, layername, NULL, "layer", obj->u.g);
@@ -558,6 +560,8 @@ static int svg_gradstyle(GVJ_t * job, pointf * A, int n)
  */
 static int svg_rgradstyle(GVJ_t * job, pointf * A, int n)
 {
+	A;
+	n;
     /* pointf G[2]; */
     float angle;
     int ifx, ify;
@@ -626,6 +630,8 @@ static void
 svg_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start,
 	   int arrow_at_end, int filled)
 {
+	arrow_at_start;
+	arrow_at_end;
     int gid = 0;
     obj_state_t *obj = job->obj;
   

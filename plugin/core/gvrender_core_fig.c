@@ -335,6 +335,8 @@ static void fig_ellipse(GVJ_t * job, pointf * A, int filled)
 static void fig_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start,
 	      int arrow_at_end, int filled)
 {
+	arrow_at_start;
+	arrow_at_end;
     obj_state_t *obj = job->obj;
 
     int object_code = 3;        /* always 3 for spline */

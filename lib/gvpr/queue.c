@@ -27,6 +27,8 @@ typedef struct {
 
 static void *makef(Dt_t * d, nsitem * obj, Dtdisc_t * disc)
 {
+	d;
+	disc;
     nsitem *p;
 
     p = oldof(0, nsitem, 1, 0);
@@ -36,6 +38,8 @@ static void *makef(Dt_t * d, nsitem * obj, Dtdisc_t * disc)
 
 static void freef(Dt_t * d, nsitem * obj, Dtdisc_t * disc)
 {
+	d;
+	disc;
     free(obj);
 }
 

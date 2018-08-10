@@ -16,44 +16,7 @@
 
 void power_method(void (*matvec)(void *, int, int, real*, real **, int, int*),
 		  void *A, int n, int K, int random_seed, int maxit, real tol, real **eigv, real **eigs){
-  /* find k-largest eigenvectors of a matrix A. Result in eigv. if eigv == NULL; memory will be allocated.
-     maxium of maxit iterations will be done, and tol is the convergence criterion
 
-     This converges only if the largest eigenvectors/values are real (e.g., if A is symmetric) and the 
-     next largest eigenvalues separate from the largest ones
-
-     input:
-     matvec: a function point that takes a matrix M and a vector u, produce v = M.u
-     A: the matrix
-     n: dimension of matrix A
-     K: number of eigenes to find
-     random_seed: seed for eigenvector initialization
-     matrix: max number f iterations
-     tol: accuracy control
-
-     output:
-     eigv: eigenvectors. The i-th is at eigvs[i*n, i*(n+1) - 1]
-     eigs: eigenvalues.  The i-th is at eigs[i]
-
-
-     Function PowerIteration (A – m × m matrix )
-     % This function computes u1, u2, . . . , uk, the first k eigenvectors of S.
-     const tol <- 0.001
-     for i = 1 to k do
-     . ui <- random
-     . ui <- ui/||ui||
-     . do
-     .   vi <- ui
-     .   % orthogonalize against previous eigenvectors
-     .   for j = 1 to i − 1 do
-     .     vi <- vi − (vi^Tvi)vj
-     .   end for
-     .   ui <- A vi/||A vi||
-     . while (ui^T vi < 1-tol) (halt when direction change is small)
-     . vi = ui
-     end for
-     return v1,v2,...
-   */
   real **v, *u, *vv;
   int iter = 0;
   real res, unorm;

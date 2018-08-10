@@ -182,7 +182,7 @@ static int object_color(void* obj,glCompColor* c)
     int objType;
     float Alpha = 1;
     char* bf;
-    Agsym_t* vis;
+    Agsym_t* vis = 0;
 
     objType=AGTYPE(obj);
 

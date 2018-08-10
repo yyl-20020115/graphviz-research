@@ -1130,6 +1130,8 @@ static void checkName(Exid_t * id)
 static int
 cmpKey(Dt_t * d, Extype_t * key1, Extype_t * key2, Dtdisc_t * disc) 
 {
+	d;
+	disc;
 	if (key1->integer < key2->integer)
 	    return -1;
 	else if (key1->integer > key2->integer)

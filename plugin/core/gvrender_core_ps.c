@@ -114,6 +114,7 @@ static void psgen_begin_graph(GVJ_t * job)
 
 static void psgen_begin_layer(GVJ_t * job, char *layername, int layerNum, int numLayers)
 {
+	layername;
     gvprintf(job, "%d %d setlayer\n", layerNum, numLayers);
 }
 
@@ -203,6 +204,9 @@ static void psgen_end_edge(GVJ_t * job)
 
 static void psgen_begin_anchor(GVJ_t *job, char *url, char *tooltip, char *target, char *id)
 {
+	id;
+	target;
+	tooltip;
     obj_state_t *obj = job->obj;
 
     if (url && obj->url_map_p) {
@@ -325,6 +329,9 @@ static void
 psgen_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start,
 	     int arrow_at_end, int filled)
 {
+	arrow_at_start;
+	arrow_at_end;
+
     int j;
 
     if (filled && job->obj->fillcolor.u.HSVA[3] > .5) {

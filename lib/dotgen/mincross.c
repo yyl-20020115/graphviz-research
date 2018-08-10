@@ -511,6 +511,7 @@ static void ordered_edges(graph_t * g)
 
 static int mincross_clust(graph_t * par, graph_t * g, int doBalance)
 {
+	par;
 	int c, nc;
 
 	expand_cluster(g);
@@ -1479,6 +1480,7 @@ void enqueue_neighbors(nodequeue * q, node_t * n0, int pass)
 
 static int constraining_flat_edge(Agraph_t *g, Agnode_t *v, Agedge_t *e)
 {
+	v;
 	if (ED_weight(e) == 0) return FALSE;
 	if (!inside_cluster(g, agtail(e))) return FALSE;
 	if (!inside_cluster(g, aghead(e))) return FALSE;

@@ -95,6 +95,7 @@ static int inBoxf(pointf p, boxf * bb)
  */
 static graph_t *getCluster(graph_t * g, char *cluster_name, Dt_t* map)
 {
+	g;
 	Agraph_t* sg;
 
 	if (!cluster_name || (*cluster_name == '\0'))

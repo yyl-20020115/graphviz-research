@@ -393,6 +393,7 @@ freeOpts (options* opts)
  */
 static options* scanArgs(int argc, char **argv, gvpropts* uopts)
 {
+	uopts;
     int i, nfiles;
     char** input_filenames;
     char* arg;

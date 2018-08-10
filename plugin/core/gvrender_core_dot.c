@@ -681,6 +681,8 @@ static void xdot_ellipse(GVJ_t * job, pointf * A, int filled)
 
 static void xdot_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start, int arrow_at_end, int filled)
 {
+	arrow_at_start;
+	arrow_at_end;
     xdot_style (job);
     xdot_pencolor (job);
     if (filled) {
@@ -720,6 +722,7 @@ static void xdot_polyline(GVJ_t * job, pointf * A, int n)
 
 void core_loadimage_xdot(GVJ_t * job, usershape_t *us, boxf b, boolean filled)
 {
+	filled;
     emit_state_t emit_state = job->obj->emit_state;
     char buf[BUFSIZ];
     

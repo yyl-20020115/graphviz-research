@@ -142,7 +142,7 @@ int tv_save_as(int withEdges)
 	gtk_widget_destroy(dialog);
 	return 0;
     }
-    return 0;
+  //  return 0;
 }
 
 static void create_text_column(char *Title, GtkTreeView * tree, int asso,

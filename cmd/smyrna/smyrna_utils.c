@@ -12,6 +12,9 @@
  *************************************************************************/
 #include "smyrna_utils.h"
 #include "memory.h"
+#include <string.h>
+
+int strcasecmp(const char *s1, const char *s2);
 /* many of these functions are available in libcommon.
  * We cannot use those because dependencies cause a great
  * deal of libcommon to be brought in, which complicates

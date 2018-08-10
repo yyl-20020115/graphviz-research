@@ -13,22 +13,21 @@ namespace WinDot
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string txt = System.IO.File.ReadAllText("Network.gv");
-            GraphResult g = GraphProvider.Generate(txt,"dot","bmp");
-            
-            if (g != null)
+            var txt = System.IO.File.ReadAllText("Network.gv");
+            using (GraphResult g = GraphProvider.Generate(txt, "dot", "bmp"))
             {
-                using(Bitmap nb = new Bitmap(g.Image.Width, g.Image.Height))
+                if (g != null)
                 {
-                    using (Graphics gx = Graphics.FromImage(nb))
+                    using (var bitmap = new Bitmap(g.Image.Width, g.Image.Height))
                     {
-                        gx.DrawImage(g.Image, 0, 0);
+                        using (var gx = Graphics.FromImage(bitmap))
+                        {
+                            gx.DrawImage(g.Image, 0, 0);
+                        }
+                        bitmap.Save("\\WorkingCurrent\\gv\\test.jpg");
                     }
-                    nb.Save("\\WorkingCurrent\\gv\\test.jpg");
                 }
-                g.Dispose();
             }
-
         }
 
         private void _MainForm_Load(object sender, EventArgs e)

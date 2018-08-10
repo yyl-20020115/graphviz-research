@@ -26,7 +26,7 @@
 char*
 exnospace(void)
 {
-	static const char	null[1];
+	static const char null[1] = { 0 };
 
 	exerror("out of space");
 	return (char*)null;

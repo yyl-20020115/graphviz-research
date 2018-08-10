@@ -114,7 +114,7 @@ static void gd_loadimage_gd(GVJ_t * job, usershape_t *us, boxf b, boolean filled
 {
     gdImagePtr im2, im = (gdImagePtr) job->context;
 
-    if ((im2 = gd_loadimage(job, us))) {
+    if ((im2 = gd_loadimage(job, us))!=0) {
         if (job->rotation)
 	    im2 = gd_rotateimage(im2, job->rotation);
         gdImageCopyResized(im, im2, ROUND(b.LL.x), ROUND(b.LL.y), 0, 0,
@@ -131,7 +131,7 @@ static void gd_loadimage_cairo(GVJ_t * job, usershape_t *us, boxf b, boolean fil
     cairo_surface_t *surface;    /* source surface */
     gdImagePtr im;
 
-    if ((im = gd_loadimage(job, us))) {
+    if ((im = gd_loadimage(job, us))!=0) {
 	width = im->sx;
 	height = im->sy;
 // cairo_format_stride_for_width() not available prior to cairo-1.6.4 or so (fc9)
@@ -194,7 +194,7 @@ static void gd_loadimage_ps(GVJ_t * job, usershape_t *us, boxf b, boolean filled
     gdImagePtr im = NULL;
     int X, Y, x, y, px;
 
-    if ((im = gd_loadimage(job, us))) {
+    if ((im = gd_loadimage(job, us))!=0) {
 	X = im->sx;
 	Y = im->sy;
 

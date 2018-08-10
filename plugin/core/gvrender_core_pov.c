@@ -696,6 +696,9 @@ static void pov_ellipse(GVJ_t * job, pointf * A, int filled)
 static void pov_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start,
 		       int arrow_at_end, int filled)
 {
+	arrow_at_start;
+	arrow_at_end;
+	filled;
 	int i;
 	char *v, *x;
 	char *pov, *s, *r, *t, *p;

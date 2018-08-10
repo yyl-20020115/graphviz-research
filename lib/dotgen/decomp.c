@@ -213,7 +213,6 @@ void decompose(graph_t * g, int pass)
 	if (++Cmark == 0)
 		Cmark = 1;
 	GD_n_nodes(g) = GD_comp(g).size = 0;
-	int t = 0;
 	
 	for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
 		v = n;

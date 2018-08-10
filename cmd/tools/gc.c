@@ -216,7 +216,7 @@ static void cc_dfs(Agraph_t * g, Agnode_t * n)
     Agnode_t *nxt;
 
     push(n);
-    while ((n = pop())) {
+    while ((n = pop())!=0) {
 	ND_dfs_mark(n) = 1;
 	for (e = agfstedge(g, n); e; e = agnxtedge(g, e, n)) {
 	    if (n == agtail(e))

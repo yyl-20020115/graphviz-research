@@ -45,6 +45,7 @@ typedef enum {
 
 static void core_loadimage_svg(GVJ_t * job, usershape_t *us, boxf b, boolean filled)
 {
+	filled;
 
     double width = (b.UR.x-b.LL.x);
     double height = (b.UR.y-b.LL.y);
@@ -74,7 +75,8 @@ static void core_loadimage_svg(GVJ_t * job, usershape_t *us, boxf b, boolean fil
 
 static void core_loadimage_fig(GVJ_t * job, usershape_t *us, boxf bf, boolean filled)
 {
-    int object_code = 2;        /* always 2 for polyline */
+	filled;
+	int object_code = 2;        /* always 2 for polyline */
     int sub_type = 5;           /* always 5 for image */
     int line_style = 0;		/* solid, dotted, dashed */
     int thickness = 0;
@@ -115,7 +117,9 @@ static void core_loadimage_fig(GVJ_t * job, usershape_t *us, boxf bf, boolean fi
 
 static void core_loadimage_vrml(GVJ_t * job, usershape_t *us, boxf b, boolean filled)
 {
-    obj_state_t *obj;
+	b;
+	filled;
+	obj_state_t *obj;
     node_t *n;
 
     assert(job);
@@ -150,6 +154,8 @@ static void ps_freeimage(usershape_t *us)
 /* usershape described by a postscript file */
 static void core_loadimage_ps(GVJ_t * job, usershape_t *us, boxf b, boolean filled)
 {
+	filled;
+
     assert(job);
     assert(us);
     assert(us->name);
@@ -240,6 +246,8 @@ static void core_loadimage_pslib(GVJ_t * job, usershape_t *us, boxf b, boolean f
 
 static void core_loadimage_vml(GVJ_t * job, usershape_t *us, boxf b, boolean filled)
 {
+	filled;
+
     unsigned int  graphHeight;
     graphHeight =(int)(job->bb.UR.y - job->bb.LL.y);
     gvprintf (job, "<v:image src=\"%s\" style=\" position:absolute; width:%.2f; height:%.2f; left:%.2f ; top:%.2f\"",
@@ -249,6 +257,8 @@ static void core_loadimage_vml(GVJ_t * job, usershape_t *us, boxf b, boolean fil
 
 static void core_loadimage_tk(GVJ_t * job, usershape_t *us, boxf b, boolean filled)
 {
+	filled;
+
     gvprintf (job, "image create photo \"photo_%s\" -file \"%s\"\n",
 	us->name, us->name);
     gvprintf (job, "$c create image %.2f %.2f -image \"photo_%s\"\n",
@@ -257,7 +267,11 @@ static void core_loadimage_tk(GVJ_t * job, usershape_t *us, boxf b, boolean fill
 
 void core_loadimage_null(GVJ_t *gvc, usershape_t *us, boxf b, boolean filled)
 {
-    /* null function - basically suppress the missing loader message */
+	filled;
+	b;
+	us;
+	gvc;
+	/* null function - basically suppress the missing loader message */
 }
 
 static gvloadimage_engine_t engine_svg = {

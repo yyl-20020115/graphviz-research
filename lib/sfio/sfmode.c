@@ -210,8 +210,8 @@ int _sfpopen(reg Sfio_t * f, int fd, int pid, int stdio)
  */
 int _sfpclose(reg Sfio_t * f)
 {
-    Sfproc_t *p;
-    int pid, status;
+    Sfproc_t *p = 0;
+    int pid =0, status = 0;
 
     if (!(p = f->proc))
 	return -1;

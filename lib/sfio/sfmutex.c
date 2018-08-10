@@ -21,5 +21,7 @@
 /* the main locking/unlocking interface */
 int sfmutex(Sfio_t * f, int type)
 {
+	type;
+	f;
     return 0;
 }

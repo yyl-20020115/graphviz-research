@@ -18,7 +18,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* FIXME - the following declaration should be removed
+ /* FIXME - the following declaration should be removed
  * when configure is coordinated with flags passed to the
  * compiler. On Linux, strcasestr is defined but needs a special
  * preprocessor constant to be defined. Configure sets the
@@ -32,7 +32,7 @@ char* strcasestr (const char *str, const char *pat)
     int slen, plen;
     char p0, pc;
     const char *endp, *sp, *pp;
-    if (!(p0 = *pat)) return (char*)str;
+    if (0==(p0 = *pat)) return (char*)str;
     plen = strlen (pat++);
     slen = strlen (str);
     if (slen < plen) return NULL;
@@ -324,7 +324,7 @@ static char *get_avail_faces(int faces, agxbuf* xb)
     }
     return agxbuse (xb);
 }
-
+int strcasecmp(const char *s1, const char *s2);
 
 /* This function creates an array of font definitions. Each entry corresponds to one of
    the Graphviz PS fonts.  The font definitions contain the generic font name and a list
@@ -337,7 +337,7 @@ static availfont_t *gv_get_ps_fontlist(PangoFontMap * fontmap)
     PangoFontFamily *family;
     fontdef_t* gv_ps_fontdef;
     int n_families;
-    int i, j, k, array_sz, availfaces;
+    int i, j, k, array_sz, availfaces = 0;
     availfont_t *gv_af_p, *gv_afs;
     const char *name;
     char *family_name;

@@ -894,6 +894,7 @@ cleanupCloneGraph(graph_t* g, attr_state_t* attr_state)
 static node_t*
 cloneNode(graph_t* g, node_t* orign, int flipped)
 {
+	flipped;
 	node_t* n = agnode(g, agnameof(orign), 1);
 	agbindrec(n, "Agnodeinfo_t", sizeof(Agnodeinfo_t), TRUE);
 	agcopyattr(orign, n);
@@ -1186,6 +1187,7 @@ static void
 make_flat_adj_edges(graph_t* g, path* P, edge_t** edges, int ind, int cnt, edge_t* e0,
 	int et)
 {
+	P;
 	node_t* n;
 	node_t *tn, *hn;
 	edge_t* e;
@@ -1954,6 +1956,7 @@ completeregularpath(path * P, edge_t * first, edge_t * last,
 	pathend_t * tendp, pathend_t * hendp, boxf * boxes,
 	int boxn, int flag)
 {
+	flag;
 	edge_t *uleft, *uright, *lleft, *lright;
 	int i, fb, lb;
 	splines *spl;

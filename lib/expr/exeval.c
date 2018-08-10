@@ -198,6 +198,8 @@ typedef struct
 static int
 prformat(Sfio_t* sp, void* vp, Sffmt_t* dp)
 {
+	sp;
+
 	register Fmt_t*		fmt = (Fmt_t*)dp;
 	register Exnode_t*	node;
 	register char*		s;
@@ -450,6 +452,7 @@ print(Expr_t* ex, Exnode_t* expr, void* env, Sfio_t* sp)
 static int
 scformat(Sfio_t* sp, void* vp, Sffmt_t* dp)
 {
+	sp;
 	register Fmt_t*		fmt = (Fmt_t*)dp;
 	register Exnode_t*	node;
 
@@ -939,7 +942,7 @@ eval(Expr_t* ex, register Exnode_t* expr, void* env)
 	Exnode_t		tmp;
 	Exnode_t		rtmp;
 	Exnode_t*		rp;
-	Exassoc_t*		assoc;
+	Exassoc_t*		assoc = 0;
 	Extype_t		args[FRAME+1];
 	Extype_t		save[FRAME];
 

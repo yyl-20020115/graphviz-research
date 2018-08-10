@@ -130,7 +130,7 @@ static int setNameValue(char *arg)
     char *p;
     char *rhs = "true";
 
-    if ((p = strchr(arg, '='))) {
+    if ((p = strchr(arg, '='))!=0) {
 	*p++ = '\0';
 	rhs = p;
     }
@@ -803,7 +803,7 @@ static Agraph_t **readGraphs(int *cp, GVC_t* gvc)
 	    exit(1);
 	} else if (!agisstrict(g))
 	    kind = g->desc;
-	init_graph(g, doPack, gvc);
+	init_graph(g,(boolean) doPack, gvc);
 	gs[cnt++] = g;
     }
 

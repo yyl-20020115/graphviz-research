@@ -167,9 +167,9 @@ int main(int argc, char **argv)
     rv = 0;
     gcnt = 0;
     initargs(argc, argv);
-    while ((inFile = getFile())) {
+    while ((inFile = getFile())!=0) {
 	cnt = 0;
-	while ((G = gml_to_gv(nameOf(gname, gcnt), inFile, cnt, &rv))) {
+	while ((G = gml_to_gv(nameOf(gname, gcnt), inFile, cnt, &rv))!=0) {
 	    cnt++;
 	    gcnt++;
 	    if (prev)

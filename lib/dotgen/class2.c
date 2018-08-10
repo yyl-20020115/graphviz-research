@@ -50,6 +50,7 @@ incr_width(graph_t * g, node_t * v)
 static node_t*
 plain_vnode(graph_t * g, edge_t * orig)
 {
+	orig;
 	node_t *v;
 	v = virtual_node(g);
 	incr_width(g, v);
@@ -59,6 +60,7 @@ plain_vnode(graph_t * g, edge_t * orig)
 static node_t*
 leader_of(graph_t * g, node_t * v)
 {
+	g;
 	graph_t *clust;
 	node_t *rv;
 
@@ -186,10 +188,7 @@ void class2(graph_t * g)
 	int cn = GD_n_cluster(g);
 	for (c = 1; c <= cn; c++)
 		build_skeleton(g, GD_clust(g)[c]);
-	int k = 0;
 	for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
-		char* t = ND_label(n)->text;
-		k++;
 		for (e = agfstout(g, n); e; e = agnxtout(g, e)) {
 			if (ND_weight_class(aghead(e)) <= 2)
 				ND_weight_class(aghead(e))++;
@@ -198,7 +197,7 @@ void class2(graph_t * g)
 		}
 	}
 	for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
-		char* t = ND_label(n)->text;
+		
 		int z = 0;
 		if ((ND_clust(n) == NULL) && (n == UF_find(n))) {
 			fast_node(g, n);

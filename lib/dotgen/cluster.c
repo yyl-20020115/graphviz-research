@@ -149,6 +149,7 @@ map_path(node_t * from, node_t * to, edge_t * orig, edge_t * ve, int type)
 static void
 make_interclust_chain(graph_t * g, node_t * from, node_t * to, edge_t * orig)
 {
+	g;
 	int newtype;
 	node_t *u, *v;
 

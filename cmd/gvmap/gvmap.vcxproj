@@ -96,7 +96,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4100;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)windows\getopt;$(SolutionDir)windows\dependencies\GTK2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -118,7 +118,7 @@
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4100;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)windows\getopt;$(SolutionDir)windows\dependencies\GTK2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -134,7 +134,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level4</WarningLevel>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4100;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)windows\getopt;$(SolutionDir)windows\dependencies\GTK2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -154,7 +154,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <EnablePREfast>false</EnablePREfast>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4100;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)windows\getopt;$(SolutionDir)windows\dependencies\GTK2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

@@ -669,7 +669,7 @@ static void dot_polygon(char **sbuff, int *len, int *len_max, int np, float *xp,
     }
 
     if (*len + ret > *len_max - 1){
-      *len_max = *len_max + MAX(100, 0.2*(*len_max)) + ret;
+      *len_max = (int)(*len_max + MAX(100, 0.2*(*len_max)) + ret);
       *sbuff = REALLOC(*sbuff, *len_max);
     }
 
@@ -780,7 +780,7 @@ void plot_dot_polygons(char **sbuff, int *len, int *len_max, real line_width, ch
 	dot_one_poly(sbuff, len, len_max, use_line, line_width, fill, close, is_river, np, xp, yp, cstring);
 	np = 0;/* start a new polygon */
       } 
-      xp[np] = x_poly[2*ja[j]]; yp[np++] = x_poly[2*ja[j]+1];
+      xp[np] = (float)x_poly[2*ja[j]]; yp[np++] = (float)x_poly[2*ja[j]+1];
     }
     if (use_line) {
       dot_one_poly(sbuff, len, len_max, use_line, line_width, fill, close, is_river, np, xp, yp, line_color);
@@ -824,7 +824,7 @@ void plot_processing_polygons(FILE *f, real line_width, SparseMatrix polys, real
 	  processing_one_poly(f, use_line, line_width, fill, close, is_river, np, xp, yp, rr, gg, bb);
 	np = 0;/* start a new polygon */
       } 
-      xp[np] = x_poly[2*ja[j]]; yp[np++] = x_poly[2*ja[j]+1];
+      xp[np] = (float)x_poly[2*ja[j]]; yp[np++] = (float)x_poly[2*ja[j]+1];
     }
     if (use_line) {
       processing_one_poly(f, use_line, line_width, fill, close, is_river, np, xp, yp, rr, gg, bb);
@@ -1886,7 +1886,7 @@ int make_map_internal(int exclude_random, int include_OK_points,
       area2 = (xmax[1] - xmin[1])*(xmax[0] - xmin[0]);
       n1 = (int) area2/(shore_depth_tol*shore_depth_tol);
       n2 = n*((int) area2/area);
-      *nrandom = MAX(n1, n2);
+      *nrandom = (int)MAX(n1, n2);
     }
     srand(123);
     xran = MALLOC(sizeof(real)*(*nrandom + 4)*dim2);

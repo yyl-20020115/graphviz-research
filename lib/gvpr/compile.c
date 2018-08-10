@@ -1589,6 +1589,7 @@ getval(Expr_t * pgm, Exnode_t * node, Exid_t * sym, Exref_t * ref,
 
 static char *typeName(Expr_t * pg, int op)
 {
+	pg;
     return typenames[op - MINTYPE];
 }
 
@@ -1601,6 +1602,8 @@ static int
 setval(Expr_t * pgm, Exnode_t * x, Exid_t * sym, Exref_t * ref,
        void *env, int elt, Extype_t v, Exdisc_t * disc)
 {
+	disc;
+	elt;
     Gpr_t *state;
     Agobj_t *objp;
     Agnode_t *np;
@@ -1798,6 +1801,8 @@ static Extype_t
 refval(Expr_t * pgm, Exnode_t * node, Exid_t * sym, Exref_t * ref,
        char *str, int elt, Exdisc_t * disc)
 {
+	elt;
+	str;
     Extype_t v;
     if (sym->lex == CONSTANT) {
 	switch (sym->index) {
@@ -1869,6 +1874,7 @@ int
 binary(Expr_t * pg, Exnode_t * l, Exnode_t * ex, Exnode_t * r, int arg,
        Exdisc_t * disc)
 {
+	disc;
     Agobj_t *lobjp;
     Agobj_t *robjp;
     int ret = -1;

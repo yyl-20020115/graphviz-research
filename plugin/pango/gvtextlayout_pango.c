@@ -120,7 +120,7 @@ static boolean pango_textlayout(textspan_t * span, char **fontpath)
         /* all text layout is done at a scale of FONT_DPI (nominaly 96.) */
         pango_font_description_set_size (desc, (gint)(fontsize * PANGO_SCALE));
 
-        if (fontpath && (font = pango_font_map_load_font(fontmap, context, desc))) {  /* -v support */
+        if (fontpath && (font = pango_font_map_load_font(fontmap, context, desc))!=0) {  /* -v support */
 	    const char *fontclass;
 
 	    fontclass = G_OBJECT_CLASS_NAME(G_OBJECT_GET_CLASS(font));
@@ -180,7 +180,7 @@ static boolean pango_textlayout(textspan_t * span, char **fontpath)
     }
 
 #ifdef ENABLE_PANGO_MARKUP
-    if ((span->font) && (flags = span->font->flags)) {
+    if ((span->font) && (flags = span->font->flags)!=0) {
 	unsigned char buf[BUFSIZ];
 	agxbuf xb;
 

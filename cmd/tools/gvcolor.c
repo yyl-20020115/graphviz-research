@@ -123,14 +123,14 @@ static void color(Agraph_t * g)
     aginit(g, AGNODE, "nodeinfo", sizeof(Agnodeinfo_t), TRUE);
     if (agattr(g, AGNODE, "style", 0) == NULL)
 	agattr(g, AGNODE, "style", "filled");
-    if ((p = agget(g, "Defcolor")))
+    if ((p = agget(g, "Defcolor"))!=0)
 	setcolor(p, Defcolor);
 
-    if ((p = agget(g, "rankdir")) && (p[0] == 'L'))
+    if ((p = agget(g, "rankdir")) != 0 && (p[0] == 'L'))
 	LR = 1;
-    if ((p = agget(g, "flow")) && (p[0] == 'b'))
+    if ((p = agget(g, "flow")) != 0 && (p[0] == 'b'))
 	Forward = 0;
-    if ((p = agget(g, "saturation"))) {
+    if ((p = agget(g, "saturation")) != 0) {
 	if (sscanf(p, "%lf,%lf", &lowsat, &highsat) == 2) {
 	    MinRankSaturation = lowsat;
 	    MaxRankSaturation = highsat;
@@ -144,7 +144,7 @@ static void color(Agraph_t * g)
     i = 0;
     for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
 	nlist[i++] = n;
-	if ((p = agget(n, "color")))
+	if ((p = agget(n, "color")) != 0)
 	    setcolor(p, ND_x(n));
 	p = agget(n, "pos");
 	sscanf(p, "%lf,%lf", &x, &y);

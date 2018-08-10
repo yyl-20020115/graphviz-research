@@ -623,6 +623,7 @@ gen(Excc_t* cc, register Exnode_t* expr)
 static int
 global(Dt_t* table, void* object, void* handle)
 {
+	table;
 	register Excc_t*	cc = (Excc_t*)handle;
 	register Exid_t*	sym = (Exid_t*)object;
 

@@ -246,7 +246,8 @@ double *lab_gamut(const char *lightness, int *n){
 
 QuadTree lab_gamut_quadtree(char *gamut_file, const char *lightness, int max_qtree_level){
   /* read the color gamut points list in the form "x y z\n ..." and store in the octtree. return NULL if file not openable */
-  int n;
+	gamut_file;
+	int n;
   //  double *x = lab_gamut_from_file(gamut_file, lightness, &n);
   double *x = lab_gamut(lightness, &n);
   QuadTree qt;
