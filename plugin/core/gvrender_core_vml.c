@@ -97,6 +97,7 @@ static void vml_print_color(GVJ_t * job, gvcolor_t color)
 
 static void vml_grstroke(GVJ_t * job, int filled)
 {
+	filled;
     obj_state_t *obj = job->obj;
 
     gvputs(job, "<v:stroke color=\"");
@@ -352,6 +353,7 @@ static void vml_end_graph(GVJ_t * job)
 static void
 vml_begin_anchor(GVJ_t * job, char *href, char *tooltip, char *target, char *id)
 {
+	id;
     gvputs(job, "<a");
     if (href && href[0])
 	gvprintf(job, " href=\"%s\"", html_string(href));
@@ -470,6 +472,8 @@ static void
 vml_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start,
 	      int arrow_at_end, int filled)
 {
+	arrow_at_start;
+	arrow_at_end;
     gvputs(job, " <v:shape style=\"position:absolute; ");
     gvprintf(job, " width: %d; height: %d\"", graphWidth, graphHeight);
 

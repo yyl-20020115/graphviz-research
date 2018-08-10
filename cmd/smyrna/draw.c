@@ -112,7 +112,7 @@ static void DrawBezier(xdot_point* pts, int filled, int param)
 
 static void set_options(sdot_op * op, int param)
 {
-
+	op;
     int a=get_mode(view);
     if ((param == 1) && (a == 10) && (view->mouse.down == 1))	//selected, if there is move, move it
     {
@@ -214,7 +214,7 @@ static void DrawBeziers(sdot_op* o, int param)
     int i = 0;
     xdot_op *  op=&o->op;
     xdot_point* ps = op->u.bezier.pts;
-    view->Topview->global_z = view->Topview->global_z + o->layer*LAYER_DIFF;
+    view->Topview->global_z = (float)(view->Topview->global_z + o->layer*LAYER_DIFF);
 
     /* SelectBeziers((sdot_op *) op); */
     /* relocate_spline((sdot_op *) op, param); */
@@ -238,10 +238,10 @@ static void DrawEllipse(sdot_op*  o, int param)
     int i = 0;
     int filled;
     xdot_op * op=&o->op;
-    view->Topview->global_z=view->Topview->global_z+o->layer*LAYER_DIFF;
+    view->Topview->global_z=(float)(view->Topview->global_z+o->layer*LAYER_DIFF);
     set_options((sdot_op *) op, param);
-    x = op->u.ellipse.x - dx;
-    y = op->u.ellipse.y - dy;
+    x = (GLfloat)(op->u.ellipse.x - dx);
+    y = (GLfloat)(op->u.ellipse.y - dy);
     xradius = (GLfloat) op->u.ellipse.w;
     yradius = (GLfloat) op->u.ellipse.h;
 //    SelectEllipse((sdot_op *) op);
@@ -285,7 +285,7 @@ static void DrawPolygon(sdot_op * o, int param)
 {
     int filled;
     xdot_op *  op=&o->op;
-    view->Topview->global_z=view->Topview->global_z+o->layer*LAYER_DIFF;
+    view->Topview->global_z=(float)(view->Topview->global_z+o->layer*LAYER_DIFF);
 
 	//SelectPolygon((sdot_op *) op);
     set_options((sdot_op *) op, param);
@@ -339,7 +339,7 @@ static void DrawPolyline(sdot_op* o, int param)
 {
     int i = 0;
     xdot_op * op=&o->op;
-    view->Topview->global_z=view->Topview->global_z+o->layer*LAYER_DIFF;
+    view->Topview->global_z=(float)(view->Topview->global_z+o->layer*LAYER_DIFF);
 
     if (param == 0)
 	glColor4f(view->penColor.R, view->penColor.G, view->penColor.B,
@@ -379,6 +379,7 @@ static glCompColor GetglCompColor(char *color)
 }
 static void SetFillColor(sdot_op*  o, int param)
 {
+	param;
     xdot_op * op=&o->op;
     glCompColor c = GetglCompColor(op->u.color);
     view->fillColor.R = c.R;
@@ -388,6 +389,7 @@ static void SetFillColor(sdot_op*  o, int param)
 }
 static void SetPenColor(sdot_op* o, int param)
 {
+	param;
     glCompColor c;
     xdot_op * op=&o->op;
     c = GetglCompColor(op->u.color);
@@ -399,6 +401,8 @@ static void SetPenColor(sdot_op* o, int param)
 
 static void SetStyle(sdot_op* o, int param)
 {
+	o;
+	param;
   /* xdot_op * op=&o->op; */
 }
 
@@ -406,6 +410,7 @@ static sdot_op * font_op;
 
 static void SetFont(sdot_op * o, int param)
 {
+	param;
 	font_op=o;
 }
 
@@ -421,15 +426,15 @@ static void InsertImage(sdot_op * o, int param)
 
 
     if(!o->img) {
-	x = o->op.u.image.pos.x;
-	y = o->op.u.image.pos.y;
+	x = (GLfloat)o->op.u.image.pos.x;
+	y = (GLfloat)o->op.u.image.pos.y;
 	i = o->img = glCompImageNewFile (NULL, x, y, o->op.u.image.name, 0);
 	if (!o->img) {
 	    fprintf (stderr, "Could not open file \"%s\" to read image.\n", o->op.u.image.name);
 	    return;
 	}
-	i->width = o->op.u.image.pos.w;
-	i->height = o->op.u.image.pos.h;
+	i->width =(GLfloat) o->op.u.image.pos.w;
+	i->height = (GLfloat)o->op.u.image.pos.h;
 	i->common.functions.draw(i);
     }
 }
@@ -449,7 +454,7 @@ static void EmbedText(sdot_op* o, int param)
 			x= (GLfloat)(o->op.u.text.x - o->op.u.text.width / 2.0);
 			break;
 		case xd_right:
-			x= (GLfloat)o->op.u.text.x - o->op.u.text.width;
+			x= (GLfloat)(o->op.u.text.x - o->op.u.text.width);
 			break;
 
 	}

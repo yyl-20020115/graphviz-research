@@ -87,7 +87,7 @@ map_path(node_t * from, node_t * to, edge_t * orig, edge_t * ve, int type)
 	if (ED_count(ve) > 1) {
 		ED_to_virt(orig) = NULL;
 		if (ND_rank(to) - ND_rank(from) == 1) {
-			if ((e = find_fast_edge(from, to)) && (ports_eq(orig, e))) {
+			if ((e = find_fast_edge(from, to)) != 0 && (ports_eq(orig, e))) {
 				merge_oneway(orig, e);
 				if ((ND_node_type(from) == NORMAL)
 					&& (ND_node_type(to) == NORMAL))
@@ -110,7 +110,7 @@ map_path(node_t * from, node_t * to, edge_t * orig, edge_t * ve, int type)
 	}
 	else {
 		if (ND_rank(to) - ND_rank(from) == 1) {
-			if ((ve = find_fast_edge(from, to)) && (ports_eq(orig, ve))) {
+			if ((ve = find_fast_edge(from, to)) != 0 && (ports_eq(orig, ve))) {
 				/*ED_to_orig(ve) = orig; */
 				ED_to_virt(orig) = ve;
 				ED_edge_type(ve) = type;
@@ -274,9 +274,9 @@ remove_rankleaders(graph_t * g)
 		v = GD_rankleader(g)[r];
 
 		/* remove the entire chain */
-		while ((e = ND_out(v).list[0]))
+		while ((e = ND_out(v).list[0]) != 0)
 			delete_fast_edge(e);
-		while ((e = ND_in(v).list[0]))
+		while ((e = ND_in(v).list[0]) != 0)
 			delete_fast_edge(e);
 		delete_fast_node(dot_root(g), v);
 		GD_rankleader(g)[r] = NULL;
@@ -332,7 +332,7 @@ void mark_clusters(graph_t * g)
 			/* here we mark the vnodes of edges in the cluster */
 			for (orig = agfstout(clust, n); orig;
 				orig = agnxtout(clust, orig)) {
-				if ((e = ED_to_virt(orig))) {
+				if ((e = ED_to_virt(orig)) != 0) {
 					while (e && ND_node_type(vn = aghead(e)) == VIRTUAL) {
 						ND_clust(vn) = clust;
 						e = ND_out(aghead(e)).list[0];
@@ -406,7 +406,7 @@ void mark_lowclusters(Agraph_t * root)
 	for (n = agfstnode(root); n; n = agnxtnode(root, n)) {
 		ND_clust(n) = NULL;
 		for (orig = agfstout(root, n); orig; orig = agnxtout(root, orig)) {
-			if ((e = ED_to_virt(orig))) {
+			if ((e = ED_to_virt(orig)) != 0) {
 				while (e && (ND_node_type(vn = aghead(e))) == VIRTUAL) {
 					ND_clust(vn) = NULL;
 					e = ND_out(aghead(e)).list[0];
@@ -435,7 +435,7 @@ static void mark_lowcluster_basic(Agraph_t * g)
 		if (ND_clust(n) == NULL)
 			ND_clust(n) = g;
 		for (orig = agfstout(g, n); orig; orig = agnxtout(g, orig)) {
-			if ((e = ED_to_virt(orig))) {
+			if ((e = ED_to_virt(orig)) != 0) {
 				while (e && (ND_node_type(vn = aghead(e))) == VIRTUAL) {
 					if (ND_clust(vn) == NULL)
 						ND_clust(vn) = g;

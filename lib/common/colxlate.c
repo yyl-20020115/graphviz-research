@@ -233,7 +233,7 @@ static char* resolveColor (char* str)
     if (!strcmp(str, "lightgrey")) return str;
     if (*str == '/') {   /* if begins with '/' */
 	c2 = str+1;
-        if ((ss = strchr(c2, '/'))) {  /* if has second '/' */
+        if ((ss = strchr(c2, '/')) != 0) {  /* if has second '/' */
 	    if (*c2 == '/') {    /* if second '/' is second character */
 		    /* Do not compare against final '/' */
 		if (ISNONDFLT(colorscheme))

@@ -32,23 +32,24 @@ int PASCAL WinMain (HANDLE hInstance, HANDLE hPrevInstance,
     char cmd[256];
     char *path;
     char *s;
-
+	nCmdShow;
+	hPrevInstance = 0;
     shellpath = getenv ("PATH");
-    if (!shellpath || !(path = buildpath ("lefty"))) {
-        if (!GetModuleFileName (hInstance, cmd, 256) ||
-                !(s = strrchr (cmd, '\\')))
+    if (!shellpath || 0==(path = buildpath ("lefty"))) {
+        if (0==GetModuleFileName (hInstance, cmd, 256) ||
+                0==(s = strrchr (cmd, '\\')))
             exit (1);
         *s = 0;
         shellpath = &cmd[0];
-        if (!(path = buildpath ("lefty")))
+        if (0==(path = buildpath ("lefty")))
             exit (1);
     }
     if (lpCmdLine[0] == 0)
         sprintf (cmd, "%s -e \"load('dotty.lefty');dotty.protogt.lserver='neato';dotty.simple(null);\"", path);
     else
-        sprintf (cmd, "%s -e \"load('dotty.lefty');dotty.protogt.lserver='neato';dotty.simple('%Ns');\"", path, lpCmdLine);
+        sprintf (cmd, "%s -e \"load('dotty.lefty');dotty.protogt.lserver='neato';dotty.simple('%s');\"", path, lpCmdLine);
 
-    handle = WinExec (cmd, SW_SHOW);
+    handle =(HANDLE) WinExec (cmd, SW_SHOW);
     exit (0);
 }
 
@@ -89,7 +90,9 @@ static char *buildpath (char *file) {
 
 static void panic (char *file, int line, char *func, char *fmt, ...) {
     va_list args;
-
+	file;
+	func;
+	line;
     va_start(args, fmt);
     {
         char buf[256];

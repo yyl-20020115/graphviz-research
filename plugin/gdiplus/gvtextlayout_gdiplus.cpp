@@ -29,6 +29,8 @@ static int CALLBACK fetch_first_font(
 	DWORD fontType,
 	LPARAM lParam)
 {
+	fontType;
+	textMetrics;
 	/* save the first font we see in the font enumeration */
 	*((LOGFONTA *)lParam) = *logFont;
 	return 0;
@@ -61,7 +63,7 @@ Layout::Layout(char *fontname, double fontsize, char* string)
 		font = new Font(reference.hdc, &found_font);
 	}
 	else
-		font = new Font(FontFamily::GenericSerif(), fontsize);
+		font = new Font(FontFamily::GenericSerif(), (Gdiplus::REAL)fontsize);
 }
 
 Layout::~Layout()
@@ -77,6 +79,7 @@ void gdiplus_free_layout(void *layout)
 
 boolean gdiplus_textlayout(textspan_t *span, char **fontpath)
 {
+	fontpath;
 	/* ensure GDI+ is started up: since we get called outside of a job, we can't rely on GDI+ startup then */
 	UseGdiplus();
 	

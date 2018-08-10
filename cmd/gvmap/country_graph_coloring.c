@@ -74,7 +74,7 @@ static void update_pmin_pmax_aband(int n, int u, int *ia, int *ja, int *p, int *
 static int check_swap(int n, int *ia, int *ja,
 		      int u, int p_u, int v, int p_v, int *aband_local, int *p, int *p_inv, int aband, PriorityQueue pq, int *pmax, int *pmin, real lambda){
   /* check if u should swap with v to improve u, without demaging v. Return TRUE if swap is successful. FALSE otherwise. */
-
+	pq;
   int j, aband_v, aband_v1, aband_u, aband_u1;
 
   aband_v = aband_local[v];
@@ -246,8 +246,8 @@ void improve_antibandwidth_by_swapping(SparseMatrix A, int *p){
 	get_local_12_norm(n, j, ia, ja, p, norm2);
 	norm = MIN(norm, norm2[0]);
 	pi = (p)[i]; pj = (p)[j];
-	(p)[i] = pj;
-	(p)[j] = pi;
+	(p)[i] = (int)pj;
+	(p)[j] =(int) pi;
 	get_local_12_norm(n, i, ia, ja, p, norm11);
 	get_local_12_norm(n, j, ia, ja, p, norm22);
 	if (MIN(norm11[0],norm22[0]) > MIN(norm1[0],norm2[0])){
@@ -258,8 +258,8 @@ void improve_antibandwidth_by_swapping(SparseMatrix A, int *p){
 	  norm1[1] = norm11[1];
 	  continue;
 	}
-	(p)[i] = pi;
-	(p)[j] = pj;
+	(p)[i] = (int)pi;
+	(p)[j] = (int)pj;
       }
       if (i%100 == 0 && Verbose) {
 	get_12_norm(n, ia, ja, p, norm1);
@@ -278,7 +278,7 @@ void country_graph_coloring_internal(int seed, SparseMatrix A, int **p, real *no
   int n = A->m, i, j, jj;
   SparseMatrix L, A2;
   int *ia = A->ia, *ja = A->ja;
-  int a = -1.;
+  int a = -1;
   real nrow;
   real *v = NULL;
   real norm1[3];
@@ -358,13 +358,14 @@ void improve_antibandwidth_by_swapping_for_fortran(int *n, int *nz, int *ja, int
      aprof: aprof[0] is the antiband width on entry. aprof[1] is the abtiband on exit
      Verbose: a flag, when set to nonzero, will print the input matrix, as well as others things.
   */
+	nz;
   SparseMatrix A, A2;
   real norm1[3];
   int i, j, jj;
   clock_t start;
   real cpu;
 
-  Verbose = *verbose;
+  Verbose =(unsigned char) *verbose;
   A = SparseMatrix_new(*n, *n, 1, MATRIX_TYPE_PATTERN, FORMAT_COORD);
 
   for (i = 0; i < *n; i++){
@@ -399,14 +400,14 @@ void improve_antibandwidth_by_swapping_for_fortran(int *n, int *nz, int *ja, int
   for (i = 0; i < *n; i++) p[i]++;
 }
 
-void improve_antibandwidth_by_swapping_for_fortran_(int *n, int *nz, int *ja, int *ia, int *p, int *aprof, int *Verbose){
-  improve_antibandwidth_by_swapping_for_fortran(n, nz, ja, ia, p, aprof, Verbose);
+void improve_antibandwidth_by_swapping_for_fortran_(int *n, int *nz, int *ja, int *ia, int *p, int *aprof, int *_Verbose){
+  improve_antibandwidth_by_swapping_for_fortran(n, nz, ja, ia, p, aprof, _Verbose);
 }
-void IMPROVE_ANTIBANDWIDTH_BY_SWAPPING_FOR_FORTRAN(int *n, int *nz, int *ja, int *ia, int *p, int *aprof, int *Verbose){
-  improve_antibandwidth_by_swapping_for_fortran(n, nz, ja, ia, p, aprof, Verbose);
+void IMPROVE_ANTIBANDWIDTH_BY_SWAPPING_FOR_FORTRAN(int *n, int *nz, int *ja, int *ia, int *p, int *aprof, int *_Verbose){
+  improve_antibandwidth_by_swapping_for_fortran(n, nz, ja, ia, p, aprof, _Verbose);
 }
-void IMPROVE_ANTIBANDWIDTH_BY_SWAPPING_FOR_FORTRAN_(int *n, int *nz, int *ja, int *ia, int *p, int *aprof, int *Verbose){
-  improve_antibandwidth_by_swapping_for_fortran(n, nz, ja, ia, p, aprof, Verbose);
+void IMPROVE_ANTIBANDWIDTH_BY_SWAPPING_FOR_FORTRAN_(int *n, int *nz, int *ja, int *ia, int *p, int *aprof, int *_Verbose){
+  improve_antibandwidth_by_swapping_for_fortran(n, nz, ja, ia, p, aprof, _Verbose);
 }
 
 

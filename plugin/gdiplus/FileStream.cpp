@@ -143,13 +143,14 @@ HRESULT FileStream::CopyTo(
 	pcbWritten;
 	pcbRead;
 	cb;
-	
+	pstm;
 	return E_NOTIMPL;
 }
 
 HRESULT FileStream::Commit( 
     DWORD grfCommitFlags)
 {
+	grfCommitFlags;
 	return E_NOTIMPL;
 }
 
@@ -163,6 +164,9 @@ HRESULT FileStream::LockRegion(
     ULARGE_INTEGER cb,
     DWORD dwLockType)
 {
+	dwLockType;
+	cb;
+	libOffset;
 	return E_NOTIMPL;
 }
 

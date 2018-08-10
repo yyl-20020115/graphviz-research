@@ -10,6 +10,9 @@
  *
  * Contributors: See CVS logs. Details at http://www.graphviz.org/
  *************************************************************************/
+#ifdef MAXSHORT
+#undef MAXSHORT
+#endif
 
 #include "config.h"
 

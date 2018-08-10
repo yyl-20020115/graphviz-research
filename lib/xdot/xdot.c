@@ -498,7 +498,12 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 	if (x->cnt == bufsz) {
 	    oldsz = bufsz;
 	    bufsz *= 2;
-	    ops = (char *) realloc(ops, bufsz * sz);
+		if (ops == 0) {
+			//bad memory
+
+			return x;
+		}
+		ops = (char *) realloc(ops, bufsz * sz);
 		if (ops == 0)
 		{
 			//bad memory
@@ -509,6 +514,7 @@ xdot *parseXDotFOn (char *s, drawfunc_t fns[], int sz, xdot* x)
 			memset(ops + (oldsz*sz), '\0', (bufsz - oldsz)*sz);
 		}
 	}
+	if(ops!=0)
 	*(xdot_op *) (ops + (x->cnt * sz)) = op;
 	x->cnt++;
     }

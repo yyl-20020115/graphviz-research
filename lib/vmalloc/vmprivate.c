@@ -55,7 +55,7 @@ static Block_t *vmextend(reg Vmalloc_t * vm, size_t size,
 	return NIL(Block_t *);
 
     /* see if we can extend the current segment */
-    if (!(seg = vd->seg))
+    if (0 == (seg = vd->seg))
 	addr = NIL(Vmuchar_t *);
     else {
 	if (!vd->wild || SEG(vd->wild) != seg)
@@ -79,7 +79,7 @@ static Block_t *vmextend(reg Vmalloc_t * vm, size_t size,
     while (!addr) {		/* try to get space */
 	if ((addr =
 	     (Vmuchar_t *) (*memoryf) (vm, NIL(void *), 0, size,
-				       vm->disc)))
+				       vm->disc))!=0)
 	    break;
 
 	/* check with exception handler to see if we should continue */
@@ -169,7 +169,7 @@ static Block_t *vmextend(reg Vmalloc_t * vm, size_t size,
     SIZE(t) = BUSY;
 
     /* see if the wild block is still wild */
-    if ((t = vd->wild) && (seg = SEG(t)) != vd->seg) {
+    if ((t = vd->wild)!=0 && (seg = SEG(t)) != vd->seg) {
 	CLRPFREE(SIZE(NEXT(t)));
 	if (vd->mode & (VM_MTBEST | VM_MTDEBUG | VM_MTPROFILE)) {
 	    SIZE(t) |= BUSY | JUNK;

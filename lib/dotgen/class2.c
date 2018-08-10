@@ -120,7 +120,7 @@ interclrep(graph_t * g, edge_t * e)
 		h = t0;
 	}
 	if (ND_clust(t) != ND_clust(h)) {
-		if ((ve = find_fast_edge(t, h))) {
+		if ((ve = find_fast_edge(t, h))!=0) {
 			merge_chain(g, e, ve, TRUE);
 			return;
 		}
@@ -288,7 +288,7 @@ void class2(graph_t * g)
 			else {
 				/*other_edge(e); */
 				/* avoid when opp==e in undirected graph */
-				if ((opp = agfindedge(g, aghead(e), agtail(e))) && (aghead(opp) != aghead(e))) {
+				if ((opp = agfindedge(g, aghead(e), agtail(e))) != 0 && (aghead(opp) != aghead(e))) {
 					/* shadows a forward edge */
 					if (ED_to_virt(opp) == NULL)
 						make_chain(g, agtail(opp), aghead(opp), opp);

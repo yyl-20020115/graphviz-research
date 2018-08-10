@@ -56,17 +56,17 @@ void Assert(int assertion, char* error) {
 void * SafeMalloc(size_t size) {
   void * result;
 
-  if ( (result = malloc(size)) ) { /* assignment intentional */
+  if ( (result = malloc(size)) != 0) { /* assignment intentional */
     return(result);
   } else {
     fprintf(stderr, "memory overflow: malloc failed in SafeMalloc.");
     /* printf("  Exiting Program.\n"); */
     longjmp(rb_jbuf, 2);
-    return(0);
+//    return(0);
   }
 }
 /*  NullFunction does nothing it is included so that it can be passed */
 /*  as a function to RBTreeCreate when no other suitable function has */
 /*  been defined */
 
-void NullFunction(void * junk) { ; }
+void NullFunction(void * junk) { junk; }

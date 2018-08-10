@@ -280,7 +280,7 @@ int gvParseArgs(GVC_t *gvc, int argc, char** argv)
 	return (1-argc);
     if ((argc = config_extra_args(gvc, argc, argv)) < 0)
 	return (1-argc);
-    if ((rv = dotneato_args_initialize(gvc, argc, argv)))
+    if ((rv = dotneato_args_initialize(gvc, argc, argv))!=0)
 	return rv;
     if (Verbose)
 	gvplugin_write_status(gvc);

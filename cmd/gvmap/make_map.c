@@ -1759,7 +1759,7 @@ int make_map_internal(int exclude_random, int include_OK_points,
 		      int *npolys, SparseMatrix *poly_lines, SparseMatrix *polys, int **polys_groups, SparseMatrix *poly_point_map,
 		      SparseMatrix *country_graph, int highlight_cluster, int *flag){
 
-
+	edge_bridge_tol;
   real xmax[2], xmin[2], area, *x = x0;
   int i, j;
   QuadTree qt;
@@ -2214,7 +2214,7 @@ int make_map_from_rectangle_groups(int exclude_random, int include_OK_points,
   real bbox[4];
 
   if (K < 0){
-    K = (int) 10/(1+n/400.);/* 0 if n > 3600*/
+    K = (int)( 10/(1+n/400.));/* 0 if n > 3600*/
   }
   *nart = 0;
   if (Verbose){
@@ -2286,7 +2286,7 @@ int make_map_from_rectangle_groups(int exclude_random, int include_OK_points,
 	if (avgsz == 0){
 	  nadded[j] = 0;
 	} else {
-	  nadded[j] = (int) K*sizes[i*dim+j]/avgsz;
+	  nadded[j] = (int) (K*sizes[i*dim+j]/avgsz);
 	}
       }
 
@@ -2370,7 +2370,7 @@ int make_map_from_rectangle_groups(int exclude_random, int include_OK_points,
 	  jj = ja[j];
 	  if (jj <= i) continue;
 	  dist = distance(x, dim, i, jj);
-	  nadded[0] = (int) 2*KB*dist/avgdist;
+	  nadded[0] = (int)( 2*KB*dist/avgdist);
 
 	  /* half the line segment near i */
 	  h[0] = 0.5*(x[jj*dim] - x[i*dim])/nadded[0];

@@ -33,11 +33,13 @@ extern int in_poly(Ppoly_t argpoly, Ppoint_t q);
 
 static boolean spline_merge(node_t * n)
 {
+	n;
     return FALSE;
 }
 
 static boolean swap_ends_p(edge_t * e)
 {
+	e;
     return FALSE;
 }
 
@@ -117,8 +119,8 @@ typedef struct {
 static void *newitem(Dt_t * d, edgeitem * obj, Dtdisc_t * disc)
 {
     edgeitem *newp;
-
-    NOTUSED(disc);
+	d;
+	disc;
     newp = NEW(edgeitem);
     newp->id = obj->id;
     newp->e = obj->e;
@@ -129,6 +131,8 @@ static void *newitem(Dt_t * d, edgeitem * obj, Dtdisc_t * disc)
 
 static void freeitem(Dt_t * d, edgeitem * obj, Dtdisc_t * disc)
 {
+	disc;
+	d;
     free(obj);
 }
 
@@ -136,7 +140,8 @@ static int
 cmpitems(Dt_t * d, edgeinfo * key1, edgeinfo * key2, Dtdisc_t * disc)
 {
     int x;
-
+	disc;
+	d;
     if (key1->n1 > key2->n1)
 	return 1;
     if (key1->n1 < key2->n1)
@@ -146,13 +151,13 @@ cmpitems(Dt_t * d, edgeinfo * key1, edgeinfo * key2, Dtdisc_t * disc)
     if (key1->n2 < key2->n2)
 	return -1;
 
-    if ((x = key1->p1.x - key2->p1.x))
+    if ((x = (int)(key1->p1.x - key2->p1.x)) != 0)
 	return x;
-    if ((x = key1->p1.y - key2->p1.y))
+    if ((x = (int)(key1->p1.y - key2->p1.y)) != 0)
 	return x;
-    if ((x = key1->p2.x - key2->p2.x))
+    if ((x = (int)(key1->p2.x - key2->p2.x)) != 0)
 	return x;
-    return (key1->p2.y - key2->p2.y);
+    return (int)((key1->p2.y - key2->p2.y));
 }
 
 Dtdisc_t edgeItemDisc = {
@@ -445,7 +450,8 @@ getPath(edge_t * e, vconfig_t * vconfig, int chkPts, Ppoly_t ** obs,
     Ppolyline_t line;
     int pp, qp;
     Ppoint_t p, q;
-
+	npoly;
+	obs;
     p = add_pointf(ND_coord(agtail(e)), ED_tail_port(e).p);
     q = add_pointf(ND_coord(aghead(e)), ED_head_port(e).p);
 
@@ -579,7 +585,7 @@ static int _spline_edges(graph_t * g, expand_t* pmargin, int edgetype)
     }
     npoly = i;
     if (obs) {
-	if ((legal = Plegal_arrangement(obs, npoly))) {
+	if ((legal = Plegal_arrangement(obs, npoly))!=0) {
 	    if (edgetype != ET_ORTHO) vconfig = Pobsopen(obs, npoly);
 	}
 	else {

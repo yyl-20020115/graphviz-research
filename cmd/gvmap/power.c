@@ -38,17 +38,17 @@ void power_method(void (*matvec)(void *, int, int, real*, real **, int, int*),
 
      Function PowerIteration (A – m × m matrix )
      % This function computes u1, u2, . . . , uk, the first k eigenvectors of S.
-     const tol ← 0.001
+     const tol <- 0.001
      for i = 1 to k do
-     . ui ← random
-     . ui ← ui/||ui||
+     . ui <- random
+     . ui <- ui/||ui||
      . do
-     .   vi ← ui
+     .   vi <- ui
      .   % orthogonalize against previous eigenvectors
      .   for j = 1 to i − 1 do
-     .     vi ← vi − (vi^Tvi)vj
+     .     vi <- vi − (vi^Tvi)vj
      .   end for
-     .   ui ← A vi/||A vi||
+     .   ui <- A vi/||A vi||
      . while (ui^T vi < 1-tol) (halt when direction change is small)
      . vi = ui
      end for
@@ -138,7 +138,8 @@ void power_method(void (*matvec)(void *, int, int, real*, real **, int, int*),
 void matvec_sparse(void *M, int m, int n, real *u, real **v, int transpose,
 		   int *flag){
   SparseMatrix A;
-
+  m;
+  n;
   *flag = 0;
   A = (SparseMatrix) M;
   SparseMatrix_multiply_vector(A, u, v, transpose);

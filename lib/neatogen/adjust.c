@@ -97,7 +97,7 @@ static void chkBoundBox(Agraph_t * graph)
     Point ll, ur;
     int i;
     double x, y;
-    double xmin, xmax, ymin, ymax;
+    double _xmin, _xmax, _ymin, _ymax;
     double xmn, xmx, ymn, ymx;
     double ydelta, xdelta;
     Info_t *ip;
@@ -108,10 +108,10 @@ static void chkBoundBox(Agraph_t * graph)
     pp = &ip->poly;
     x = ip->site.coord.x;
     y = ip->site.coord.y;
-    xmin = pp->origin.x + x;
-    ymin = pp->origin.y + y;
-    xmax = pp->corner.x + x;
-    ymax = pp->corner.y + y;
+    _xmin = pp->origin.x + x;
+    _ymin = pp->origin.y + y;
+    _xmax = pp->corner.x + x;
+    _ymax = pp->corner.y + y;
     for (i = 1; i < nsites; i++) {
 	ip++;
 	pp = &ip->poly;
@@ -121,26 +121,26 @@ static void chkBoundBox(Agraph_t * graph)
 	ymn = pp->origin.y + y;
 	xmx = pp->corner.x + x;
 	ymx = pp->corner.y + y;
-	if (xmn < xmin)
-	    xmin = xmn;
-	if (ymn < ymin)
-	    ymin = ymn;
-	if (xmx > xmax)
-	    xmax = xmx;
-	if (ymx > ymax)
-	    ymax = ymx;
+	if (xmn < _xmin)
+	    _xmin = xmn;
+	if (ymn < _ymin)
+	    _ymin = ymn;
+	if (xmx > _xmax)
+	    _xmax = xmx;
+	if (ymx > _ymax)
+	    _ymax = ymx;
     }
 
     marg = agget(graph, "voro_margin");
     if (marg && (*marg != '\0')) {
 	margin = atof(marg);
     }
-    ydelta = margin * (ymax - ymin);
-    xdelta = margin * (xmax - xmin);
-    ll.x = xmin - xdelta;
-    ll.y = ymin - ydelta;
-    ur.x = xmax + xdelta;
-    ur.y = ymax + ydelta;
+    ydelta = margin * (_ymax - _ymin);
+    xdelta = margin * (_xmax - _xmin);
+    ll.x = _xmin - xdelta;
+    ll.y = _ymin - ydelta;
+    ur.x = _xmax + xdelta;
+    ur.y = _ymax + ydelta;
 
     setBoundBox(&ll, &ur);
 }
@@ -169,8 +169,8 @@ static int makeInfo(Agraph_t * graph)
     if (pmargin.doAdd) {
 	polyf = makeAddPoly;
 	/* we need inches for makeAddPoly */
-	pmargin.x = PS2INCH(pmargin.x);
-	pmargin.y = PS2INCH(pmargin.y);
+	pmargin.x = (float)PS2INCH(pmargin.x);
+	pmargin.y = (float)PS2INCH(pmargin.y);
     }
 	
     else polyf = makePoly;
@@ -592,6 +592,7 @@ static int vAdjust(void)
 
 static double rePos(Point c)
 {
+	c;
     int i;
     Info_t *ip = nodeInfo;
     double f = 1.0 + incr;
@@ -646,6 +647,7 @@ static int sAdjust(void)
   */
 static void updateGraph(Agraph_t * graph)
 {
+	graph;
     /* Agnode_t*    node; */
     int i;
     Info_t *ip;
@@ -702,6 +704,7 @@ double *getSizes(Agraph_t * g, pointf pad, int* n_elabels, int** elabels)
  */
 SparseMatrix makeMatrix(Agraph_t* g, int dim, SparseMatrix *D)
 {
+	dim;
     SparseMatrix A = 0;
     Agnode_t *n;
     Agedge_t *e;
@@ -836,7 +839,7 @@ vpscAdjust(graph_t* G)
     float* f_storage = N_GNEW(dim * nnodes, float);
     int i, j;
     Agnode_t* v;
-    expand_t margin;
+    expand_t _margin;
 
     for (i = 0; i < dim; i++) {
 	coords[i] = f_storage + i * nnodes;
@@ -856,11 +859,11 @@ vpscAdjust(graph_t* G)
     opt.edge_gap = 0;
     opt.noverlap = 2;
     opt.clusters = NEW(cluster_data);
-    margin = sepFactor (G);
+    _margin = sepFactor (G);
  	/* Multiply by 2 since opt.gap is the gap size, not the margin */
-    if (margin.doAdd) {
-	opt.gap.x = 2.0*PS2INCH(margin.x);
-	opt.gap.y = 2.0*PS2INCH(margin.y);
+    if (_margin.doAdd) {
+	opt.gap.x = 2.0*PS2INCH(_margin.x);
+	opt.gap.y = 2.0*PS2INCH(_margin.y);
     }
     else {
 	opt.gap.x = opt.gap.y = 2.0*PS2INCH(DFLT_MARGIN);
@@ -943,7 +946,7 @@ int normalize(graph_t * g)
 
     e = NULL;
     for (v = agfstnode(g); v; v = agnxtnode(g, v))
-	if ((e = agfstout(g, v)))
+	if ((e = agfstout(g, v))!=0)
 	    break;
     if (e == NULL)
 	return ret;
@@ -1091,8 +1094,8 @@ static int simpleScale (graph_t* g)
     int i;
     char* p;
 
-    if ((p = agget(g, "scale"))) {
-	if ((i = sscanf(p, "%lf,%lf", &sc.x, &sc.y))) {
+    if ((p = agget(g, "scale")) != 0) {
+	if ((i = sscanf(p, "%lf,%lf", &sc.x, &sc.y)) != 0) {
 	    if (ISZERO(sc.x)) return 0;
 	    if (i == 1) sc.y = sc.x;
 	    else if (ISZERO(sc.y)) return 0;
@@ -1256,7 +1259,7 @@ parseFactor (char* s, expand_t* pp, float sepfact, float dflt)
     }
     else pp->doAdd = 0;
 
-    if ((i = sscanf(s, "%f,%f", &x, &y))) {
+    if ((i = sscanf(s, "%f,%f", &x, &y)) != 0) {
 	if (i == 1) y = x;
 	if (pp->doAdd) {
 	    if (sepfact > 1) {
@@ -1273,8 +1276,8 @@ parseFactor (char* s, expand_t* pp, float sepfact, float dflt)
 	    }
 	}
 	else {
-	    pp->x = 1.0 + x/sepfact;
-	    pp->y = 1.0 + y/sepfact;
+	    pp->x = 1.0f + x/sepfact;
+	    pp->y = 1.0f + y/sepfact;
 	}
 	return 1;
     }
@@ -1289,9 +1292,9 @@ sepFactor(graph_t* g)
     expand_t pmargin;
     char*  marg;
 
-    if ((marg = agget(g, "sep")) && parseFactor(marg, &pmargin, 1.0, 0)) {
+    if ((marg = agget(g, "sep")) != 0 && parseFactor(marg, &pmargin, 1.0, 0)) {
     }
-    else if ((marg = agget(g, "esep")) && parseFactor(marg, &pmargin, SEPFACT, DFLT_MARGIN)) {
+    else if ((marg = agget(g, "esep")) != 0 && parseFactor(marg, &pmargin, (float)SEPFACT, (float)DFLT_MARGIN)) {
     }
     else { /* default */
 	pmargin.x = pmargin.y = DFLT_MARGIN;
@@ -1315,12 +1318,12 @@ esepFactor(graph_t* g)
     expand_t pmargin;
     char*  marg;
 
-    if ((marg = agget(g, "esep")) && parseFactor(marg, &pmargin, 1.0, 0)) {
+    if ((marg = agget(g, "esep")) != 0 && parseFactor(marg, &pmargin, 1.0, 0)) {
     }
-    else if ((marg = agget(g, "sep")) && parseFactor(marg, &pmargin, 1.0/SEPFACT, SEPFACT*DFLT_MARGIN)) {
+    else if ((marg = agget(g, "sep")) != 0 && parseFactor(marg, &pmargin, (float)( 1.0/SEPFACT), (float)(SEPFACT*DFLT_MARGIN))) {
     }
     else {
-	pmargin.x = pmargin.y = SEPFACT*DFLT_MARGIN;
+	pmargin.x = pmargin.y = (float)SEPFACT*DFLT_MARGIN;
 	pmargin.doAdd = 1;
     }
     if (Verbose)

@@ -41,13 +41,13 @@ static void *poolalloc(Vmalloc_t * vm, reg size_t size)
 	    return NIL(void *);
     }
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	if (ISLOCK(vd, 0))
 	    return NIL(void *);
 	SETLOCK(vd, 0);
     }
 
-    if ((tp = vd->free)) {	/* there is a ready free block */
+    if ((tp = vd->free)!=0) {	/* there is a ready free block */
 	vd->free = SEGLINK(tp);
 	goto done;
     }
@@ -56,14 +56,14 @@ static void *poolalloc(Vmalloc_t * vm, reg size_t size)
 
     /* look through all segments for a suitable free block */
     for (tp = NIL(Block_t *), seg = vd->seg; seg; seg = seg->next) {
-	if ((tp = seg->free) &&
+	if ((tp = seg->free) !=0 &&
 	    (s = (SIZE(tp) & ~BITS) + sizeof(Head_t)) >= size)
 	    goto has_blk;
     }
 
     for (;;) {			/* must extend region */
 	if ((tp =
-	     (*_Vmextend) (vm, ROUND(size, vd->incr), NIL(Vmsearch_f)))) {
+	     (*_Vmextend) (vm, ROUND(size, vd->incr), NIL(Vmsearch_f)))!=0) {
 	    s = (SIZE(tp) & ~BITS) + sizeof(Head_t);
 	    seg = SEG(tp);
 	    goto has_blk;
@@ -107,7 +107,7 @@ static long pooladdr(Vmalloc_t * vm, reg void * addr)
     reg Vmdata_t *vd = vm->data;
     reg int local;
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	GETLOCAL(vd, local);
 	if (ISLOCK(vd, local))
 	    return -1L;
@@ -150,7 +150,7 @@ static int poolfree(reg Vmalloc_t * vm, reg void * data)
     if (!data)
 	return 0;
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0==(local = vd->mode & VM_TRUST)) {
 	if (ISLOCK(vd, 0) || vd->pool <= 0)
 	    return -1;
 
@@ -185,7 +185,7 @@ static void *poolresize(Vmalloc_t * vm, void * data, size_t size,
     NOTUSED(type);
 
     if (!data) {
-	if ((data = poolalloc(vm, size)) && (type & VM_RSZERO)) {
+	if ((data = poolalloc(vm, size)) != 0&& (type & VM_RSZERO)) {
 	    reg int *d = (int *) data, *ed =
 		(int *) ((char *) data + size);
 	    do {
@@ -239,7 +239,7 @@ static int poolcompact(Vmalloc_t * vm)
     for (seg = vd->seg; seg; seg = next) {
 	next = seg->next;
 
-	if (!(fp = seg->free))
+	if (0 == (fp = seg->free))
 	    continue;
 
 	seg->free = NIL(Block_t *);

@@ -46,8 +46,8 @@ void* init_xdot (Agraph_t* g)
     char* p;
     xdot* xd = NULL;
 
-    if (!((p = agget(g, "_background")) && p[0])) {
-	if (!((p = agget(g, "_draw_")) && p[0])) {
+    if (!((p = agget(g, "_background")) != 0 && p[0])) {
+	if (!((p = agget(g, "_draw_")) != 0 && p[0])) {
 	    return NULL;
 	}
     }
@@ -85,7 +85,7 @@ obj_state_t* push_obj_state(GVJ_t *job)
 {
     obj_state_t *obj, *parent;
 
-    if (! (obj = zmalloc(sizeof(obj_state_t))))
+    if (0 == (obj = zmalloc(sizeof(obj_state_t))))
         agerr(AGERR, "no memory from zmalloc()\n");
 
     parent = obj->parent = job->obj;
@@ -374,7 +374,7 @@ static char **checkClusterStyle(graph_t* sg, int *flagp)
 	char **qp;
 	char *p;
 	pp = pstyle = parse_style(style);
-	while ((p = *pp)) {
+	while ((p = *pp) != 0) {
 	    if (strcmp(p, "filled") == 0) {
 		istyle |= FILLED;
 		pp++;
@@ -741,7 +741,7 @@ static int ifFilled(node_t * n)
     style = late_nnstring(n, N_style, "");
     if (style[0]) {
         pp = parse_style(style);
-        while ((p = *pp)) {
+        while ((p = *pp)!=0) {
             if (strcmp(p, "filled") == 0)
                 r = 1;
             pp++;
@@ -1058,7 +1058,7 @@ static boolean selectedLayer(GVC_t *gvc, int layerNum, int numLayers, char *spec
     part_in_p = agxbuse(&xb);
 
     /* Thanks to Matteo Nastasi for this extended code. */
-    while ((rval == FALSE) && (cur = strtok_r(part_in_p, gvc->layerListDelims, &buf_part_p))) {
+    while ((rval == FALSE) && (cur = strtok_r(part_in_p, gvc->layerListDelims, &buf_part_p)) != 0) {
 	w1 = w0 = strtok_r (cur, gvc->layerDelims, &buf_p);
 	if (w0)
 	    w1 = strtok_r (NULL, gvc->layerDelims, &buf_p);
@@ -1152,7 +1152,7 @@ static int parse_layers(GVC_t *gvc, graph_t * g, char *p)
     gvc->layerListDelims = agget(g, "layerlistsep");
     if (!gvc->layerListDelims)
         gvc->layerListDelims = DEFAULT_LAYERLISTSEP;
-    if ((tok = strpbrk (gvc->layerDelims, gvc->layerListDelims))) { /* conflict in delimiter strings */
+    if ((tok = strpbrk (gvc->layerDelims, gvc->layerListDelims)) != 0) { /* conflict in delimiter strings */
 	agerr(AGWARN, "The character \'%c\' appears in both the layersep and layerlistsep attributes - layerlistsep ignored.\n", *tok);
         gvc->layerListDelims = "";
     }
@@ -1616,7 +1616,7 @@ static void emit_background(GVJ_t * job, graph_t *g)
     int dfltColor;
     
     /* if no bgcolor specified - first assume default of "white" */
-    if (! ((str = agget(g, "bgcolor")) && str[0])) {
+    if (! ((str = agget(g, "bgcolor")) != 0 && str[0])) {
 	str = "white";
 	dfltColor = 1;
     }
@@ -1659,7 +1659,7 @@ static void emit_background(GVJ_t * job, graph_t *g)
 	}
     }
 
-    if ((xd = (xdot*)GD_drawing(g)->xdots))
+    if ((xd = (xdot*)GD_drawing(g)->xdots) != 0)
 	emit_xdot (job, xd);
 }
 
@@ -1859,7 +1859,7 @@ static void emit_begin_node(GVJ_t * job, node_t * n)
 
             vertices = poly->vertices;
 
-            if ((s = agget(n, "samplepoints")))
+            if ((s = agget(n, "samplepoints")) != 0)
                 nump = atoi(s);
             /* We want at least 4 points. For server-side maps, at most 100
              * points are allowed. To simplify things to fit with the 120 points
@@ -2156,8 +2156,8 @@ static void splitBSpline (bezier* bz, float t, bezier* left, bezier* right)
  */
 static int multicolor (GVJ_t * job, edge_t * e, char** styles, char* colors, int num, double arrowsize, double penwidth)
 { 
-    bezier bz;
-    bezier bz0, bz_l, bz_r;
+	bezier bz = { 0 };
+    bezier bz0 = { 0 }, bz_l = { 0 }, bz_r = { 0 };
     int i, rv;
     colorsegs_t* segs;
     colorseg_t* s;
@@ -2284,7 +2284,7 @@ static void emit_edge_graphics(GVJ_t * job, edge_t * e, char** styles)
     char *color, *pencolor, *fillcolor;
     char *headcolor, *tailcolor, *lastcolor;
     char *colors = NULL;
-    bezier bz;
+	bezier bz = { 0 };
     splines offspl, tmpspl;
     pointf pf0, pf1, pf2 = { 0, 0 }, pf3, *offlist, *tmplist;
     double arrowsize, numc2, penwidth=job->obj->penwidth;
@@ -2547,7 +2547,7 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
      */
     if (styles && ED_spl(e)) gvrender_set_style(job, styles);
 
-    if (E_penwidth && ((s=agxget(e,E_penwidth)) && s[0])) {
+    if (E_penwidth && ((s=agxget(e,E_penwidth)) != 0 && s[0])) {
 	penwidth = late_double(e, E_penwidth, 1.0, 0.0);
 	gvrender_set_penwidth(job, penwidth);
     }
@@ -2564,14 +2564,14 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
     }
 
     if (flags & GVRENDER_DOES_LABELS) {
-	if ((lab = ED_label(e)))
+	if ((lab = ED_label(e)) != 0)
 	    obj->label = lab->text;
 	obj->taillabel = obj->headlabel = obj->xlabel = obj->label;
-	if ((tlab = ED_xlabel(e)))
+	if ((tlab = ED_xlabel(e)) != 0)
 	    obj->xlabel = tlab->text;
-	if ((tlab = ED_tail_label(e)))
+	if ((tlab = ED_tail_label(e)) != 0)
 	    obj->taillabel = tlab->text;
-	if ((hlab = ED_head_label(e)))
+	if ((hlab = ED_head_label(e)) != 0)
 	    obj->headlabel = hlab->text;
     }
 
@@ -2584,23 +2584,23 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
 	obj->id = strdup_and_subst_obj(s, (void*)e);
 	agxbfree(&xb);
 
-        if (((s = agget(e, "href")) && s[0]) || ((s = agget(e, "URL")) && s[0]))
+        if (((s = agget(e, "href")) != 0 && s[0]) || ((s = agget(e, "URL")) != 0 && s[0]))
             dflt_url = strdup_and_subst_obj(s, (void*)e);
-	if (((s = agget(e, "edgehref")) && s[0]) || ((s = agget(e, "edgeURL")) && s[0]))
+	if (((s = agget(e, "edgehref")) != 0 && s[0]) || ((s = agget(e, "edgeURL")) != 0 && s[0]))
             obj->url = strdup_and_subst_obj(s, (void*)e);
 	else if (dflt_url)
 	    obj->url = strdup(dflt_url);
-	if (((s = agget(e, "labelhref")) && s[0]) || ((s = agget(e, "labelURL")) && s[0]))
+	if (((s = agget(e, "labelhref")) != 0 && s[0]) || ((s = agget(e, "labelURL")) != 0 && s[0]))
             obj->labelurl = strdup_and_subst_obj(s, (void*)e);
 	else if (dflt_url)
 	    obj->labelurl = strdup(dflt_url);
-	if (((s = agget(e, "tailhref")) && s[0]) || ((s = agget(e, "tailURL")) && s[0])) {
+	if (((s = agget(e, "tailhref")) != 0 && s[0]) || ((s = agget(e, "tailURL")) != 0 && s[0])) {
             obj->tailurl = strdup_and_subst_obj(s, (void*)e);
             obj->explicit_tailurl = TRUE;
 	}
 	else if (dflt_url)
 	    obj->tailurl = strdup(dflt_url);
-	if (((s = agget(e, "headhref")) && s[0]) || ((s = agget(e, "headURL")) && s[0])) {
+	if (((s = agget(e, "headhref")) != 0 && s[0]) || ((s = agget(e, "headURL")) != 0 && s[0])) {
             obj->headurl = strdup_and_subst_obj(s, (void*)e);
             obj->explicit_headurl = TRUE;
 	}
@@ -2609,25 +2609,25 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
     } 
 
     if (flags & GVRENDER_DOES_TARGETS) {
-        if ((s = agget(e, "target")) && s[0])
+        if ((s = agget(e, "target")) != 0 && s[0])
             dflt_target = strdup_and_subst_obj(s, (void*)e);
-        if ((s = agget(e, "edgetarget")) && s[0]) {
+        if ((s = agget(e, "edgetarget")) != 0 && s[0]) {
 	    obj->explicit_edgetarget = TRUE;
             obj->target = strdup_and_subst_obj(s, (void*)e);
 	}
 	else if (dflt_target)
 	    obj->target = strdup(dflt_target);
-        if ((s = agget(e, "labeltarget")) && s[0])
+        if ((s = agget(e, "labeltarget")) != 0 && s[0])
             obj->labeltarget = strdup_and_subst_obj(s, (void*)e);
 	else if (dflt_target)
 	    obj->labeltarget = strdup(dflt_target);
-        if ((s = agget(e, "tailtarget")) && s[0]) {
+        if ((s = agget(e, "tailtarget")) != 0 && s[0]) {
             obj->tailtarget = strdup_and_subst_obj(s, (void*)e);
 	    obj->explicit_tailtarget = TRUE;
 	}
 	else if (dflt_target)
 	    obj->tailtarget = strdup(dflt_target);
-        if ((s = agget(e, "headtarget")) && s[0]) {
+        if ((s = agget(e, "headtarget")) != 0 && s[0]) {
 	    obj->explicit_headtarget = TRUE;
             obj->headtarget = strdup_and_subst_obj(s, (void*)e);
 	}
@@ -2636,8 +2636,8 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
     } 
 
     if (flags & GVRENDER_DOES_TOOLTIPS) {
-        if (((s = agget(e, "tooltip")) && s[0]) ||
-            ((s = agget(e, "edgetooltip")) && s[0])) {
+        if (((s = agget(e, "tooltip")) != 0 && s[0]) ||
+            ((s = agget(e, "edgetooltip")) != 0 && s[0])) {
 	    char* tooltip = preprocessTooltip (s, e);
             obj->tooltip = strdup_and_subst_obj(tooltip, (void*)e);
 	    free (tooltip);
@@ -2646,7 +2646,7 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
 	else if (obj->label)
 	    obj->tooltip = strdup(obj->label);
 
-        if ((s = agget(e, "labeltooltip")) && s[0]) {
+        if ((s = agget(e, "labeltooltip")) != 0 && s[0]) {
 	    char* tooltip = preprocessTooltip (s, e);
             obj->labeltooltip = strdup_and_subst_obj(tooltip, (void*)e);
 	    free (tooltip);
@@ -2655,7 +2655,7 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
 	else if (obj->label)
 	    obj->labeltooltip = strdup(obj->label);
 
-        if ((s = agget(e, "tailtooltip")) && s[0]) {
+        if ((s = agget(e, "tailtooltip")) != 0 && s[0]) {
 	    char* tooltip = preprocessTooltip (s, e);
             obj->tailtooltip = strdup_and_subst_obj(tooltip, (void*)e);
 	    free (tooltip);
@@ -2664,7 +2664,7 @@ static void emit_begin_edge(GVJ_t * job, edge_t * e, char** styles)
 	else if (obj->taillabel)
 	    obj->tailtooltip = strdup(obj->taillabel);
 
-        if ((s = agget(e, "headtooltip")) && s[0]) {
+        if ((s = agget(e, "headtooltip")) != 0 && s[0]) {
 	    char* tooltip = preprocessTooltip (s, e);
             obj->headtooltip = strdup_and_subst_obj(tooltip, (void*)e);
 	    free (tooltip);
@@ -2713,8 +2713,8 @@ emit_edge_label(GVJ_t* job, textlabel_t* lbl, emit_state_t lkind, int explicit,
 {
     int flags = job->flags;
     emit_state_t old_emit_state;
-    char* newid;
-    char* type;
+    char* newid = 0;
+    char* type = 0;
 
     if ((lbl == NULL) || !(lbl->set)) return;
     if (id) { /* non-NULL if needed */
@@ -3098,7 +3098,7 @@ static void init_gvc(GVC_t * gvc, graph_t * g)
 
     /* margins */
     gvc->graph_sets_margin = FALSE;
-    if ((p = agget(g, "margin"))) {
+    if ((p = agget(g, "margin")) != 0) {
         i = sscanf(p, "%lf,%lf", &xf, &yf);
         if (i > 0) {
             gvc->margin.x = gvc->margin.y = xf * POINTS_PER_INCH;
@@ -3110,7 +3110,7 @@ static void init_gvc(GVC_t * gvc, graph_t * g)
 
     /* pad */
     gvc->graph_sets_pad = FALSE;
-    if ((p = agget(g, "pad"))) {
+    if ((p = agget(g, "pad")) != 0) {
         i = sscanf(p, "%lf,%lf", &xf, &yf);
         if (i > 0) {
             gvc->pad.x = gvc->pad.y = xf * POINTS_PER_INCH;
@@ -3134,7 +3134,7 @@ static void init_gvc(GVC_t * gvc, graph_t * g)
 
     /* pagedir */
     gvc->pagedir = "BL";
-    if ((p = agget(g, "pagedir")) && p[0])
+    if ((p = agget(g, "pagedir")) != 0 && p[0])
             gvc->pagedir = p;
 
 
@@ -3266,7 +3266,7 @@ static void init_job_viewport(GVJ_t * job, graph_t * g)
     Y = sz.y * Z;
 
     /* user can override */
-    if ((str = agget(g, "viewport"))) {
+    if ((str = agget(g, "viewport")) != 0) {
         nodename = malloc(strlen(str)+1);
         junk = malloc(strlen(str)+1);
 	rv = sscanf(str, "%lf,%lf,%lf,\'%[^\']\'", &X, &Y, &Z, nodename);
@@ -3525,7 +3525,7 @@ static void emit_page(GVJ_t * job, graph_t * g)
 	obj->url_map_p = p;
 	obj->url_map_n = nump;
     }
-    if ((flags & GVRENDER_DOES_LABELS) && ((lab = GD_label(g))))
+    if ((flags & GVRENDER_DOES_LABELS) && ((lab = GD_label(g))) != 0)
 	/* do graph label on every page and rely on clipping to show it on the right one(s) */
 	obj->label = lab->text;
 	/* If EMIT_CLUSTERS_LAST is set, we assume any URL or tooltip
@@ -3698,7 +3698,7 @@ void emit_clusters(GVJ_t * job, Agraph_t * g, int flags)
 	}
 	filled = FALSE;
 	istyle = 0;
-	if ((style = checkClusterStyle(sg, &istyle))) {
+	if ((style = checkClusterStyle(sg, &istyle)) != 0) {
 	    gvrender_set_style(job, style);
 	    if (istyle & FILLED)
 		filled = FILL;
@@ -3763,13 +3763,13 @@ void emit_clusters(GVJ_t * job, Agraph_t * g, int flags)
         	gvrender_set_fillcolor(job, fillcolor);
 	}
 
-	if (G_penwidth && ((s=ag_xget(sg,G_penwidth)) && s[0])) {
+	if (G_penwidth && ((s=ag_xget(sg,G_penwidth)) != 0 && s[0])) {
 	    penwidth = late_double(sg, G_penwidth, 1.0, 0.0);
             gvrender_set_penwidth(job, penwidth);
 	}
 
 	if (istyle & ROUNDED) {
-	    if ((doPerim = late_int(sg, G_peripheries, 1, 0)) || filled) {
+	    if ((doPerim = late_int(sg, G_peripheries, 1, 0)) != 0 || filled) {
 		AF[0] = GD_bb(sg).LL;
 		AF[2] = GD_bb(sg).UR;
 		AF[1].x = AF[2].x;
@@ -3812,7 +3812,7 @@ void emit_clusters(GVJ_t * job, Agraph_t * g, int flags)
 	}
 
 	free (clrs[0]);
-	if ((lab = GD_label(sg)))
+	if ((lab = GD_label(sg)) != 0)
 	    emit_label(job, EMIT_CLABEL, lab);
 
 	if (doAnchor) {

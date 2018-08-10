@@ -64,6 +64,7 @@ int stress_majorization_cola(vtx_data * graph,	/* Input graph in sparse represen
 			     int maxi,	/* max iterations */
 			     ipsep_options * opt)
 {
+	nedges_graph;
     int iterations = 0;		/* Output: number of iteration of the process */
 
 	/*************************************************
@@ -219,7 +220,7 @@ int stress_majorization_cola(vtx_data * graph,	/* Input graph in sparse represen
 			v = maxEdgeLen;
 			v *= v;
 			if (v > 0.01) {
-			    v = 1.0 / v;
+			    v = (float)(1.0 / v);
 			}
 		    } else
 			v = 0;
@@ -413,7 +414,7 @@ int stress_majorization_cola(vtx_data * graph,	/* Input graph in sparse represen
 	 */
 
 	if (opt->noverlap == 1 && nsizeScale > 0.001) {
-	    generateNonoverlapConstraints(cMajEnvHor, nsizeScale, coords,
+	    generateNonoverlapConstraints(cMajEnvHor, (float)nsizeScale, coords,
 					  0,
 					  nsizeScale < 0.5 ? FALSE : TRUE,
 					  opt);
@@ -438,7 +439,7 @@ int stress_majorization_cola(vtx_data * graph,	/* Input graph in sparse represen
 	    }
 	}
 	if (opt->noverlap == 1 && nsizeScale > 0.001) {
-	    generateNonoverlapConstraints(cMajEnvVrt, nsizeScale, coords,
+	    generateNonoverlapConstraints(cMajEnvVrt, (float)nsizeScale, coords,
 					  1, FALSE, opt);
 	}
 	if (cMajEnvVrt->m > 0) {

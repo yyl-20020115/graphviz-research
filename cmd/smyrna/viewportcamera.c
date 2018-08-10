@@ -103,6 +103,7 @@ int refresh_viewport_camera(ViewInfo * view)
 
 void menu_click_add_camera(void *p)
 {
+	p;
     viewport_camera *c;
     /*add test cameras */
     c = add_camera_to_viewport(view);

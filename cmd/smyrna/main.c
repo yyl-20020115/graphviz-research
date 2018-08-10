@@ -240,7 +240,7 @@ int main(int argc, char *argv[])
 	char* s;
 	MEMORY_BASIC_INFORMATION mbi;
 
-	if (VirtualQuery (&main, &mbi, sizeof(mbi)) == 0) {
+	if (VirtualQuery ((LPCVOID)&main, &mbi, sizeof(mbi)) == 0) {
 	    fprintf (stderr,"failed to get handle for executable.\n");
 	    return 1;
 	}

@@ -26,6 +26,7 @@ static int splines_intersect(int dim, int u1, int v1, int u2, int v2,
      xsplines1,xsplines2: the first and second splines corresponding to two edges
 
   */
+	x;
   int itmp;
   int len1 = 100, len2 = 100;
   real *x1, *x2;

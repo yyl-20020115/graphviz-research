@@ -189,7 +189,7 @@ Halfedge *ELleftbnd(Point * p)
     Halfedge *he;
 
 /* Use hash table to get close to desired halfedge */
-    bucket = (p->x - xmin) / deltax * ELhashsize;
+    bucket =(int)((p->x - xmin) / deltax * ELhashsize);
     if (bucket < 0)
 	bucket = 0;
     if (bucket >= ELhashsize)

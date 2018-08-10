@@ -122,7 +122,7 @@ static char *picfontname(char *psname)
     else {
         agerr(AGERR, "%s%s is not a troff font\n", picgen_msghdr, psname);
         /* try base font names, e.g. Helvetica-Outline-Oblique -> Helvetica-Outline -> Helvetica */
-        if ((rv = strrchr(psname, '-'))) {
+        if ((rv = strrchr(psname, '-')) != 0) {
             *rv = '\0';         /* psname is not specified as const ... */
             rv = picfontname(psname);
         } else
@@ -482,6 +482,7 @@ static void pic_bezier(GVJ_t * job, pointf * A, int n, int arrow_at_start,
 
 static void pic_polygon(GVJ_t * job, pointf * A, int n, int filled)
 {
+	filled;
     obj_state_t *obj = job->obj;
 
 //  int object_code = 2;        /* always 2 for polyline */

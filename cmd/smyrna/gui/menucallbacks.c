@@ -30,12 +30,16 @@
 char buf[255];
 void mAttributesSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
     showAttrsWidget(view->Topview);
 }
 
 void mOpenSlot(GtkWidget * widget, gpointer user_data)
 {
-    GtkWidget *dialog;
+	widget;
+	user_data;
+	GtkWidget *dialog;
     GtkFileFilter *filter;
     int i = 0;
 
@@ -70,6 +74,8 @@ void mOpenSlot(GtkWidget * widget, gpointer user_data)
 
 void mSaveSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
 
     save_graph();		//save without prompt
 
@@ -77,22 +83,30 @@ void mSaveSlot(GtkWidget * widget, gpointer user_data)
 
 void mSaveAsSlot(GtkWidget * widget, gpointer user_data)
 {
-    save_as_graph();		//save with prompt
+	widget;
+	user_data;
+	save_as_graph();		//save with prompt
 }
 
 void mCloseSlot(GtkWidget * widget, gpointer user_data)
 {
-    if (view->activeGraph == 0)
+	widget;
+	user_data;
+	if (view->activeGraph == 0)
 	close_graph(view, 0);
 }
 
 void mOptionsSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
 }
 
 void mQuitSlot(GtkWidget * widget, gpointer user_data)
 {
-    if (close_graph(view, view->activeGraph));
+	widget;
+	user_data;
+	if (close_graph(view, view->activeGraph));
     gtk_main_quit();
 }
 
@@ -120,21 +134,36 @@ int show_close_nosavedlg(void)
 //edit
 void mCutSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 
 void mCopySlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 
 void mPasteSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 
 void mDeleteSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 void mTopviewSettingsSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
     show_settings_form();
 }
 
@@ -143,6 +172,8 @@ void mTopviewSettingsSlot(GtkWidget * widget, gpointer user_data)
 //view
 void mShowToolBoxSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
 
 
     if (!gtk_widget_set_gl_capability
@@ -169,7 +200,9 @@ void mShowHostSelectionSlot(GtkWidget * widget, gpointer user_data)
 
 void mShowConsoleSlot(GtkWidget * widget, gpointer user_data)
 {
-    static int state = 0;  // off by default
+	widget;
+	user_data;
+	static int state = 0;  // off by default
 
     if (state) {
 	gtk_widget_hide (glade_xml_get_widget(xml, "vbox13"));
@@ -196,26 +229,35 @@ void mHideConsoleSlot(GtkWidget * widget, gpointer user_data)
 //Graph
 void mNodeListSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
 	gtk_widget_show(glade_xml_get_widget(xml, "frmTVNodes"));
 	setup_tree (view->g[view->activeGraph]);
-
-
 }
 
 void mNewNodeSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 
 void mNewEdgeSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 void mNewClusterSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 
 void mGraphPropertiesSlot(GtkWidget * widget, gpointer user_data)
 {
-    int respond;
+    int _respond;
     //there has to be an active graph to open the graph prop page
     if (view->activeGraph > -1) {
 	load_graph_properties(view->g[view->activeGraph]);	//load from graph to gui              
@@ -227,7 +269,7 @@ void mGraphPropertiesSlot(GtkWidget * widget, gpointer user_data)
 					  glade_xml_get_widget(xml,
 							       "dlgOpenGraph"),
 					  2, 1);
-	respond = gtk_dialog_run((GtkDialog *)
+	_respond = gtk_dialog_run((GtkDialog *)
 				 glade_xml_get_widget(xml,
 						      "dlgOpenGraph"));
 	//need to hide the dialog , again freaking GTK!!!!
@@ -237,6 +279,8 @@ void mGraphPropertiesSlot(GtkWidget * widget, gpointer user_data)
 
 void mNodeFindSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
 
 }
 
@@ -251,25 +295,38 @@ static void mPropertiesSlot(gve_element element)
 
 void mClusterPropertiesSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
     mPropertiesSlot(GVE_CLUSTER);
 }
 
 void mNodePropertiesSlot(GtkWidget * widget, gpointer user_data)
 {
-    mPropertiesSlot(GVE_NODE);
+	widget;
+	user_data;
+	mPropertiesSlot(GVE_NODE);
 }
 
 void mEdgePropertiesSlot(GtkWidget * widget, gpointer user_data)
 {
-    mPropertiesSlot(GVE_EDGE);
+	widget;
+	user_data;
+	mPropertiesSlot(GVE_EDGE);
 }
 
 void mShowCodeSlot(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 static void mSlot(GtkWidget * widget, gpointer user_data,
 		  gvk_layout layout, int doCursor)
 {
+	widget;
+	user_data;
+
     /* GdkCursor *cursor; */
     /* GdkWindow *w; */
 /*    Dlg = (GtkMessageDialog *) gtk_message_dialog_new(NULL,
@@ -321,10 +378,16 @@ void mSfdpSlot(GtkWidget * widget, gpointer user_data)
 
 void mAbout(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 
 void mHelp(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
+
 }
 
 

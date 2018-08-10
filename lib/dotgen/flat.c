@@ -81,7 +81,7 @@ static void setbounds(node_t * v, int *bounds, int lpos, int rpos)
 		else {		/* forward */
 			boolean onleft, onright;
 			onleft = onright = FALSE;
-			for (i = 0; (f = ND_out(v).list[i]); i++) {
+			for (i = 0; (f = ND_out(v).list[i]) != 0; i++) {
 				if (ND_order(aghead(f)) <= lpos) {
 					onleft = TRUE;
 					continue;
@@ -149,7 +149,7 @@ flat_node(edge_t * e)
 
 	place = flat_limits(g, e);
 	/* grab ypos = LL.y of label box before make_vn_slot() */
-	if ((n = GD_rank(g)[r - 1].v[0]))
+	if ((n = GD_rank(g)[r - 1].v[0]) != 0)
 		ypos = ND_coord(n).y - GD_rank(g)[r - 1].ht1;
 	else {
 		n = GD_rank(g)[r].v[0];
@@ -267,7 +267,7 @@ flat_edges(graph_t * g)
 
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
 		if (ND_flat_out(n).list) {
-			for (j = 0; (e = ND_flat_out(n).list[j]); j++) {
+			for (j = 0; (e = ND_flat_out(n).list[j]) != 0; j++) {
 				checkFlatAdjacent(e);
 			}
 		}
@@ -279,8 +279,8 @@ flat_edges(graph_t * g)
 	}
 
 	if ((GD_rank(g)[0].flat) || (GD_n_cluster(g) > 0)) {
-		for (i = 0; (n = GD_rank(g)[0].v[i]); i++) {
-			for (j = 0; (e = ND_flat_in(n).list[j]); j++) {
+		for (i = 0; (n = GD_rank(g)[0].v[i]) != 0; i++) {
+			for (j = 0; (e = ND_flat_in(n).list[j]) != 0; j++) {
 				if ((ED_label(e)) && !ED_adjacent(e)) {
 					abomination(g);
 					found = TRUE;
@@ -296,7 +296,7 @@ flat_edges(graph_t * g)
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
 		/* if n is the tail of any flat edge, one will be in flat_out */
 		if (ND_flat_out(n).list) {
-			for (i = 0; (e = ND_flat_out(n).list[i]); i++) {
+			for (i = 0; (e = ND_flat_out(n).list[i]) != 0; i++) {
 				if (ED_label(e)) {
 					if (ED_adjacent(e)) {
 						if (GD_flip(g)) ED_dist(e) = ED_label(e)->dimen.y;

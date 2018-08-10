@@ -36,7 +36,7 @@ static int PQbucket(Halfedge * he)
     else if (b >= PQhashsize)
 	bucket = PQhashsize - 1;
     else
-	bucket = b;
+	bucket = (int)b;
     if (bucket < PQmin)
 	PQmin = bucket;
     return (bucket);

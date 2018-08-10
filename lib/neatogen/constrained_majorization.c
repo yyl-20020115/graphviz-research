@@ -241,20 +241,20 @@ int stress_majorization_with_hierarchy(vtx_data * graph,	/* Input graph in spars
     }
 
     if (levels_gap > 0) {
-	int length = n + n * (n - 1) / 2;
+	int _length = n + n * (n - 1) / 2;
 	double sum1, sum2, scale_ratio;
-	int count;
+	int _count;
 	sum1 = (float) (n * (n - 1) / 2);
 	sum2 = 0;
-	for (count = 0, i = 0; i < n - 1; i++) {
-	    count++;		// skip self distance
-	    for (j = i + 1; j < n; j++, count++) {
-		sum2 += distance_kD(d_coords, dim, i, j) / Dij[count];
+	for (_count = 0, i = 0; i < n - 1; i++) {
+	    _count++;		// skip self distance
+	    for (j = i + 1; j < n; j++, _count++) {
+		sum2 += distance_kD(d_coords, dim, i, j) / Dij[_count];
 	    }
 	}
 	scale_ratio = sum2 / sum1;
 	/* double scale_ratio=10; */
-	for (i = 0; i < length; i++) {
+	for (i = 0; i < _length; i++) {
 	    Dij[i] *= (float) scale_ratio;
 	}
     }
@@ -485,7 +485,7 @@ int stress_majorization_with_hierarchy(vtx_data * graph,	/* Input graph in spars
 						       coords, dim, k,
 						       localConstrMajorIterations,
 						       hierarchy_boundaries,
-						       levels_gap);
+						       (float)levels_gap);
 
 	    } else {
 		/* use conjugate gradient for all dimensions except y */

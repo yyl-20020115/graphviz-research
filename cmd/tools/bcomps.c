@@ -51,9 +51,9 @@ typedef struct {
 #define NEXTBLK(g)  (((Agraphinfo_t*)(g->base.data))->next)
 
 #include "ingraphs.h"
-
+#ifndef min
 #define min(a,b) ((a) < (b) ? (a) :  (b))
-
+#endif
 char **Files;
 int verbose;
 int silent;

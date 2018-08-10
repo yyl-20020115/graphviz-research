@@ -310,7 +310,7 @@ construct_graph(int n, PairStack * edges_stack, vtx_data ** New_graph)
     int *degrees = N_GNEW(n, int);
     int top = edges_stack->top;
     int new_nedges = 2 * top + n;
-    Pair pair;
+	Pair pair = { 0 };
     int *edges = N_GNEW(new_nedges, int);
     float *weights = N_GNEW(new_nedges, float);
 

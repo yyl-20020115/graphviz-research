@@ -1147,7 +1147,7 @@ static void set_color_theme_color(colorschemaset * sc, char **colorstr, int smoo
 	}
     }
     else {
-	av_perc = 1.0 / (float) (colorcnt);
+	av_perc = (float)(1.0 / (colorcnt));
 	for (ind = 0; ind < colorcnt; ind++) {
 	    colorxlate(colorstr[ind], &cl, RGBA_DOUBLE);
 	    sc->s[ind].c.R = cl.u.RGBA[0];

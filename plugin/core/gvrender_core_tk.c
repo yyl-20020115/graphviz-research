@@ -52,10 +52,10 @@ static void tkgen_print_color(GVJ_t * job, gvcolor_t color)
 
 static void tkgen_print_tags(GVJ_t *job)
 {
-    char *ObjType;
-    unsigned int ObjId;
+    char *ObjType = 0;
+	unsigned int ObjId = 0;
     obj_state_t *obj = job->obj;
-    int ObjFlag;
+    int ObjFlag =0;
 
     switch (obj->emit_state) {
     case EMIT_NDRAW:
@@ -153,11 +153,13 @@ static void tkgen_begin_graph(GVJ_t * job)
 
 static void tkgen_begin_node(GVJ_t * job)
 {
+	job;
 	first_periphery = 1;     /* FIXME - this is an ugly hack! */
 }
 
 static void tkgen_begin_edge(GVJ_t * job)
 {
+	job;
 	first_periphery = -1;     /* FIXME - this is an ugly ugly hack!  Need this one for arrowheads. */
 }
 

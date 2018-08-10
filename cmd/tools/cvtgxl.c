@@ -192,7 +192,7 @@ int main(int argc, char **argv)
 	ingraph_state ig;
 	newIngraph(&ig, Files, gread);
 
-	while ((G = nextGraph(&ig))) {
+	while ((G = nextGraph(&ig))!=0) {
 	    if (prev)
 		agclose(prev);
 	    prev = G;

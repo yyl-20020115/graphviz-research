@@ -15,7 +15,7 @@
  * appreciated if you could also contribute those changes back to the
  * Adaptagrams repository.
  */
-
+int t = 0;
 /* 
  * Interface to Mosek (www.mosek.com) quadratic programming solver for solving
  * instances of the "Variable Placement with Separation Constraints" problem,

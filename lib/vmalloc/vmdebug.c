@@ -134,7 +134,7 @@ static void dbwarn(Vmalloc_t * vm, void * data, int where, char *file,
 	    (*_Vmstrcpy) (bufp,
 			  (*_Vmitoa) (VLONG(INT2PTR(char *, where)), -1),
 			  ':');
-	if ((s = DBFILE(data)) && (bufp + strlen(s) + SLOP) < endbuf) {
+	if ((s = DBFILE(data))!=0 && (bufp + strlen(s) + SLOP) < endbuf) {
 	    bufp = (*_Vmstrcpy) (bufp, "allocated at", '=');
 	    bufp = (*_Vmstrcpy) (bufp, s, ',');
 	    bufp =
@@ -342,7 +342,7 @@ static void *dballoc(Vmalloc_t * vm, size_t size)
     if (s < sizeof(Body_t))	/* no tiny blocks during Vmdebug */
 	s = sizeof(Body_t);
 
-    if (!(data = (Vmuchar_t *) KPVALLOC(vm, s, (*(Vmbest->allocf))))) {
+    if (0 == (data = (Vmuchar_t *) KPVALLOC(vm, s, (*(Vmbest->allocf))))) {
 	dbwarn(vm, NIL(Vmuchar_t *), DB_ALLOC, file, line, DB_ALLOC);
 	goto done;
     }
@@ -617,7 +617,7 @@ static void *dbalign(Vmalloc_t * vm, size_t size, size_t align)
     if ((s = ROUND(size, ALIGN) + DB_EXTRA) < sizeof(Body_t))
 	s = sizeof(Body_t);
 
-    if (!
+    if (0 ==
 	(data = (Vmuchar_t *) KPVALIGN(vm, s, align, (*(Vmbest->alignf)))))
 	goto done;
 

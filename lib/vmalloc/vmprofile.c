@@ -69,12 +69,12 @@ static Pfobj_t *pfsearch(Vmalloc_t * vm, char *file, int line)
     reg int n;
     reg char *cp;
 
-    if (!Vmpf && !(Vmpf = vmopen(Vmdcheap, Vmpool, 0)))
+    if (!Vmpf && 0 == (Vmpf = vmopen(Vmdcheap, Vmpool, 0)))
 	return NIL(Pfobj_t *);
 
     /* make hash table; PFTABLE'th slot hold regions' records */
     if (!Pftable) {
-	if (!
+	if (0 ==
 	    (Pftable =
 	     (Pfobj_t **) vmalloc(Vmheap,
 				  (PFTABLE + 1) * sizeof(Pfobj_t *))))
@@ -111,7 +111,7 @@ static Pfobj_t *pfsearch(Vmalloc_t * vm, char *file, int line)
 	if (!fn) {
 	    reg size_t s;
 	    s = sizeof(Pfobj_t) - sizeof(Pfdata_t) + strlen(file) + 1;
-	    if (!(fn = (Pfobj_t *) vmalloc(Vmheap, s)))
+	    if (0==(fn = (Pfobj_t *) vmalloc(Vmheap, s)))
 		return NIL(Pfobj_t *);
 	    fn->next = Pftable[n];
 	    Pftable[n] = fn;
@@ -125,7 +125,7 @@ static Pfobj_t *pfsearch(Vmalloc_t * vm, char *file, int line)
 	    if (vm >= PFVM(pfvm))
 		break;
 	if (!pfvm || PFVM(pfvm) > vm) {
-	    if (!(pfvm = (Pfobj_t *) vmalloc(Vmpf, sizeof(Pfobj_t))))
+	    if (0==(pfvm = (Pfobj_t *) vmalloc(Vmpf, sizeof(Pfobj_t))))
 		return NIL(Pfobj_t *);
 	    if (last) {
 		pfvm->next = last->next;
@@ -141,7 +141,7 @@ static Pfobj_t *pfsearch(Vmalloc_t * vm, char *file, int line)
 	    PFLINE(pfvm) = 0;
 	}
 
-	if (!(pf = (Pfobj_t *) vmalloc(Vmpf, sizeof(Pfobj_t))))
+	if (0==(pf = (Pfobj_t *) vmalloc(Vmpf, sizeof(Pfobj_t))))
 	    return NIL(Pfobj_t *);
 	n = (int) (h % PFTABLE);
 	pf->next = Pftable[n];
@@ -202,7 +202,7 @@ static void pfsetinfo(Vmalloc_t * vm, Vmuchar_t * data, size_t size,
 	line = 0;
     }
 
-    if ((pf = pfsearch(vm, file, line))) {
+    if ((pf = pfsearch(vm, file, line))!=0) {
 	PFALLOC(pf) += size;
 	PFNALLOC(pf) += 1;
     }
@@ -234,7 +234,7 @@ static Pfobj_t *pfsort(Pfobj_t * pf)
 	pf->next = one;
 	one = pf;
 
-	if ((pf = next)) {
+	if ((pf = next)!=0) {
 	    next = pf->next;
 	    pf->next = two;
 	    two = pf;
@@ -264,7 +264,7 @@ static Pfobj_t *pfsort(Pfobj_t * pf)
 	    else
 		next->next = one;
 	    next = one;
-	    if (!(one = one->next)) {
+	    if (0 == (one = one->next)) {
 		if (two)
 		    next->next = two;
 		return pf;
@@ -275,7 +275,7 @@ static Pfobj_t *pfsort(Pfobj_t * pf)
 	    else
 		next->next = two;
 	    next = two;
-	    if (!(two = two->next)) {
+	    if (0 == (two = two->next)) {
 		if (one)
 		    next->next = one;
 		return pf;
@@ -428,7 +428,7 @@ static void *pfalloc(Vmalloc_t * vm, size_t size)
     SETLOCK(vd, 0);
 
     s = ROUND(size, ALIGN) + PF_EXTRA;
-    if (!(data = KPVALLOC(vm, s, (*(Vmbest->allocf)))))
+    if (0 == (data = KPVALLOC(vm, s, (*(Vmbest->allocf)))))
 	goto done;
 
     pfsetinfo(vm, (Vmuchar_t *) data, size, file, line);
@@ -530,7 +530,7 @@ static void *pfresize(Vmalloc_t * vm, void * data, size_t size,
     news = ROUND(size, ALIGN) + PF_EXTRA;
     if ((addr =
 	 KPVRESIZE(vm, data, news, (type & ~VM_RSZERO),
-		   Vmbest->resizef))) {
+		   Vmbest->resizef))!=0) {
 	if (pf) {
 	    PFFREE(pf) += s;
 	    PFNFREE(pf) += 1;
@@ -600,7 +600,7 @@ static void *pfalign(Vmalloc_t * vm, size_t size, size_t align)
     SETLOCK(vd, 0);
 
     s = (size <= TINYSIZE ? TINYSIZE : ROUND(size, ALIGN)) + PF_EXTRA;
-    if (!(data = KPVALIGN(vm, s, align, Vmbest->alignf)))
+    if (0 == (data = KPVALIGN(vm, s, align, Vmbest->alignf)))
 	goto done;
 
     pfsetinfo(vm, (Vmuchar_t *) data, size, file, line);

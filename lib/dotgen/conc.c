@@ -85,13 +85,13 @@ static void mergevirtual(graph_t * g, int r, int lpos, int rpos, int dir)
 	for (i = lpos + 1; i <= rpos; i++) {
 		right = GD_rank(g)[r].v[i];
 		if (dir == DOWN) {
-			while ((e = ND_out(right).list[0])) {
-				for (k = 0; (f = ND_out(left).list[k]); k++)
+			while ((e = ND_out(right).list[0]) != 0) {
+				for (k = 0; (f = ND_out(left).list[k]) != 0; k++)
 					if (aghead(f) == aghead(e))
 						break;
 				if (f == NULL)
 					f = virtual_edge(left, aghead(e), e);
-				while ((e0 = ND_in(right).list[0])) {
+				while ((e0 = ND_in(right).list[0]) != 0) {
 					merge_oneway(e0, f);
 					/*ED_weight(f) += ED_weight(e0); */
 					delete_fast_edge(e0);
@@ -100,13 +100,13 @@ static void mergevirtual(graph_t * g, int r, int lpos, int rpos, int dir)
 			}
 		}
 		else {
-			while ((e = ND_in(right).list[0])) {
-				for (k = 0; (f = ND_in(left).list[k]); k++)
+			while ((e = ND_in(right).list[0]) != 0) {
+				for (k = 0; (f = ND_in(left).list[k]) != 0; k++)
 					if (agtail(f) == agtail(e))
 						break;
 				if (f == NULL)
 					f = virtual_edge(agtail(e), left, e);
-				while ((e0 = ND_out(right).list[0])) {
+				while ((e0 = ND_out(right).list[0]) != 0) {
 					merge_oneway(e0, f);
 					delete_fast_edge(e0);
 				}

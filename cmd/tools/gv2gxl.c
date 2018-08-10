@@ -692,7 +692,7 @@ writeNondefaultAttr(void *obj, FILE * gxlFile, Dict_t * defdict)
  */
 static int attrs_written(gxlstate_t * stp, void *obj)
 {
-    return 0==(AGATTRWF((Agobj_t *) obj) == stp->attrsNotWritten);
+    return 0==(AGATTRWF((Agobj_t *) obj) == (unsigned char)stp->attrsNotWritten);
 }
 
 static void

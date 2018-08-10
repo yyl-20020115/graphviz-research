@@ -39,7 +39,9 @@
 #define EX_DATAERR		65
 #define EX_NOINPUT		66
 #define EX_UNAVAILABLE	69
+#ifndef bool
 #define bool int
+#endif
 #define false 0
 #else
 #include <sysexits.h>
@@ -187,7 +189,7 @@ int main(int argc, char **argv)
     rc = imageDiff (A, B, C, minSX, minSY, black, white);
 
 #ifdef HAVE_GD_PNG
-    if ((argc > 3) && ((f = fopen(argv[3], "wb")))) {
+    if ((argc > 3) && ((f = fopen(argv[3], "wb"))) != 0) {
 	gdImagePng (C, f);
 	fclose(f);
     }

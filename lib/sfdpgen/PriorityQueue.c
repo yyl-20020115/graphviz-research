@@ -79,7 +79,7 @@ PriorityQueue PriorityQueue_push(PriorityQueue q, int i, int gain){
 
     data = N_GNEW(1,int);
     data[0] = i;
-    if ((l = (q->buckets)[gain])){
+    if ((l = (q->buckets)[gain])!=0){
       (q->buckets)[gain] = (q->where)[i] = DoubleLinkedList_prepend(l, data);
     } else {
       (q->buckets)[gain] = (q->where)[i] = DoubleLinkedList_new(data);

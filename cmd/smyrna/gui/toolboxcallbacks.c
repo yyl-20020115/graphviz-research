@@ -24,11 +24,16 @@
 
 void btnToolZoomOut_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
+
     glmotion_zoom_inc(0);
 }
 
 void btnToolZoomFit_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 
     float z, GDX, SDX, GDY, SDY;
     (view->active_camera >= 0)
@@ -63,6 +68,9 @@ void btnToolZoomFit_clicked(GtkWidget * widget, gpointer user_data)
 
 void btnToolFit_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
+
     float scx, scy, gcx, gcy, z;
 
 
@@ -101,28 +109,44 @@ void btnToolFit_clicked(GtkWidget * widget, gpointer user_data)
 
 void btnToolMove_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 
 void btnToolAddNode_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 void btnToolDeleteNode_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 void btnToolFindNode_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 void btnToolAddEdge_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 void btnToolDeleteEdge_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 void btnToolFindEdge_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 void btnToolCursor_clicked(GtkWidget * widget, gpointer user_data)
 {
+	user_data;
+	widget;
 }
 void write_to_console(char *text)
 {
@@ -139,7 +163,9 @@ void write_to_console(char *text)
 
 void on_btnActivateGraph_clicked(GtkWidget * widget, gpointer user_data)
 {
-    int graphId;
+	user_data;
+	widget;
+	int graphId;
     graphId = gtk_combo_box_get_active(view->graphComboBox);
     /* fprintf (stderr, "switch to graph %d\n",graphId); */
     switch_graph(graphId);

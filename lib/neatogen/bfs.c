@@ -77,7 +77,7 @@ bfs_bounded(int vertex, vtx_data * graph, int n, DistType * dist,
  /* ignore nodes whose distance to 'vertex' is more than bound */
 {
     /* we assume here, that all distances are initialized with -1 !!!! */
-
+	n;
     int i;
     int num_visit;
     int closestVertex, neighbor;

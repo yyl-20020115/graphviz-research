@@ -93,7 +93,7 @@ static void svg_print_id_class(GVJ_t * job, char* id, char* idx, char* kind, voi
     if (idx)
 	gvprintf (job, "_%s", xml_string(idx));
     gvprintf(job, "\" class=\"%s", kind);
-    if ((str = agget(obj, "class")) && *str) {
+    if ((str = agget(obj, "class")) != 0 && *str) {
 	gvputs(job, " ");
 	gvputs(job, xml_string(str));
     }
@@ -168,7 +168,7 @@ static void svg_begin_job(GVJ_t * job)
     char *s;
     gvputs(job,
 	   "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
-    if ((s = agget(job->gvc->g, "stylesheet")) && s[0]) {
+    if ((s = agget(job->gvc->g, "stylesheet")) != 0 && s[0]) {
 	gvputs(job, "<?xml-stylesheet href=\"");
 	gvputs(job, s);
 	gvputs(job, "\" type=\"text/css\"?>\n");
@@ -445,7 +445,7 @@ static void svg_textspan(GVJ_t * job, pointf p, textspan_t * span)
 	    gvprintf(job, " font-style=\"%s\"", style);
     } else
 	gvprintf(job, " font-family=\"%s\"", span->font->name);
-    if ((span->font) && (flags = span->font->flags)) {
+    if ((span->font) && (flags = span->font->flags) != 0) {
 	if ((flags & HTML_BF) && !weight)
 	    gvprintf(job, " font-weight=\"bold\"");
 	if ((flags & HTML_IF) && !style)

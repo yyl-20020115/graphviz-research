@@ -231,6 +231,7 @@ static void cc_dfs(Agraph_t * g, Agnode_t * n)
 
 static void cntCluster(Agraph_t * g, Agobj_t * sg, void *arg)
 {
+	g;
     char *sgname = agnameof((Agraph_t *) sg);
 
     if (strncmp(sgname, "cluster", 7) == 0)

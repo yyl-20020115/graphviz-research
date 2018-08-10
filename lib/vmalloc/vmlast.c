@@ -27,7 +27,7 @@ static void *lastalloc(Vmalloc_t * vm, size_t size)
     reg int local;
     size_t orgsize = 0;
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	GETLOCAL(vd, local);
 	if (ISLOCK(vd, local))
 	    return NIL(void *);
@@ -39,7 +39,7 @@ static void *lastalloc(Vmalloc_t * vm, size_t size)
     for (;;) {
 	for (last = NIL(Seg_t *), seg = vd->seg; seg;
 	     last = seg, seg = seg->next) {
-	    if (!(tp = seg->free) || (SIZE(tp) + sizeof(Head_t)) < size)
+	    if (0 == (tp = seg->free) || (SIZE(tp) + sizeof(Head_t)) < size)
 		continue;
 	    if (last) {
 		last->next = seg->next;
@@ -50,7 +50,7 @@ static void *lastalloc(Vmalloc_t * vm, size_t size)
 	}
 
 	/* there is no usable free space in region, try extending */
-	if ((tp = (*_Vmextend) (vm, size, NIL(Vmsearch_f)))) {
+	if ((tp = (*_Vmextend) (vm, size, NIL(Vmsearch_f)))!=0) {
 	    seg = SEG(tp);
 	    goto got_block;
 	} else if (vd->mode & VM_AGAIN)
@@ -88,7 +88,7 @@ static int lastfree(Vmalloc_t * vm, reg void * data)
 
     if (!data)
 	return 0;
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	if (ISLOCK(vd, 0))
 	    return -1;
 	SETLOCK(vd, 0);
@@ -146,7 +146,7 @@ static void *lastresize(Vmalloc_t * vm, reg void * data, size_t size,
 	return NIL(void *);
     }
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	if (ISLOCK(vd, 0))
 	    return NIL(void *);
 	SETLOCK(vd, 0);
@@ -176,7 +176,7 @@ static void *lastresize(Vmalloc_t * vm, reg void * data, size_t size,
 	s = -1;
     } else {
 	s = (Vmuchar_t *) BLOCK(seg->baddr) - (Vmuchar_t *) data;
-	if (!(tp = seg->free))
+	if (0 == (tp = seg->free))
 	    oldsize = s;
 	else {
 	    oldsize = (Vmuchar_t *) tp - (Vmuchar_t *) data;
@@ -205,7 +205,7 @@ static void *lastresize(Vmalloc_t * vm, reg void * data, size_t size,
 		data = NIL(void *);
 	    else {
 		tp = vd->free;
-		if (!(addr = KPVALLOC(vm, size, lastalloc))) {
+		if (0 == (addr = KPVALLOC(vm, size, lastalloc))) {
 		    vd->free = tp;
 		    data = NIL(void *);
 		} else {
@@ -305,7 +305,7 @@ static int lastcompact(Vmalloc_t * vm)
     for (seg = vd->seg; seg; seg = next) {
 	next = seg->next;
 
-	if (!(fp = seg->free))
+	if (0 == (fp = seg->free))
 	    continue;
 
 	seg->free = NIL(Block_t *);
@@ -337,7 +337,7 @@ static void *lastalign(Vmalloc_t * vm, size_t size, size_t align)
     if (size <= 0 || align <= 0)
 	return NIL(void *);
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	GETLOCAL(vd, local);
 	if (ISLOCK(vd, local))
 	    return NIL(void *);
@@ -350,7 +350,7 @@ static void *lastalign(Vmalloc_t * vm, size_t size, size_t align)
     align = MULTIPLE(align, ALIGN);
 
     s = size + align;
-    if (!(data = (Vmuchar_t *) KPVALLOC(vm, s, lastalloc)))
+    if (0 == (data = (Vmuchar_t *) KPVALLOC(vm, s, lastalloc)))
 	goto done;
 
     /* find the segment containing this block */

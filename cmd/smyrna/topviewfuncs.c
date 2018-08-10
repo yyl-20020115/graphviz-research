@@ -49,6 +49,7 @@ static xdot *parseXdotwithattrs(void *e)
 
 static void set_boundaries(Agraph_t * g, topview * t)
 {
+	t;
     Agnode_t *v;
     Agsym_t* pos_attr = GN_pos(g);
     glCompPoint pos;
@@ -665,6 +666,8 @@ static void renderEdgesFn (Agraph_t * g, edgefn ef, int skipSelected)
 
 static void edge_xdot (Agraph_t* g, Agedge_t* e, glCompColor c)
 {
+	c;
+	g;
     xdot * x;
     x=parseXdotwithattrs(e);
     draw_xdot(x,0);
@@ -932,6 +935,8 @@ void initSmGraph(Agraph_t * g,topview* rv)
 
 void renderSmGraph(Agraph_t * g,topview* t)
 {
+	g;
+
     /*
 	we like to have blending affect where node and edge  overlap
 	to achive this depth test should be turned off.
@@ -970,6 +975,8 @@ void renderSmGraph(Agraph_t * g,topview* t)
 
 void freeSmGraph(Agraph_t * g,topview* t)
 {
+	g;
+	t;
     return ;
 }
 

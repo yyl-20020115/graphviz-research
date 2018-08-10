@@ -105,10 +105,10 @@ static void xdot_str (GVJ_t *job, char* pfx, char* s)
  */
 static void xdot_trim_zeros (char* buf, int addSpace)
 {
-    char* dotp;
-    char* p;
+    char* dotp =0;
+    char* p = 0;
 
-    if ((dotp = strchr (buf,'.'))) {
+    if ((dotp = strchr (buf,'.')) != 0) {
 	p = dotp+1;
 	while (*p) p++;  // find end of string
 	p--;
@@ -398,7 +398,7 @@ xdot_begin_graph (graph_t *g, int s_arrows, int e_arrows, format_type id)
 	xd->version = 12;
 	xd->version_s = "1.2";
     }
-    else if ((s = agget(g, "xdotversion")) && s[0] && ((us = versionStr2Version(s)) > 10)) {
+    else if ((s = agget(g, "xdotversion")) != 0 && s[0] && ((us = versionStr2Version(s)) > 10)) {
 	xd->version = us;
 	xd->version_s = s;
     }

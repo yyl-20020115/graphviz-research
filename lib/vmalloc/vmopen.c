@@ -45,14 +45,14 @@ Vmalloc_t *vmopen(Vmdisc_t * disc, Vmethod_t * meth, int mode)
     reg Vmemory_f memoryf;
     reg int e;
 
-    if (!meth || !disc || !(memoryf = disc->memoryf))
+    if (!meth || !disc || 0 == (memoryf = disc->memoryf))
 	return NIL(Vmalloc_t *);
 
     GETPAGESIZE(_Vmpagesize);
 
     /* note that Vmalloc_t space must be local to process since that's
        where the meth&disc function addresses are going to be stored */
-    if (!(vm = (Vmalloc_t *) vmalloc(Vmheap, sizeof(Vmalloc_t))))
+    if (0 == (vm = (Vmalloc_t *) vmalloc(Vmheap, sizeof(Vmalloc_t))))
 	return NIL(Vmalloc_t *);
     vm->meth = *meth;
     vm->disc = disc;
@@ -90,7 +90,7 @@ Vmalloc_t *vmopen(Vmdisc_t * disc, Vmethod_t * meth, int mode)
 
     /* get space for region data */
     s = ROUND(sizeof(Vminit_t), incr);
-    if (!(addr = (Vmuchar_t *) (*memoryf) (vm, NIL(void *), 0, s, disc))) {
+    if (0 == (addr = (Vmuchar_t *) (*memoryf) (vm, NIL(void *), 0, s, disc))) {
 	vmfree(Vmheap, vm);
 	return NIL(Vmalloc_t *);
     }

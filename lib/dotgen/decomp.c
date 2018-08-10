@@ -150,7 +150,7 @@ search_component(stk_t* stk, graph_t * g, node_t * n)
 
 	push(stk, n);
 	ND_mark(n) = Cmark + 1;
-	while ((n = pop(stk))) {
+	while ((n = pop(stk)) != 0) {
 		if (ND_mark(n) == Cmark) continue;
 		add_to_component(g, n);
 		vec[0] = ND_out(n);
@@ -218,7 +218,7 @@ void decompose(graph_t * g, int pass)
 	for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
 		v = n;
 		
-		if ((pass > 0) && (subg = ND_clust(v)))
+		if ((pass > 0) && (subg = ND_clust(v)) != 0)
 			v = GD_rankleader(subg)[ND_rank(v)];
 		else if (v != UF_find(v))
 			continue;

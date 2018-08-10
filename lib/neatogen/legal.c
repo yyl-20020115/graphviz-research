@@ -221,7 +221,9 @@ static int find_intersection(vertex *l,
     double x, y;
     pointf p;
 	int i[3];
-    sgnarea(l, m, i);
+	input;
+	ilist;
+	sgnarea(l, m, i);
 
     if (i[2] > 0)
 	return 0;
@@ -284,7 +286,7 @@ find_ints(vertex vertex_list[],
     active_edge_list all;
     active_edge *new, *tempa;
     vertex *pt1, *pt2, *templ, **pvertex;
-
+	polygon_list;
     input->ninters = 0;
     all.first = all.final = 0;
     all.number = 0;

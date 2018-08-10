@@ -115,7 +115,7 @@ collapse_rankset(graph_t * g, graph_t * subg, int kind)
 	u = v = agfstnode(subg);
 	if (u) {
 		ND_ranktype(u) = kind;
-		while ((v = agnxtnode(subg, v))) {
+		while ((v = agnxtnode(subg, v)) != 0) {
 			UF_union(u, v);
 			ND_ranktype(v) = ND_ranktype(u);
 		}
@@ -343,16 +343,16 @@ minmax_edges(graph_t * g)
 	if (GD_maxset(g) != NULL)
 		GD_maxset(g) = UF_find(GD_maxset(g));
 
-	if ((n = GD_maxset(g))) {
+	if ((n = GD_maxset(g)) != 0) {
 		slen.y = (ND_ranktype(GD_maxset(g)) == SINKRANK);
-		while ((e = ND_out(n).list[0])) {
+		while ((e = ND_out(n).list[0]) != 0) {
 			assert(aghead(e) == UF_find(aghead(e)));
 			reverse_edge(e);
 		}
 	}
-	if ((n = GD_minset(g))) {
+	if ((n = GD_minset(g)) != 0) {
 		slen.x = (ND_ranktype(GD_minset(g)) == SOURCERANK);
-		while ((e = ND_in(n).list[0])) {
+		while ((e = ND_in(n).list[0]) != 0) {
 			assert(agtail(e) == UF_find(agtail(e)));
 			reverse_edge(e);
 		}
@@ -392,7 +392,7 @@ void rank1(graph_t * g)
 	int c;
 	char *s;
 
-	if ((s = agget(g, "nslimit1")))
+	if ((s = agget(g, "nslimit1")) != 0)
 		maxiter = atof(s) * agnnodes(g);
 	for (c = 0; c < GD_comp(g).size; c++) {
 		GD_nlist(g) = GD_comp(g).list[c];
@@ -409,7 +409,7 @@ graphSize(graph_t * g, int* nn, int* ne)
 	nnodes = nedges = 0;
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
 		nnodes++;
-		for (i = 0; (e = ND_out(n).list[i]); i++) {
+		for (i = 0; (e = ND_out(n).list[i]) != 0; i++) {
 			nedges++;
 		}
 	}
@@ -429,7 +429,7 @@ static void expand_ranksets(graph_t * g, aspect_t* asp)
 	int c;
 	node_t *n, *leader;
 
-	if ((n = agfstnode(g))) {
+	if ((n = agfstnode(g)) != 0) {
 		GD_minrank(g) = MAXSHORT;
 		GD_maxrank(g) = -1;
 		while (n) {
@@ -762,7 +762,7 @@ static int is_nonconstraint(edge_t * e)
 {
 	char *constr;
 
-	if (E_constr && (constr = agxget(e, E_constr))) {
+	if (E_constr && (constr = agxget(e, E_constr)) != 0) {
 		if (constr[0] && mapbool(constr) == FALSE)
 			return TRUE;
 	}
@@ -772,7 +772,7 @@ static int is_nonconstraint(edge_t * e)
 static node_t *find(node_t * n)
 {
 	node_t *set;
-	if ((set = ND_set(n))) {
+	if ((set = ND_set(n)) != 0) {
 		if (set != n)
 			set = ND_set(n) = find(set);
 	}
@@ -797,7 +797,7 @@ static node_t *union_all(graph_t * g)
 	if (!n)
 		return n;
 	leader = find(n);
-	while ((n = agnxtnode(g, n)))
+	while ((n = agnxtnode(g, n)) != 0)
 		union_one(leader, n);
 	return leader;
 }
@@ -944,8 +944,8 @@ static void merge(edge_t * e, int minlen, int weight)
 static void strong(graph_t * g, node_t * t, node_t * h, edge_t * orig)
 {
 	edge_t *e;
-	if ((e = agfindedge(g, t, h)) ||
-		(e = agfindedge(g, h, t)) || (e = agedge(g, t, h, 0, 1)))
+	if ((e = agfindedge(g, t, h)) != 0 ||
+		(e = agfindedge(g, h, t)) != 0 || (e = agedge(g, t, h, 0, 1)) != 0)
 		merge(e, ED_minlen(orig), ED_weight(orig));
 	else
 		agerr(AGERR, "ranking: failure to create strong constraint edge between nodes %s and %s\n",
@@ -962,7 +962,7 @@ static void weak(graph_t * g, node_t * t, node_t * h, edge_t * orig)
 	for (e = agfstin(g, t); e; e = agnxtin(g, e)) {
 		/* merge with existing weak edge (e,f) */
 		v = agtail(e);
-		if ((f = agfstout(g, v)) && (aghead(f) == h)) {
+		if ((f = agfstout(g, v)) != 0 && (aghead(f) == h)) {
 			return;
 		}
 	}
@@ -1112,9 +1112,9 @@ static void setMinMax(graph_t* g, int doRoot)
 	for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
 		v = ND_rank(n);
 		if (GD_maxrank(g) < v)
-			GD_maxrank(g) = v;
+			GD_maxrank(g) = (short)v;
 		if (GD_minrank(g) > v) {
-			GD_minrank(g) = v;
+			GD_minrank(g) = (short)v;
 			leader = n;
 		}
 	}
@@ -1234,14 +1234,17 @@ static void add_fast_edges(graph_t * g)
 
 static void my_init_graph(Agraph_t *g, Agobj_t *graph, void *arg)
 {
+	g;
 	int *sz = arg; agbindrec(graph, "level graph rec", sz[0], TRUE);
 }
 static void my_init_node(Agraph_t *g, Agobj_t *node, void *arg)
 {
+	g;
 	int *sz = arg; agbindrec(node, "level node rec", sz[1], TRUE);
 }
 static void my_init_edge(Agraph_t *g, Agobj_t *edge, void *arg)
 {
+	g;
 	int *sz = arg; agbindrec(edge, "level edge rec", sz[2], TRUE);
 }
 static Agcbdisc_t mydisc = { {my_init_graph,0,0}, {my_init_node,0,0}, {my_init_edge,0,0} };
@@ -1266,7 +1269,7 @@ void dot2_rank(graph_t * g, aspect_t* asp)
 
 	edgelabel_ranks(g);
 
-	if ((s = agget(g, "nslimit1")))
+	if ((s = agget(g, "nslimit1")) != 0)
 		maxiter = atof(s) * agnnodes(g);
 	else
 		maxiter = INT_MAX;
@@ -1284,7 +1287,7 @@ void dot2_rank(graph_t * g, aspect_t* asp)
 		initEdgeTypes(Xg);
 	}
 
-	if ((s = agget(g, "searchsize")))
+	if ((s = agget(g, "searchsize")) != 0)
 		ssize = atoi(s);
 	else
 		ssize = -1;

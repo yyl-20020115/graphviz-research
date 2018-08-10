@@ -623,6 +623,7 @@ static void drawtopfishedges(topview * t)
 
 static int get_active_frame(topview * t)
 {
+	t;
     gulong microseconds;
     gdouble seconds;
     int fr;
@@ -756,7 +757,7 @@ void infotopfisheye(topview * t, float *x, float *y, float *z)
 void changetopfishfocus(topview * t, float *x, float *y,
 			float *z, int num_foci)
 {
-
+	z;
     gvcolor_t cl;
     focus_t *fs = t->fisheyeParams.fs;
     int i;

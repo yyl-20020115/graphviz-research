@@ -101,9 +101,10 @@ static void
 computeHierarchyBoundaries(float *place, int n, int *ordering, int *levels,
 			   int num_levels, float *hierarchy_boundaries)
 {
+	n;
     int i;
     for (i = 0; i < num_levels; i++) {
-	hierarchy_boundaries[i] = place[ordering[levels[i] - 1]];
+		hierarchy_boundaries[i] = place[ordering[levels[i] - 1]];
     }
 }
 
@@ -438,7 +439,7 @@ int constrained_majorization_gradient_projection(CMajEnv * e,
     float *d = e->fArray4;
     float test = 0, tmptest = 0;
     float beta;
-
+	ndims;
     if (max_iterations == 0)
 	return 0;
 
@@ -556,7 +557,7 @@ int constrained_majorization_gradient_projection(CMajEnv * e,
 	    if (beta > 0 && beta < 1.0) {
 		place[i] = old_place[i] + beta * d[i];
 	    }
-	    tmptest = fabs(place[i] - old_place[i]);
+	    tmptest = (float)fabs(place[i] - old_place[i]);
 	    if (test < tmptest)
 		test = tmptest;
 	}
@@ -608,7 +609,8 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 				       float *hierarchy_boundaries,
 				       float levels_gap)
 {
-    float *place = coords[cur_axis];
+    float *_place = coords[cur_axis];
+	ndims;
     int i, j;
     int n = e->n;
     float **lap = e->A;
@@ -641,7 +643,7 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 	return 0;
     }
 
-    ensureMonotonicOrderingWithGaps(place, n, ordering, levels, num_levels,
+    ensureMonotonicOrderingWithGaps(_place, n, ordering, levels, num_levels,
 				    levels_gap);
     /* it is important that in 'ordering' nodes are always sorted by layers, 
      * and within a layer by 'place'
@@ -686,7 +688,7 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 	    /* compute a block 'ordering[left]...ordering[right-1]' of 
 	     * nodes connected with active constraints
 	     */
-	    cur_place = place[ordering[left]];
+	    cur_place = _place[ordering[left]];
 	    total_gap = 0;
 	    target_place = cur_place;
 	    gap[ordering[left]] = 0;
@@ -701,10 +703,10 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 		if (place[node] != target_place)
 #endif
 		    /* not sure if this is better than 'place[node]!=target_place' */
-		    if (fabs(place[node] - target_place) > 1e-9) {
+		    if (fabs(_place[node] - target_place) > 1e-9) {
 			break;
 		    }
-		gap[node] = place[node] - cur_place;
+		gap[node] = _place[node] - cur_place;
 	    }
 
 	    /* compute desired place of block's reference point according 
@@ -718,7 +720,7 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 		    if (j == node) {
 			continue;
 		    }
-		    new_place_i += lap_node[j] * place[j];
+		    new_place_i += lap_node[j] * _place[j];
 		}
 		desired_place[node] =
 		    new_place_i / (-lap_node[node]) - gap[node];
@@ -867,11 +869,11 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 		     */
 		    if (lev[ordering[right]] > lev[ordering[right - 1]]) {
 			upper_bound =
-			    place[ordering[right]] - levels_gap -
+			    _place[ordering[right]] - levels_gap -
 			    gap[block[block_len - 1]];
 		    } else {
 			upper_bound =
-			    place[ordering[right]] -
+			    _place[ordering[right]] -
 			    gap[block[block_len - 1]];
 		    }
 		}
@@ -892,20 +894,20 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 
 		/* move prefix: */
 		for (i = 0; i < best_i; i++) {
-		    place[block[i]] = prefix_des_place + gap[block[i]];
+		    _place[block[i]] = prefix_des_place + gap[block[i]];
 		}
 		/* move suffix: */
 		for (i = best_i; i < block_len; i++) {
-		    place[block[i]] = suffix_des_place + gap[block[i]];
+		    _place[block[i]] = suffix_des_place + gap[block[i]];
 		}
 
 
 		/* compute lower bound for next block */
 		if (right < n
 		    && lev[ordering[right]] > lev[ordering[right - 1]]) {
-		    lower_bound = place[block[block_len - 1]] + levels_gap;
+		    lower_bound = _place[block[block_len - 1]] + levels_gap;
 		} else {
-		    lower_bound = place[block[block_len - 1]];
+		    lower_bound = _place[block[block_len - 1]];
 		}
 
 
@@ -943,14 +945,14 @@ constrained_majorization_new_with_gaps(CMajEnv * e, float *b,
 		/* compute lower bound for next block */
 		if (right < n
 		    && lev[ordering[right]] > lev[ordering[right - 1]]) {
-		    lower_bound = place[block[block_len - 1]] + levels_gap;
+		    lower_bound = _place[block[block_len - 1]] + levels_gap;
 		} else {
-		    lower_bound = place[block[block_len - 1]];
+		    lower_bound = _place[block[block_len - 1]];
 		}
 	    }
 	}
-	orthog1f(n, place);	/* for numerical stability, keep ||place|| small */
-	computeHierarchyBoundaries(place, n, ordering, levels, num_levels,
+	orthog1f(n, _place);	/* for numerical stability, keep ||place|| small */
+	computeHierarchyBoundaries(_place, n, ordering, levels, num_levels,
 				   hierarchy_boundaries);
     }
 

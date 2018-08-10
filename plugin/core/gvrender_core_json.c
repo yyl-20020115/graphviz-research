@@ -93,7 +93,7 @@ static char* stoj (char* ins, state_t* sp)
 
     if (xb.buf == NULL)
 	agxbinit(&xb, BUFSIZ, NULL);
-    for (s = input; (c = *s); s++) {
+    for (s = input;0== (c = *s); s++) {
 	switch (c) {
 	case '"' :
 	    agxbput(&xb, "\\\"");
@@ -357,7 +357,7 @@ static void write_attrs(Agobj_t * obj, GVJ_t * job, state_t* sp)
     if (!sym) return;
 
     for (; sym; sym = agnxtattr(g, type, sym)) {
-	if (!(attrval = agxget(obj, sym))) continue;
+	if (0==(attrval = agxget(obj, sym))) continue;
 	if ((*attrval == '\0') && !streq(sym->name, "label")) continue;
 	gvputs(job, ",\n");
 	indent(job, sp->Level);

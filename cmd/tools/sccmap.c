@@ -161,7 +161,8 @@ static void nodeInduce(Agraph_t * g, Agraph_t* map)
 
 static int visit(Agnode_t * n, Agraph_t * map, Stack * sp, sccstate * st)
 {
-    unsigned int m, min;
+    //unsigned 
+	int m, min;
     Agnode_t *t;
     Agraph_t *subg;
     Agedge_t *e;

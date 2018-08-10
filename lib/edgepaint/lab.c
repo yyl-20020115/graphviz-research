@@ -357,7 +357,7 @@ color_rgb color_blend_rgb(char *color_list, real ratio, int *flag){
   int nc = 1, r, g, b, i, ii;
   char *cl;
   color_lab *lab = NULL;
-  color_rgb rgb;
+  color_rgb rgb = { 0.0,0.0,0.0 };
   double *dists = NULL;
   char *cp;
   color_lab clab;

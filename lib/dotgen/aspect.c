@@ -711,7 +711,7 @@ static void reduceMaxWidth2(graph_t * g)
 	double w = 0;
 	double targetWidth;
 	int fst;
-	nodeGroup_t *fstNdGrp;
+	nodeGroup_t *fstNdGrp = 0;
 	int ndem;
 	int p, q;
 	int limit;
@@ -2000,7 +2000,7 @@ setAspect(Agraph_t * g, aspect_t* adata)
 	adata->nextIter = 0;
 	adata->badGraph = 0;
 	return NULL;
-
+#if 0
 	if (rv < MIN_AR) rv = MIN_AR;
 	else if (rv > MAX_AR) rv = MAX_AR;
 	adata->targetAR = rv;
@@ -2012,4 +2012,5 @@ setAspect(Agraph_t * g, aspect_t* adata)
 		fprintf(stderr, "Target AR = %g\n", adata->targetAR);
 
 	return adata;
+#endif
 }

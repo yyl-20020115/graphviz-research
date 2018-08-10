@@ -65,10 +65,11 @@ static Image* gdiplus_loadimage(GVJ_t * job, usershape_t *us)
 
 static void gdiplus_loadimage_gdiplus(GVJ_t * job, usershape_t *us, boxf b, boolean filled)
 {
+	filled;
 	/* get the image from usershape details, then blit it to the context */
 	Image *image = gdiplus_loadimage(job, us);
 	if (image)
-		((Graphics *)job->context)->DrawImage(image, RectF(b.LL.x, b.LL.y, b.UR.x - b.LL.x, b.UR.y - b.LL.y));
+		((Graphics *)job->context)->DrawImage(image, RectF((Gdiplus::REAL)b.LL.x, (Gdiplus::REAL)b.LL.y, (Gdiplus::REAL)(b.UR.x - b.LL.x), (Gdiplus::REAL)( b.UR.y - b.LL.y)));
 }
 
 static gvloadimage_engine_t engine = {

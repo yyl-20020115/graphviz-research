@@ -103,12 +103,13 @@ static int comp_scan_points(const void *p, const void *q){
     }
     return 0;
   }
-  return 0;
+//  return 0;
 }
 
 
 void NodeDest(void* a) {
   /*  free((int*)a);*/
+	a;
 }
 
 
@@ -127,11 +128,11 @@ void NodePrint(const void* a) {
 }
 
 void InfoPrint(void* a) {
-  ;
+  a;
 }
 
 void InfoDest(void *a){
-  ;
+  a;
 }
 
 static SparseMatrix get_overlap_graph(int dim, int n, real *x, real *width, int check_overlap_only){
@@ -396,7 +397,7 @@ OverlapSmoother OverlapSmoother_new(SparseMatrix A, int m,
   }
 
   sm->tol_cg = 0.01;
-  sm->maxit_cg = sqrt((double) A->m);
+  sm->maxit_cg = (int)sqrt((double) A->m);
 
   lambda = sm->lambda = N_GNEW(m,real);
   for (i = 0; i < m; i++) sm->lambda[i] = lambda0;

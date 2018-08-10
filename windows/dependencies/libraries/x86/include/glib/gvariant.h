@@ -299,7 +299,7 @@ struct _GVariantBuilder {
   /*< private >*/
   union
   {
-    struct {
+    struct u{
       gsize partial_magic;
       const GVariantType *type;
       gsize y[14];

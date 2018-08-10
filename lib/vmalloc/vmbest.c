@@ -209,11 +209,11 @@ static Block_t *bestsearch(Vmdata_t * vd, reg size_t size,
     Block_t link;
 
     /* extracting a tiniest block from its list */
-    if ((root = wanted) && size == TINYSIZE) {
+    if ((root = wanted)!=0 && size == TINYSIZE) {
 	reg Seg_t *seg;
 
 	l = TLEFT(root);
-	if ((r = LINK(root)))
+	if ((r = LINK(root))!=0)
 	    TLEFT(r) = l;
 	if (l)
 	    LINK(l) = r;
@@ -239,13 +239,13 @@ static Block_t *bestsearch(Vmdata_t * vd, reg size_t size,
 
     /* find the right one to delete */
     l = r = &link;
-    if ((root = vd->root))
+    if ((root = vd->root)!=0)
 	do {
 	    /**/ ASSERT(!ISBITS(size) && !ISBITS(SIZE(root)));
 	    if (size == (s = SIZE(root)))
 		break;
 	    if (size < s) {
-		if ((t = LEFT(root))) {
+		if ((t = LEFT(root))!=0) {
 		    if (size <= (s = SIZE(t))) {
 			RROTATE(root, t);
 			if (size == s)
@@ -258,7 +258,7 @@ static Block_t *bestsearch(Vmdata_t * vd, reg size_t size,
 		}
 		RLINK(r, root);
 	    } else {
-		if ((t = RIGHT(root))) {
+		if ((t = RIGHT(root))!=0) {
 		    if (size >= (s = SIZE(t))) {
 			LROTATE(root, t);
 			if (size == s)
@@ -272,7 +272,7 @@ static Block_t *bestsearch(Vmdata_t * vd, reg size_t size,
 		LLINK(l, root);
 	    }
 	     /**/ ASSERT(root != t);
-	} while ((root = t));
+	} while ((root = t)!=0);
 
     if (root) {			/* found it, now isolate it */
 	RIGHT(l) = LEFT(root);
@@ -282,20 +282,20 @@ static Block_t *bestsearch(Vmdata_t * vd, reg size_t size,
 	RIGHT(l) = NIL(Block_t *);
 
 	/* grab the least one from the right tree */
-	if ((root = LEFT(&link))) {
-	    while ((t = LEFT(root)))
+	if ((root = LEFT(&link))!=0) {
+	    while ((t = LEFT(root))!=0)
 		RROTATE(root, t);
 	    LEFT(&link) = RIGHT(root);
 	}
     }
 
-    if (root && (r = LINK(root))) {	/* head of a link list, use next one for root */
+    if (root && (r = LINK(root))!=0) {	/* head of a link list, use next one for root */
 	LEFT(r) = RIGHT(&link);
 	RIGHT(r) = LEFT(&link);
-    } else if (!(r = LEFT(&link)))
+    } else if (0 == (r = LEFT(&link)))
 	r = RIGHT(&link);
     else {			/* graft left tree to right tree */
-	while ((t = LEFT(r)))
+	while ((t = LEFT(r))!=0)
 	    RROTATE(r, t);
 	LEFT(r) = RIGHT(&link);
     }
@@ -317,7 +317,7 @@ static int bestreclaim(reg Vmdata_t * vd, Block_t * wanted, int c)
 
      /**/ ASSERT(!vd->root || vmchktree(vd->root));
 
-    if ((fp = vd->free)) {
+    if ((fp = vd->free)!=0) {
 	LINK(fp) = *(cache = CACHE(vd) + S_CACHE);
 	*cache = fp;
 	vd->free = NIL(Block_t *);
@@ -328,7 +328,7 @@ static int bestreclaim(reg Vmdata_t * vd, Block_t * wanted, int c)
     for (n = S_CACHE; n >= c; --n) {
 	list = *(cache = CACHE(vd) + n);
 	*cache = NIL(Block_t *);
-	while ((fp = list)) {	/* Note that below here we allow ISJUNK blocks to be
+	while ((fp = list)!=0) {	/* Note that below here we allow ISJUNK blocks to be
 				 ** forward-merged even though they are not removed from
 				 ** the list immediately. In this way, the list is
 				 ** scanned only once. It works because the LINK and SIZE
@@ -423,7 +423,7 @@ static int bestreclaim(reg Vmdata_t * vd, Block_t * wanted, int c)
 
 	    /* don't put in free tree yet because they may be merged soon */
 	    np = &tree;
-	    if ((LINK(fp) = LINK(np)))
+	    if ((LINK(fp) = LINK(np))!=0)
 		LEFT(LINK(fp)) = fp;
 	    LINK(np) = fp;
 	    LEFT(fp) = np;
@@ -440,7 +440,7 @@ static int bestreclaim(reg Vmdata_t * vd, Block_t * wanted, int c)
 	 /**/ ASSERT(ISBUSY(SIZE(NEXT(fp))));
 	 /**/ ASSERT(ISPFREE(SIZE(NEXT(fp))));
 	LEFT(fp) = RIGHT(fp) = LINK(fp) = NIL(Block_t *);
-	if (!(np = vd->root)) {	/* inserting into an empty tree   */
+	if (0 == (np = vd->root)) {	/* inserting into an empty tree   */
 	    vd->root = fp;
 	    continue;
 	}
@@ -449,7 +449,7 @@ static int bestreclaim(reg Vmdata_t * vd, Block_t * wanted, int c)
 	while (1) {		/* leaf insertion */
 	    /**/ ASSERT(np != fp);
 	    if ((s = SIZE(np)) > size) {
-		if ((t = LEFT(np))) {
+		if ((t = LEFT(np))!=0) {
 		    /**/ ASSERT(np != t);
 		    np = t;
 		} else {
@@ -457,7 +457,7 @@ static int bestreclaim(reg Vmdata_t * vd, Block_t * wanted, int c)
 		    break;
 		}
 	    } else if (s < size) {
-		if ((t = RIGHT(np))) {
+		if ((t = RIGHT(np))!=0) {
 		    /**/ ASSERT(np != t);
 		    np = t;
 		} else {
@@ -465,7 +465,7 @@ static int bestreclaim(reg Vmdata_t * vd, Block_t * wanted, int c)
 		    break;
 		}
 	    } else {		/* s == size */
-		if ((t = LINK(np))) {
+		if ((t = LINK(np))!=0) {
 		    LINK(fp) = t;
 		    LEFT(t) = fp;
 		}
@@ -495,7 +495,7 @@ static void *bestalloc(Vmalloc_t * vm, reg size_t size)
 
      /**/ COUNT(N_alloc);
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	GETLOCAL(vd, local);
 	if (ISLOCK(vd, local))
 	    return NIL(void *);
@@ -514,14 +514,14 @@ static void *bestalloc(Vmalloc_t * vm, reg size_t size)
     /* for ANSI requirement that malloc(0) returns non-NULL pointer */
     size = size <= TINYSIZE ? TINYSIZE : ROUND(size, ALIGN);
 
-    if (size < MAXCACHE && (tp = *(cache = CACHE(vd) + INDEX(size)))) {
+    if (size < MAXCACHE && (tp = *(cache = CACHE(vd) + INDEX(size)))!=0) {
 	*cache = LINK(tp);
 	CLRJUNK(SIZE(tp));
 	 /**/ COUNT(N_cache);
 	goto done;
     }
 
-    if ((tp = vd->free)) {	/* allocate from last free piece */
+    if ((tp = vd->free)!=0) {	/* allocate from last free piece */
 	/**/ ASSERT(ISBUSY(SIZE(tp)));
 	 /**/ ASSERT(ISJUNK(SIZE(tp)));
 	 /**/ COUNT(N_last);
@@ -548,7 +548,7 @@ static void *bestalloc(Vmalloc_t * vm, reg size_t size)
     for (;;) {
 	for (;;) {		/* best-fit - more or less */
 	    for (s = INDEX(size); s < S_TINY; ++s) {
-		if ((tp = TINY(vd)[s])) {
+		if ((tp = TINY(vd)[s])!=0) {
 		    REMOVE(vd, tp, s, np, bestsearch);
 		    CLRPFREE(SIZE(NEXT(tp)));
 		    goto got_block;
@@ -557,14 +557,14 @@ static void *bestalloc(Vmalloc_t * vm, reg size_t size)
 
 	    if (CACHE(vd)[S_CACHE])	/* reclaim big pieces */
 		bestreclaim(vd, NIL(Block_t *), S_CACHE);
-	    if (vd->root && (tp = bestsearch(vd, size, NIL(Block_t *))))
+	    if (vd->root && (tp = bestsearch(vd, size, NIL(Block_t *)))!=0)
 		goto got_block;
 	    if (bestreclaim(vd, NIL(Block_t *), 0) == 0)
 		break;
 	}
 
 	 /**/ ASSERT(!vd->free);
-	if ((tp = vd->wild) && SIZE(tp) >= size) {
+	if ((tp = vd->wild)!=0 && SIZE(tp) >= size) {
 	    /**/ ASSERT(vmcheck(vd, size, 1));
 	     /**/ COUNT(N_wild);
 	    vd->wild = NIL(Block_t *);
@@ -572,7 +572,7 @@ static void *bestalloc(Vmalloc_t * vm, reg size_t size)
 	}
 
 	/**/ ASSERT(vmcheck(vd, size, 0));
-	if ((tp = (*_Vmextend) (vm, size, bestsearch)))
+	if ((tp = (*_Vmextend) (vm, size, bestsearch))!=0)
 	    goto got_block;
 	else if (vd->mode & VM_AGAIN)
 	    vd->mode &= ~VM_AGAIN;
@@ -637,7 +637,7 @@ static long bestaddr(Vmalloc_t * vm, void * addr)
     b = 0;
     endb = 0;
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	GETLOCAL(vd, local);
 	if (ISLOCK(vd, local))
 	    return -1L;
@@ -694,7 +694,7 @@ static int bestfree(Vmalloc_t * vm, void * data)
     if (!data)			/* ANSI-ism */
 	return 0;
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	if (ISLOCK(vd, 0))
 	    return -1;
 	if (KPVADDR(vm, data, bestaddr) != 0)
@@ -752,7 +752,7 @@ static void *bestresize(Vmalloc_t * vm, void * data, reg size_t size,
      /**/ COUNT(N_resize);
 
     if (!data) {
-	if ((data = bestalloc(vm, size))) {
+	if ((data = bestalloc(vm, size))!=0) {
 	    oldsize = 0;
 	    size = size <= TINYSIZE ? TINYSIZE : ROUND(size, ALIGN);
 	}
@@ -763,7 +763,7 @@ static void *bestresize(Vmalloc_t * vm, void * data, reg size_t size,
 	return NIL(void *);
     }
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	GETLOCAL(vd, local);
 	if (ISLOCK(vd, local))
 	    return NIL(void *);
@@ -846,7 +846,7 @@ static void *bestresize(Vmalloc_t * vm, void * data, reg size_t size,
 	    ed = (int *) data;
 	    if (size < ((s & ~BITS) + bs))
 		size = (s & ~BITS) + bs;
-	    if ((data = KPVALLOC(vm, size, bestalloc))) {
+	    if ((data = KPVALLOC(vm, size, bestalloc))!=0) {
 		if (type & VM_RSCOPY) {	/* old data must be copied */
 		    d = (int *) data;
 		    INTCOPY(d, ed, s);
@@ -855,7 +855,7 @@ static void *bestresize(Vmalloc_t * vm, void * data, reg size_t size,
 		SETJUNK(SIZE(rp));
 		LINK(rp) = *(cache = CACHE(vd) + S_CACHE);
 		*cache = rp;
-		if ((rp = vd->free)) {
+		if ((rp = vd->free)!=0) {
 		    vd->free = NIL(Block_t *);
 		    LINK(rp) = *cache;
 		    *cache = rp;
@@ -1003,7 +1003,7 @@ static void *bestalign(Vmalloc_t * vm, size_t size, size_t align)
     if (size <= 0 || align <= 0)
 	return NIL(void *);
 
-    if (!(local = vd->mode & VM_TRUST)) {
+    if (0 == (local = vd->mode & VM_TRUST)) {
 	GETLOCAL(vd, local);
 	if (ISLOCK(vd, local))
 	    return NIL(void *);
@@ -1028,7 +1028,7 @@ static void *bestalign(Vmalloc_t * vm, size_t size, size_t align)
     bestreclaim(vd, NIL(Block_t *), 0);
 
     s = size + 2 * (align + sizeof(Head_t) + extra);
-    if (!(data = (Vmuchar_t *) KPVALLOC(vm, s, bestalloc)))
+    if (0 == (data = (Vmuchar_t *) KPVALLOC(vm, s, bestalloc)))
 	goto done;
 
     tp = BLOCK(data);

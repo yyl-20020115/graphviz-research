@@ -118,6 +118,7 @@ int static get_drag(const char *s)
 
 void load_mouse_actions(char *modefile, ViewInfo * v)
 {
+	modefile;
 /*#define MM_PAN					0
 #define MM_ZOOM					1
 #define MM_ROTATE				2

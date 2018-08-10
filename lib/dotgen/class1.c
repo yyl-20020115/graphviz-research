@@ -24,7 +24,7 @@ int nonconstraint_edge(edge_t * e)
 {
 	char *constr;
 
-	if (E_constr && (constr = agxget(e, E_constr))) {
+	if (E_constr && (constr = agxget(e, E_constr)) != 0) {
 		if (constr[0] && mapbool(constr) == FALSE)
 			return TRUE;
 	}
@@ -102,7 +102,7 @@ void class1(graph_t * g)
 				continue;
 			}
 
-			if ((rep = find_fast_edge(t, h)))
+			if ((rep = find_fast_edge(t, h)) != 0)
 				merge_oneway(e, rep);
 			else
 				virtual_edge(t, h, e);

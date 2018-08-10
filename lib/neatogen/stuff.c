@@ -199,7 +199,7 @@ static double setEdgeLen(graph_t * G, node_t * np, Agsym_t* lenx, double dfltlen
     int err;
 
     for (ep = agfstout(G, np); ep; ep = agnxtout(G, ep)) {
-	if ((err = lenattr(ep, lenx, &len))) {
+	if ((err = lenattr(ep, lenx, &len)) != 0) {
 	    if (err == 2) agerr(AGPREV, " in %s - setting to %.02f\n", agnameof(G), dfltlen);
 	    len = dfltlen;
 	}
@@ -250,7 +250,7 @@ int scan_graph_mode(graph_t * G, int mode)
     if (mode == MODE_KK) {
 	Epsilon = .0001 * nV;
 	getdouble(G, "epsilon", &Epsilon);
-	if ((str = agget(G->root, "Damping")))
+	if ((str = agget(G->root, "Damping"))!=0)
 	    Damping = atof(str);
 	else
 	    Damping = .99;
@@ -340,7 +340,7 @@ void initial_positions(graph_t * G, int nG)
 	once = 1;
     }
 
-    for (i = 0; (np = GD_neato_nlist(G)[i]); i++) {
+    for (i = 0; (np = GD_neato_nlist(G)[i]) != 0; i++) {
 	if (hasPos(np))
 	    continue;
 	randompos(np, 1);
@@ -364,7 +364,7 @@ void diffeq_model(graph_t * G, int nG)
     for (i = 0; i < nG; i++) {
 	for (j = 0; j < i; j++) {
 	    f = Spring_coeff / (D[i][j] * D[i][j]);
-	    if ((e = agfindedge(G, GD_neato_nlist(G)[i], GD_neato_nlist(G)[j])))
+	    if ((e = agfindedge(G, GD_neato_nlist(G)[i], GD_neato_nlist(G)[j])) != 0)
 		f = f * ED_factor(e);
 	    K[i][j] = K[j][i] = f;
 	}
@@ -375,7 +375,7 @@ void diffeq_model(graph_t * G, int nG)
 	for (k = 0; k < Ndim; k++)
 	    GD_sum_t(G)[i][k] = 0.0;
 
-    for (i = 0; (vi = GD_neato_nlist(G)[i]); i++) {
+    for (i = 0; (vi = GD_neato_nlist(G)[i]) != 0; i++) {
 	for (j = 0; j < nG; j++) {
 	    if (i == j)
 		continue;
@@ -428,7 +428,7 @@ void solve_model(graph_t * G, int nG)
 
     Epsilon2 = Epsilon * Epsilon;
 
-    while ((np = choose_node(G, nG))) {
+    while ((np = choose_node(G, nG)) != 0) {
 	move_node(G, nG, np);
     }
     if (Verbose) {
@@ -690,14 +690,14 @@ void s1(graph_t * G, node_t * node)
     int t;
     double f;
 
-    for (t = 0; (v = GD_neato_nlist(G)[t]); t++)
+    for (t = 0; (v = GD_neato_nlist(G)[t]) != 0; t++)
 	ND_dist(v) = Initial_dist;
     Src = node;
     ND_dist(Src) = 0;
     ND_hops(Src) = 0;
     neato_enqueue(Src);
 
-    while ((v = neato_dequeue())) {
+    while ((v = neato_dequeue()) != 0) {
 	if (v != Src)
 	    make_spring(G, Src, v, ND_dist(v));
 	for (e = agfstedge(G, v); e; e = agnxtedge(G, e, v)) {

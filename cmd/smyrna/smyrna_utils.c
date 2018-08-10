@@ -200,7 +200,7 @@ float l_float(void *obj, Agsym_t * attr, float def)
     p = agxget(obj, attr);
     if (!p || p[0] == '\0')
 	return def;
-    return atof(p);
+    return (float)atof(p);
 }
 int getAttrBool(Agraph_t* g,void* obj,char* attr_name,int def)
 {

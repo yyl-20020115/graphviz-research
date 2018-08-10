@@ -425,7 +425,7 @@ static void
 emitNode (Agraph_t* G, Agnode_t* n, FILE* _outFile)
 {
     agbindrec (n, "nodeinfo", sizeof(Agnodeinfo_t), TRUE);
-    fprintf (_outFile, "  node [\n    id %lu\n    name \"%s\"\n", id, (unsigned long)agnameof(n));
+    fprintf (_outFile, "  node [\n    id %lu\n    name \"%s\"\n",(unsigned long) id, agnameof(n));
     ID(n) = id++;
     emitNodeAttrs (G, n, _outFile, 2);
     fprintf (_outFile, "  ]\n");

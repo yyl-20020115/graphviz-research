@@ -1,4 +1,7 @@
 /* vim:set shiftwidth=4 ts=4: */
+#ifdef MAXSHORT
+#undef MAXSHORT
+#endif
 
 #include <spinehdr.h>
 #include <subset.h>
@@ -196,7 +199,7 @@ reweightEdge (Agedge_t* e, Dt_t* nbr0, Dt_t* nbr1, Agedge_t*** nbrs, int verbose
 		}
 	}
 	
-	ED_wt(e) = maxwt;
+	ED_wt(e) =(float) maxwt;
 	if (verbose > 1)
 		fprintf(stderr, "%s : %s %f %ld/%ld %f\n",
 			agnameof(tail), agnameof(head), maxwt, maxi, MAX(len0, len1), oldwt);

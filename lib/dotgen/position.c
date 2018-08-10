@@ -85,7 +85,7 @@ connectGraph(graph_t* g)
 		for (i = 0; i < rp->n; i++) {
 			tp = rp->v[i];
 			if (ND_save_out(tp).list) {
-				for (j = 0; (e = ND_save_out(tp).list[j]); j++) {
+				for (j = 0; (e = ND_save_out(tp).list[j]) != 0; j++) {
 					if ((ND_rank(aghead(e)) > r) || (ND_rank(agtail(e)) > r)) {
 						found = TRUE;
 						break;
@@ -94,7 +94,7 @@ connectGraph(graph_t* g)
 				if (found) break;
 			}
 			if (ND_save_in(tp).list) {
-				for (j = 0; (e = ND_save_in(tp).list[j]); j++) {
+				for (j = 0; (e = ND_save_in(tp).list[j]) != 0; j++) {
 					if ((ND_rank(agtail(e)) > r) || (ND_rank(aghead(e)) > r)) {
 						found = TRUE;
 						break;
@@ -146,7 +146,7 @@ static int nsiter2(graph_t * g)
 	int maxiter = INT_MAX;
 	char *s;
 
-	if ((s = agget(g, "nslimit")))
+	if ((s = agget(g, "nslimit")) != 0)
 		maxiter = atof(s) * agnnodes(g);
 	return maxiter;
 }
@@ -158,7 +158,7 @@ static int go(node_t * u, node_t * v)
 
 	if (u == v)
 		return TRUE;
-	for (i = 0; (e = ND_out(u).list[i]); i++) {
+	for (i = 0; (e = ND_out(u).list[i]) != 0; i++) {
 		if (go(aghead(e), v))
 			return TRUE;
 	}
@@ -248,7 +248,7 @@ make_LR_constraints(graph_t * g)
 					 * positioning but may also affect interrank spacing.
 					 */
 				sw = 0;
-				for (k = 0; (e = ND_other(u).list[k]); k++) {
+				for (k = 0; (e = ND_other(u).list[k]) != 0; k++) {
 					if (agtail(e) == aghead(e)) {
 						sw += selfRightSpace(e);
 					}
@@ -263,7 +263,7 @@ make_LR_constraints(graph_t * g)
 			}
 
 			/* constraints from labels of flat edges on previous rank */
-			if ((e = (edge_t*)ND_alg(u))) {
+			if ((e = (edge_t*)ND_alg(u)) != 0) {
 				e0 = ND_save_out(u).list[0];
 				e1 = ND_save_out(u).list[1];
 				if (ND_order(aghead(e0)) > ND_order(aghead(e1))) {
@@ -299,7 +299,7 @@ make_LR_constraints(graph_t * g)
 				width = ND_rw(t0) + ND_lw(h0);
 				m0 = ED_minlen(e) * GD_nodesep(g) + width;
 
-				if ((e0 = find_fast_edge(t0, h0))) {
+				if ((e0 = find_fast_edge(t0, h0)) != 0) {
 					/* flat edge between adjacent neighbors
 							 * ED_dist contains the largest label width.
 							 */
@@ -333,7 +333,7 @@ static void make_edge_pairs(graph_t * g)
 
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
 		if (ND_save_out(n).list)
-			for (i = 0; (e = ND_save_out(n).list[i]); i++) {
+			for (i = 0; (e = ND_save_out(n).list[i]) != 0; i++) {
 				sn = virtual_node(g);
 				ND_node_type(sn) = SLACKNODE;
 				m0 = (ED_head_port(e).p.x - ED_tail_port(e).p.x);
@@ -369,7 +369,7 @@ static void contain_clustnodes(graph_t * g)
 
 	if (g != dot_root(g)) {
 		contain_nodes(g);
-		if ((e = find_fast_edge(GD_ln(g), GD_rn(g))))	/* maybe from lrvn()?*/
+		if ((e = find_fast_edge(GD_ln(g), GD_rn(g))) != 0)	/* maybe from lrvn()?*/
 			ED_weight(e) += 128;
 		else
 			make_aux_edge(GD_ln(g), GD_rn(g), 1, 128);	/* clust compaction edge */
@@ -556,7 +556,7 @@ static void remove_aux_edges(graph_t * g)
 	edge_t *e;
 
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
-		for (i = 0; (e = ND_out(n).list[i]); i++) {
+		for (i = 0; (e = ND_out(n).list[i]) != 0; i++) {
 			free(e->base.data);
 			free(e);
 		}
@@ -772,7 +772,7 @@ static void set_ycoords(graph_t * g)
 
 			/* have to look for high self-edge labels, too */
 			if (ND_other(n).list)
-				for (j = 0; (e = ND_other(n).list[j]); j++) {
+				for (j = 0; (e = ND_other(n).list[j]) != 0; j++) {
 					if (agtail(e) == aghead(e)) {
 						if (ED_label(e))
 							ht2 = MAX(ht2, ED_label(e)->dimen.y / 2);
@@ -786,7 +786,7 @@ static void set_ycoords(graph_t * g)
 				rank[r].pht1 = rank[r].ht1 = ht2;
 
 			/* update nearest enclosing cluster rank ht */
-			if ((clust = ND_clust(n))) {
+			if ((clust = ND_clust(n)) != 0) {
 				int yoff = (clust == g ? 0 : late_int(clust, G_margin, CL_OFFSET, 0));
 				if (ND_rank(n) == GD_minrank(clust))
 					GD_ht2(clust) = MAX(GD_ht2(clust), ht2 + yoff);
@@ -1159,7 +1159,7 @@ static void expand_leaves(graph_t * g)
 		if (ND_outleaf(n))
 			do_leaves(g, ND_outleaf(n));
 		if (ND_other(n).list)
-			for (i = 0; (e = ND_other(n).list[i]); i++) {
+			for (i = 0; (e = ND_other(n).list[i]) != 0; i++) {
 
 				//NOTICE: head - tail?
 				if ((d = ND_rank(aghead(e)) - ND_rank(aghead(e))) == 0)

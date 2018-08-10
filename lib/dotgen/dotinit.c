@@ -26,7 +26,7 @@ graphSize(graph_t * g, int* nn, int* ne)
 	nnodes = nedges = 0;
 	for (n = GD_nlist(g); n; n = ND_next(n)) {
 		nnodes++;
-		for (i = 0; (e = ND_out(n).list[i]); i++) {
+		for (i = 0; (e = ND_out(n).list[i]) != 0; i++) {
 			nedges++;
 		}
 	}

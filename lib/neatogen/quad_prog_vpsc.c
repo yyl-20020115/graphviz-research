@@ -73,7 +73,7 @@ constrained_majorization_vpsc(CMajEnvVPSC * e, float *b, float *place,
 	/* fprintf(stderr,"  calling satisfyVPSC...\n"); */
 	satisfyVPSC(e->vpsc);
 	for (i = 0; i < n; i++) {
-	    place[i] = getVariablePos(e->vs[i]);
+	    place[i] = (float)getVariablePos(e->vs[i]);
 	    /* fprintf(stderr,"vs[%d]=%f\n",i,place[i]); */
 	}
 	/* fprintf(stderr,"    done.\n"); */
@@ -127,7 +127,7 @@ constrained_majorization_vpsc(CMajEnvVPSC * e, float *b, float *place,
 	    }
 	    satisfyVPSC(e->vpsc);
 	    for (i = 0; i < n; i++) {
-		place[i] = getVariablePos(e->vs[i]);
+		place[i] = (float) getVariablePos(e->vs[i]);
 	    }
 	}
 	/* set place to the intersection of old_place-g and boundary and 
@@ -158,7 +158,7 @@ constrained_majorization_vpsc(CMajEnvVPSC * e, float *b, float *place,
 	    if (beta > 0 && beta < 1.0) {
 		place[i] = old_place[i] + beta * d[i];
 	    }
-	    test += fabs(place[i] - old_place[i]);
+	    test += (float)fabs(place[i] - old_place[i]);
 	}
 #ifdef CONMAJ_LOGGING
 	float stress = 0;
@@ -397,7 +397,7 @@ void generateNonoverlapConstraints(CMajEnvVPSC * e,
 	/* grow a bit in the x dimension, so that if overlap is resolved
 	 * horizontally then it won't be considered overlapping vertically
 	 */
-	nsizeScale *= 1.0001;
+	nsizeScale *= 1.0001f;
     }
     for (i = 0; i < n; i++) {
 	bb[i].LL.x =
@@ -619,12 +619,12 @@ void removeoverlaps(int n, float **coords, ipsep_options * opt)
     generateNonoverlapConstraints(e, 1.0, coords, 0, TRUE, opt);
     solveVPSC(e->vpsc);
     for (i = 0; i < n; i++) {
-	coords[0][i] = getVariablePos(e->vs[i]);
+	coords[0][i] = (float)getVariablePos(e->vs[i]);
     }
     generateNonoverlapConstraints(e, 1.0, coords, 1, FALSE, opt);
     solveVPSC(e->vpsc);
     for (i = 0; i < n; i++) {
-	coords[1][i] = getVariablePos(e->vs[i]);
+	coords[1][i] = (float)getVariablePos(e->vs[i]);
     }
     deleteCMajEnvVPSC(e);
 }

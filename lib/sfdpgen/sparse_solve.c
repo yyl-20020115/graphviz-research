@@ -165,7 +165,7 @@ static real conjugate_gradient(Operator A, Operator precon, int n, real *x, real
   real* (*Ax)(Operator o, real *in, real *out) = A->Operator_apply;
   real* (*Minvx)(Operator o, real *in, real *out) = precon->Operator_apply;
   int iter = 0;
-
+  flag;
   z = N_GNEW(n,real);
   r = N_GNEW(n,real);
   p = N_GNEW(n,real);
@@ -255,7 +255,7 @@ real* jacobi(SparseMatrix A, int dim, real *x0, real *rhs, int maxit, int *flag)
   b = MALLOC(sizeof(real)*n);
   assert(A->type = MATRIX_TYPE_REAL);
   ia = A->ia; ja = A->ja; a = (real*) A->a;
-
+  flag;
   for (k = 0; k < dim; k++){
     for (i = 0; i < n; i++) {
       x[i] = x0[i*dim+k];

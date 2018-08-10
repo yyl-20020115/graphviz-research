@@ -146,7 +146,7 @@ static void mapGraphs(graph_t * g, graph_t * cg, distfn dist)
 		    elist_append(ce, ND_out(t));
 		    elist_append(ce, ND_in(h));
 		}
-		ED_minlen(ce) = delta;
+		ED_minlen(ce) =(unsigned short) delta;
 	    }
 	}
     }
@@ -252,7 +252,7 @@ static graph_t *mkNConstraintG(graph_t * g, Dt_t * list,
 	        e = agedge(cg, p->cnode, nxp->cnode, NULL, 1);
 		agbindrec(e, "Agedgeinfo_t", sizeof(Agedgeinfo_t), TRUE);   // edge custom data
 		assert (delta <= 0xFFFF);
-		ED_minlen(e) = delta;
+		ED_minlen(e) = (unsigned short)delta;
 		ED_weight(e) = 1;
 	    }
 	    if (e && agfindedge(g,p->np, nxp->np)) {
@@ -295,6 +295,7 @@ static graph_t *mkNConstraintG(graph_t * g, Dt_t * list,
 static graph_t *mkConstraintG(graph_t * g, Dt_t * list,
 			      intersectfn intersect, distfn dist)
 {
+	g;
     nitem *p;
     nitem *nxt = NULL;
     nitem *nxp;
@@ -580,12 +581,12 @@ static void initItem(node_t * n, nitem * p, expand_t margin)
     box b;
 
     if (margin.doAdd) {
-	w2 = SCALE * (POINTS(ND_width(n)/2.0) + margin.x);
-	h2 = SCALE * (POINTS(ND_height(n)/2.0) + margin.y);
+	w2 = (int)(SCALE * (POINTS(ND_width(n)/2.0) + margin.x));
+	h2 = (int)(SCALE * (POINTS(ND_height(n)/2.0) + margin.y));
     }
     else {
-	w2 = POINTS(margin.x * SCALE2 * ND_width(n));
-	h2 = POINTS(margin.y * SCALE2 * ND_height(n));
+	w2 = (int)(POINTS(margin.x * SCALE2 * ND_width(n)));
+	h2 = (int)(POINTS(margin.y * SCALE2 * ND_height(n)));
     }
 
     b.LL.x = x - w2;
@@ -882,8 +883,8 @@ int scAdjust(graph_t * g, int equal)
     margin = sepFactor (g);
     if (margin.doAdd) {
 	/* we use inches below */
-	margin.x = PS2INCH(margin.x);
-	margin.y = PS2INCH(margin.y);
+		margin.x = (float)PS2INCH(margin.x);
+		margin.y = (float)PS2INCH(margin.y);
     }
 
     for (n = agfstnode(g); n; n = agnxtnode(g, n)) {

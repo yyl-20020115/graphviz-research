@@ -367,6 +367,7 @@ static int make_coarse_graph(v_data * graph,	/* array of vtx data for graph */
     int i, j, cv, v, neighbor, cv_nedges;
     int cnedges = 0;		/* number of edges in coarsened graph */
     v_data *cgraph;		/* coarsened version of graph */
+	nvtxs;
     int *index = N_NEW(cnvtxs, int);
     float intra_weight;
     /* An upper bound on the number of coarse graph edges. */
@@ -597,7 +598,7 @@ make_coarse_ex_graph (
     int i, j, cv, v, neighbor, cv_nedges;
     int *index = N_NEW(cnvtxs, int);
     int *edges;
-
+	nvtxs;
     for (i = 0; i < cnvtxs; i++) {
 	index[i] = 0;
     }
@@ -828,7 +829,7 @@ Hierarchy *create_hierarchy(v_data * graph, int nvtxs, int nedges,
 			    ex_vtx_data * geom_graph, int ngeom_edges,
 			    hierparms_t* parms)
 {
-    int cur_level;
+    int _cur_level;
     Hierarchy *hierarchy = NEW(Hierarchy);
     int cngeom_edges = ngeom_edges;
     ex_vtx_data *geom_graph_level;
@@ -849,10 +850,10 @@ Hierarchy *create_hierarchy(v_data * graph, int nvtxs, int nedges,
     hierarchy->nvtxs[0] = nvtxs;
     hierarchy->nedges[0] = nedges;
 
-    for (cur_level = 0;
-	 hierarchy->nvtxs[cur_level] > min_nvtxs
-	 && cur_level < 50 /*nvtxs/10 */ ; cur_level++) {
-	if (cur_level == nlevels - 1) {	// we have to allocate more space
+    for (_cur_level = 0;
+	 hierarchy->nvtxs[_cur_level] > min_nvtxs
+	 && _cur_level < 50 /*nvtxs/10 */ ; _cur_level++) {
+	if (_cur_level == nlevels - 1) {	// we have to allocate more space
 	    nlevels *= 2;
 	    hierarchy->graphs =
 		RALLOC(nlevels, hierarchy->graphs, v_data *);
@@ -866,18 +867,18 @@ Hierarchy *create_hierarchy(v_data * graph, int nvtxs, int nedges,
 
 	ngeom_edges = cngeom_edges;
 	coarsen_match
-	    (hierarchy->graphs[cur_level],
-	     hierarchy->geom_graphs[cur_level],
-	     hierarchy->nvtxs[cur_level], hierarchy->nedges[cur_level],
-	     ngeom_edges, &hierarchy->graphs[cur_level + 1],
-	     &hierarchy->geom_graphs[cur_level + 1],
-	     &hierarchy->nvtxs[cur_level + 1],
-	     &hierarchy->nedges[cur_level + 1], &cngeom_edges,
-	     &hierarchy->v2cv[cur_level], &hierarchy->cv2v[cur_level + 1],
+	    (hierarchy->graphs[_cur_level],
+	     hierarchy->geom_graphs[_cur_level],
+	     hierarchy->nvtxs[_cur_level], hierarchy->nedges[_cur_level],
+	     ngeom_edges, &hierarchy->graphs[_cur_level + 1],
+	     &hierarchy->geom_graphs[_cur_level + 1],
+	     &hierarchy->nvtxs[_cur_level + 1],
+	     &hierarchy->nedges[_cur_level + 1], &cngeom_edges,
+	     &hierarchy->v2cv[_cur_level], &hierarchy->cv2v[_cur_level + 1],
              parms->dist2_limit);
     }
 
-    hierarchy->nlevels = cur_level + 1;
+    hierarchy->nlevels = _cur_level + 1;
 
     // assign consecutive global identifiers to all nodes on hierarchy
     for (i = 0; i < hierarchy->nlevels; i++) {
@@ -1073,9 +1074,9 @@ findClosestActiveNode(Hierarchy * hierarchy, int node,
  */
 static int
 find_leftmost_descendant(Hierarchy * hierarchy, int node, int level,
-			 int cur_level)
+			 int _cur_level)
 {
-    while (level > cur_level) 
+    while (level > _cur_level) 
 	{
 		node = hierarchy->cv2v[level--][2 * node];
     }
@@ -1091,7 +1092,7 @@ double
 find_closest_active_node(Hierarchy * hierarchy, double x, double y,
 			 int *closest_fine_node)
 {
-    int i, closest_node, closest_node_level;
+    int i, closest_node = 0, closest_node_level=0;
     int top_level = hierarchy->nlevels - 1;
     double min_dist = 1e20;
 

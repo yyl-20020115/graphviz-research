@@ -20,6 +20,7 @@
 
 SparseMatrix call_tri(int n, int dim, real * x)
 {
+	dim;
     real one = 1;
     int i, ii, jj;
     SparseMatrix A;

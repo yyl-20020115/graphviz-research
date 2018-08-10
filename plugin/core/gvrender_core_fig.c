@@ -217,27 +217,32 @@ static void fig_end_graph(GVJ_t * job)
 
 static void fig_begin_page(GVJ_t * job)
 {
+	job;
     Depth = 2;
 }
 
 static void fig_begin_node(GVJ_t * job)
 {
-    Depth = 1;
+	job;
+	Depth = 1;
 }
 
 static void fig_end_node(GVJ_t * job)
 {
-    Depth = 2;
+	job;
+	Depth = 2;
 }
 
 static void fig_begin_edge(GVJ_t * job)
 {
-    Depth = 0;
+	job;
+	Depth = 0;
 }
 
 static void fig_end_edge(GVJ_t * job)
 {
-    Depth = 2;
+	job;
+	Depth = 2;
 }
 
 static void fig_textspan(GVJ_t * job, pointf p, textspan_t * span)

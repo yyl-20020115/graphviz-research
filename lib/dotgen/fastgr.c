@@ -26,12 +26,12 @@ static edge_t *ffe(node_t * tail, elist tailEdges, node_t * head, elist headEdge
 
 	if ((tailEdges.size > 0) && (headEdges.size > 0)) {
 		if (tailEdges.size < headEdges.size) {
-			for (i = 0; (e = tailEdges.list[i]); i++)
+			for (i = 0; (e = tailEdges.list[i])!=0; i++)
 				if (aghead(e) == head)
 					break;
 		}
 		else {
-			for (i = 0; (e = headEdges.list[i]); i++)
+			for (i = 0; (e = headEdges.list[i]) != 0; i++)
 				if (agtail(e) == tail)
 					break;
 		}
@@ -128,10 +128,10 @@ safe_delete_fast_edge(edge_t * e)
 	edge_t *f;
 
 	assert(e != NULL);
-	for (i = 0; (f = ND_out(agtail(e)).list[i]); i++)
+	for (i = 0; (f = ND_out(agtail(e)).list[i]) != 0; i++)
 		if (f == e)
 			zapinlist(&(ND_out(agtail(e))), e);
-	for (i = 0; (f = ND_in(aghead(e)).list[i]); i++)
+	for (i = 0; (f = ND_in(aghead(e)).list[i]) != 0; i++)
 		if (f == e)
 			zapinlist(&(ND_in(aghead(e))), e);
 }

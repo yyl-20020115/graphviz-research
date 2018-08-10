@@ -108,7 +108,7 @@ int string_split(char *s, char sp, char ***ss0, int *ntokens0){
     swork1 = MALLOC(sizeof(char)*maxlen);
   }
 
-  for (i = 0; i < strlen(s); i++){
+  for (i = 0; i < (int)strlen(s); i++){
     if (s[i] == sp){
       ntokens++;
     } else if (s[i] == '\n' || s[i]== EOF){
@@ -119,7 +119,7 @@ int string_split(char *s, char sp, char ***ss0, int *ntokens0){
 
   ss = malloc(sizeof(char*)*(ntokens+1));
   ntokens = 0;
-  for (i = 0; i < strlen(s); i++){
+  for (i = 0; i < (int)strlen(s); i++){
     if (s[i] == sp){
       swork1[len++] = '\0';
       ss[ntokens] = malloc(sizeof(char)*(len+1));

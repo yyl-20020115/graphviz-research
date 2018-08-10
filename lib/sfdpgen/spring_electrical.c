@@ -1245,7 +1245,8 @@ static void scale_coord(int n, int dim, real *x, int *id, int *jd, real *d, real
 static real dmean_get(int n, int *id, int *jd, real* d){
   real dmean = 0;
   int i, j;
-  (void)id;
+  jd;
+  id;
   if (!d) return 1.;
   for (i = 0; i < n; i++){
     for (j = id[i]; j < id[i+1]; j++){

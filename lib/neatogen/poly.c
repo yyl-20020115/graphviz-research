@@ -50,26 +50,26 @@ void breakPoly(Poly * pp)
 
 static void bbox(Point * verts, int cnt, Point * o, Point * c)
 {
-    double xmin, ymin, xmax, ymax;
+    double _xmin, _ymin, _xmax, _ymax;
     int i;
 
-    xmin = xmax = verts->x;
-    ymin = ymax = verts->y;
+    _xmin = _xmax = verts->x;
+    _ymin = _ymax = verts->y;
     for (i = 1; i < cnt; i++) {
 	verts++;
-	if (verts->x < xmin)
-	    xmin = verts->x;
-	if (verts->y < ymin)
-	    ymin = verts->y;
-	if (verts->x > xmax)
-	    xmax = verts->x;
-	if (verts->y > ymax)
-	    ymax = verts->y;
+	if (verts->x < _xmin)
+	    _xmin = verts->x;
+	if (verts->y < _ymin)
+	    _ymin = verts->y;
+	if (verts->x > _xmax)
+	    _xmax = verts->x;
+	if (verts->y > _ymax)
+	    _ymax = verts->y;
     }
-    o->x = xmin;
-    o->y = ymin;
-    c->x = xmax;
-    c->y = ymax;
+    o->x = _xmin;
+    o->y = _ymin;
+    c->x = _xmax;
+    c->y = _ymax;
 }
 
 #ifdef OLD
@@ -189,16 +189,16 @@ int makeAddPoly(Poly * pp, Agnode_t * n, float xmargin, float ymargin)
     boxf b;
 
     if (ND_clust(n)) {
-	Point b;
+	Point _b;
 	sides = 4;
-	b.x = ND_width(n) / 2.0 + xmargin;
-	b.y = ND_height(n) / 2.0 + ymargin;
+	_b.x = ND_width(n) / 2.0 + xmargin;
+	_b.y = ND_height(n) / 2.0 + ymargin;
 	pp->kind = BOX;
 	verts = N_GNEW(sides, Point);
-	PUTPT(verts[0], b.x, b.y);
-	PUTPT(verts[1], -b.x, b.y);
-	PUTPT(verts[2], -b.x, -b.y);
-	PUTPT(verts[3], b.x, -b.y);
+	PUTPT(verts[0], _b.x, _b.y);
+	PUTPT(verts[1], -_b.x, _b.y);
+	PUTPT(verts[2], -_b.x, -_b.y);
+	PUTPT(verts[3], _b.x, -_b.y);
     } else
 	switch (shapeOf(n)) {
 	case SH_POLY:
@@ -247,10 +247,10 @@ int makeAddPoly(Poly * pp, Agnode_t * n, float xmargin, float ymargin)
 	    sides = 4;
 	    verts = N_GNEW(sides, Point);
 	    b = ((field_t *) ND_shape_info(n))->b;
-	    verts[0] = makeScaledTransPoint(b.LL.x, b.LL.y, -xmargin, -ymargin);
-	    verts[1] = makeScaledTransPoint(b.UR.x, b.LL.y, xmargin, -ymargin);
-	    verts[2] = makeScaledTransPoint(b.UR.x, b.UR.y, xmargin, ymargin);
-	    verts[3] = makeScaledTransPoint(b.LL.x, b.UR.y, -xmargin, ymargin);
+	    verts[0] = makeScaledTransPoint((int)b.LL.x, (int)b.LL.y, -xmargin, -ymargin);
+	    verts[1] = makeScaledTransPoint((int)b.UR.x, (int)b.LL.y, xmargin, -ymargin);
+	    verts[2] = makeScaledTransPoint((int)b.UR.x, (int)b.UR.y, xmargin, ymargin);
+	    verts[3] = makeScaledTransPoint((int)b.LL.x, (int)b.UR.y, -xmargin, ymargin);
 	    pp->kind = BOX;
 	    break;
 	case SH_POINT:
@@ -281,16 +281,16 @@ int makePoly(Poly * pp, Agnode_t * n, float xmargin, float ymargin)
     boxf b;
 
     if (ND_clust(n)) {
-	Point b;
+	Point _b;
 	sides = 4;
-	b.x = ND_width(n) / 2.0;
-	b.y = ND_height(n) / 2.0;
+	_b.x = ND_width(n) / 2.0;
+	_b.y = ND_height(n) / 2.0;
 	pp->kind = BOX;
 	verts = N_GNEW(sides, Point);
-	PUTPT(verts[0], b.x, b.y);
-	PUTPT(verts[1], -b.x, b.y);
-	PUTPT(verts[2], -b.x, -b.y);
-	PUTPT(verts[3], b.x, -b.y);
+	PUTPT(verts[0], _b.x, _b.y);
+	PUTPT(verts[1], -_b.x, _b.y);
+	PUTPT(verts[2], -_b.x, -_b.y);
+	PUTPT(verts[3], _b.x, -_b.y);
     } else
 	switch (shapeOf(n)) {
 	case SH_POLY:
@@ -482,10 +482,10 @@ static int inPoly(Point vertex[], int n, Point q)
 	return 0;
 }
 
-static int inBox(Point p, Point origin, Point corner)
+static int inBox(Point p, Point _origin, Point corner)
 {
     return ((p.x <= corner.x) &&
-	    (p.x >= origin.x) && (p.y <= corner.y) && (p.y >= origin.y));
+	    (p.x >= _origin.x) && (p.y <= corner.y) && (p.y >= _origin.y));
 
 }
 

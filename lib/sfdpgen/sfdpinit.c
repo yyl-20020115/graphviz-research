@@ -59,9 +59,9 @@ static void sfdp_init_graph(Agraph_t * g)
 
     setEdgeType(g, ET_LINE);
     outdim = late_int(g, agfindgraphattr(g, "dimen"), 2, 2);
-    GD_ndim(agroot(g)) = late_int(g, agfindgraphattr(g, "dim"), outdim, 2);
+    GD_ndim(agroot(g)) = (unsigned short)late_int(g, agfindgraphattr(g, "dim"), outdim, 2);
     Ndim = GD_ndim(agroot(g)) = MIN(GD_ndim(agroot(g)), MAXDIM);
-    GD_odim(agroot(g)) = MIN(outdim, Ndim);
+    GD_odim(agroot(g)) = (unsigned short)MIN(outdim, Ndim);
     sfdp_init_node_edge(g);
 }
 
@@ -72,7 +72,7 @@ static real *getPos(Agraph_t * g, spring_electrical_control ctrl)
     Agnode_t *n;
     real *pos = N_NEW(Ndim * agnnodes(g), real);
     int ix, i;
-
+	ctrl;
     if (agfindnodeattr(g, "pos") == NULL)
 	return pos;
 
@@ -328,7 +328,7 @@ void sfdp_layout(graph_t * g)
 	int ncc;
 	int i;
 	expand_t sep;
-	pointf pad;
+	pointf pad = { 0.0,0.0 };
 	spring_electrical_control ctrl = spring_electrical_control_new();
 
 	tuneControl (g, ctrl);
@@ -391,6 +391,7 @@ void sfdp_layout(graph_t * g)
 
 static void sfdp_cleanup_graph(graph_t * g)
 {
+	g;
 }
 
 void sfdp_cleanup(graph_t * g)

@@ -134,6 +134,8 @@ static void examine_gl_config_attrib(GdkGLConfig * glconfig)
 */
 static void realize(GtkWidget * widget, gpointer data)
 {
+	widget;
+	data;
 
     GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable(widget);
@@ -188,6 +190,9 @@ static void realize(GtkWidget * widget, gpointer data)
 static gboolean configure_event(GtkWidget * widget,
 				GdkEventConfigure * event, gpointer data)
 {
+	widget;
+	data;
+
     /* static int doonce=0; */
     int vPort[4];
     float aspect;
@@ -238,6 +243,9 @@ static gboolean configure_event(GtkWidget * widget,
 gboolean expose_event(GtkWidget * widget, GdkEventExpose * event,
 		      gpointer data)
 {
+	event;
+	data;
+
     GdkGLContext *glcontext = gtk_widget_get_gl_context(widget);
     GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable(widget);
 
@@ -272,6 +280,8 @@ static gboolean button_press_event(GtkWidget * widget,
 				   GdkEventButton * event, gpointer data)
 {
     Agraph_t* g;
+	widget;
+	data;
 
     if (view->g == 0) return FALSE;
     g=view->g[view->activeGraph];

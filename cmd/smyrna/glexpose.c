@@ -188,7 +188,7 @@ static void drawRotatingAxis(void)
 	glVertex3f(0, 0, AL);
 
 	glEnd();
-	glColor4f(0, 1, 0, 0.3);
+	glColor4f(0, 1, 0, 0.3f);
 	gluSphere(quadratic, AL, 20, 20);
 	glLineWidth(1);
 	glPopMatrix();
@@ -271,19 +271,19 @@ static void drawtestpoly(void)
 	params:ViewInfo	, global view variable defined in viewport.c
 	return value:none
 */
-static void glexpose_grid(ViewInfo * view)
+static void glexpose_grid(ViewInfo * _view)
 {
     //drawing grids
     float x, y;
-    if (view->gridVisible) {
+    if (_view->gridVisible) {
 	glPointSize(1);
 	glBegin(GL_POINTS);
-	glColor4f(view->gridColor.R, view->gridColor.G, view->gridColor.B,
-		  view->gridColor.A);
-	for (x = view->bdxLeft; x <= view->bdxRight;
-	     x = x + view->gridSize) {
-	    for (y = view->bdyBottom; y <= view->bdyTop;
-		 y = y + view->gridSize) {
+	glColor4f(_view->gridColor.R, _view->gridColor.G, _view->gridColor.B,
+		  _view->gridColor.A);
+	for (x = _view->bdxLeft; x <= _view->bdxRight;
+	     x = x + _view->gridSize) {
+	    for (y = _view->bdyBottom; y <= _view->bdyTop;
+		 y = y + _view->gridSize) {
 		glVertex3f(x, y, 0);
 	    }
 	}
@@ -296,17 +296,17 @@ static void glexpose_grid(ViewInfo * view)
 	params:ViewInfo	, global view variable defined in viewport.c
 	return value:1 if there is a graph to draw else 0 
 */
-static int glexpose_drawgraph(ViewInfo * view)
+static int glexpose_drawgraph(ViewInfo * _view)
 {
 
-    if (view->activeGraph > -1) {
+    if (_view->activeGraph > -1) {
 //              if (GD_TopView(view->g[view->activeGraph])) 
 //              {
-	if (!view->Topview->fisheyeParams.active)
+	if (!_view->Topview->fisheyeParams.active)
 //	    drawTopViewGraph(view->g[view->activeGraph]);	//view->Topview style dots and straight lines
-	    renderSmGraph(view->g[view->activeGraph],view->Topview);	    
+	    renderSmGraph(_view->g[_view->activeGraph],_view->Topview);	    
 	else {
-	    drawtopologicalfisheye(view->Topview);
+	    drawtopologicalfisheye(_view->Topview);
 	}
 
 //              }
@@ -345,10 +345,10 @@ static void test_color_pallete(void)
 	params:ViewInfo	, global view variable defined in viewport.c
 	return value:0 if something goes wrong with GL 1 , otherwise
 */
-int glexpose_main(ViewInfo * view)
+int glexpose_main(ViewInfo * _view)
 {
     static int doonce = 0;
-    if (!glupdatecamera(view))
+    if (!glupdatecamera(_view))
 	return 0;
 
 //    glEnable(GL_DEPTH_TEST);
@@ -356,7 +356,7 @@ int glexpose_main(ViewInfo * view)
 //    draw_cube_tex();
 
 
-    if (view->activeGraph >= 0) {
+    if (_view->activeGraph >= 0) {
 	if (!doonce) {
 	    doonce = 1;
 	    btnToolZoomFit_clicked(NULL, NULL);
@@ -368,16 +368,16 @@ int glexpose_main(ViewInfo * view)
 
 
 
-    glexpose_grid(view);
+    glexpose_grid(_view);
 #if UNUSED
     draw_fisheye_magnifier(view);
     draw_magnifier(view);
 #endif
-    drawBorders(view);
-    glexpose_drawgraph(view);
+    drawBorders(_view);
+    glexpose_drawgraph(_view);
     drawRotatingAxis();
-    draw_selpoly(&view->Topview->sel.selPoly);
-    glCompSetDraw(view->widgets);
+    draw_selpoly(&_view->Topview->sel.selPoly);
+    glCompSetDraw(_view->widgets);
 
 //              draw_stuff();
 //      test_color_pallete();

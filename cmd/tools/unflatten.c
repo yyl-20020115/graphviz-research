@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 
     files = scanargs(argc, argv);
     newIngraph(&ig, files, gread);
-    while ((g = nextGraph(&ig))) {
+    while ((g = nextGraph(&ig))!=0) {
 	transform(g);
 	agwrite(g, outFile);
     }

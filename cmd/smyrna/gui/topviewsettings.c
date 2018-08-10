@@ -20,11 +20,15 @@
 
 void color_change_request(GtkWidget * widget, gpointer user_data)
 {
+	widget;
+	user_data;
     view->refresh.color=1;
 }
 void size_change_request(GtkWidget * widget, gpointer user_data)
 {
-    view->refresh.nodesize=1;
+	widget;
+	user_data;
+	view->refresh.nodesize=1;
 }
 
 void on_settingsOKBtn_clicked(GtkWidget * widget, gpointer user_data)

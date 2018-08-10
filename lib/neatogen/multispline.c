@@ -19,11 +19,13 @@
 
 static boolean spline_merge(node_t * n)
 {
+	n;
     return FALSE;
 }
 
 static boolean swap_ends_p(edge_t * e)
 {
+	e;
     return FALSE;
 }
 
@@ -75,6 +77,8 @@ static int cmpItem(Dt_t * d, int p1[], int p2[], Dtdisc_t * disc)
  */
 static void *newItem(Dt_t * d, item * objp, Dtdisc_t * disc)
 {
+	disc;
+	d;
     item *newp = NEW(item);
 
     NOTUSED(disc);
@@ -87,6 +91,9 @@ static void *newItem(Dt_t * d, item * objp, Dtdisc_t * disc)
 
 static void freeItem(Dt_t * d, item * obj, Dtdisc_t * disc)
 {
+	d;
+	obj;
+	disc;
     free(obj);
 }
 
@@ -175,8 +182,8 @@ static int cmpIpair(Dt_t * d, int *p1, int *p2, Dtdisc_t * disc)
 static void *newIpair(Dt_t * d, Ipair * objp, Dtdisc_t * disc)
 {
     Ipair *newp = NEW(Ipair);
-
-    NOTUSED(disc);
+	d;
+    disc;
     newp->i = objp->i;
     newp->j = objp->j;
 
@@ -185,6 +192,8 @@ static void *newIpair(Dt_t * d, Ipair * objp, Dtdisc_t * disc)
 
 static void freeIpair(Dt_t * d, Ipair * obj, Dtdisc_t * disc)
 {
+	d;
+	disc;
     free(obj);
 }
 
@@ -553,6 +562,7 @@ static void addTriEdge(tgraph * g, int t, int h, double d, ipair seg)
     tedge *ep = g->edges + g->nedges;
     tnode *tp = g->nodes + t;
     tnode *hp = g->nodes + h;
+	d;
 
     ep->t = t;
     ep->h = h;
@@ -821,6 +831,7 @@ finishEdge (graph_t* g, edge_t* e, Ppoly_t spl, int flip, pointf p, pointf q)
 static Ppoint_t
 tweakEnd (Ppoly_t poly, int s, Ppolyline_t pl, Ppoint_t q)
 {
+	pl;
     Ppoint_t prv, nxt, p;
 
     p = poly.ps[s];
@@ -1004,7 +1015,7 @@ static void addEndpoint(router_t * rtr, pointf p, node_t* v, int v_id, int sides
     pointf* pts = rtr->ps;
     int i, t;
     double d;
-    pointf vr, v0, v1;
+	pointf vr = { 0.0,0.0 }, v0 = { 0.0,0.0 }, v1 = { 0.0,0.0 };
 
     switch (sides) {
     case TOP :
@@ -1064,6 +1075,7 @@ static void addEndpoint(router_t * rtr, pointf p, node_t* v, int v_id, int sides
 	else
 	    seg.j = starti;
 	t = findMap(rtr->trimap, seg.i, seg.j);
+	
 	if (sides && !inCone (v0, p, v1, pts[seg.i]) && !inCone (v0, p, v1, pts[seg.j]) && !raySeg(p,vr,pts[seg.i],pts[seg.j]))
 	    continue;
 	d = DIST(p, (rtr->tg->nodes + t)->ctr);
@@ -1081,7 +1093,7 @@ static void addEndpoint(router_t * rtr, pointf p, node_t* v, int v_id, int sides
  */
 static ipair edgeToSeg(tgraph * tg, int i, int j)
 {
-    ipair ip;
+	ipair ip = { 0 };
     tnode *np = tg->nodes + i;
     tedge *ep;
 
@@ -1320,11 +1332,11 @@ triPath(tgraph * g, int n, int v0, int v1, PQ * pq)
 	    if (N_VAL(pq, adjn) < 0) {
 		d = -(N_VAL(pq, i) + E_WT(e));
 		if (N_VAL(pq, adjn) == UNSEEN) {
-		    N_VAL(pq, adjn) = d;
+		    N_VAL(pq, adjn) =(float) d;
 		    N_DAD(adjn) = i;
 		    if (PQinsert(pq, adjn)) return NULL;
 		} else if (N_VAL(pq, adjn) < d) {
-		    PQupdate(pq, adjn, d);
+		    PQupdate(pq, adjn, (float)d);
 		    N_DAD(adjn) = i;
 		}
 	    }

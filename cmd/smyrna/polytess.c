@@ -94,6 +94,8 @@ GLdouble complex[25][3] = { 0.0f, 0.0f, 0.0f,
 #endif
 static void CALLBACK combineCallback(GLdouble coords[3], GLdouble *vertex_data[4],GLfloat weight[4], GLdouble **dataOut)
 {
+	weight;
+	vertex_data;
     GLdouble *vertex;
     int i;
     vertex = (GLdouble *) malloc(6 * sizeof(GLdouble));

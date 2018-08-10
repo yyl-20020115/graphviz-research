@@ -240,7 +240,7 @@ static void setEdgeLabelPos(graph_t * g)
 				l->pos = ND_coord(n);
 				l->set = TRUE;
 			}
-			else if ((l = ND_label(n))) {// label of regular edge
+			else if ((l = ND_label(n)) != 0) {// label of regular edge
 				place_vnlabel(n);
 			}
 			if (l) updateBB(g, l);
@@ -263,7 +263,7 @@ static void _dot_splines(graph_t * g, int normalize)
 	Agedgepair_t fwdedgea, fwdedgeb;
 	edge_t *e, *e0, *e1, *ea, *eb, *le0, *le1, **edges = NULL;
 	path *P = NULL;
-	spline_info_t sd;
+	spline_info_t sd = { 0 };
 	int et = EDGE_TYPE(g);
 	fwdedgea.out.base.data = (Agrec_t*)&fwdedgeai;
 	fwdedgeb.out.base.data = (Agrec_t*)&fwdedgebi;
@@ -301,9 +301,9 @@ static void _dot_splines(graph_t * g, int normalize)
 	n_edges = n_nodes = 0;
 	for (i = GD_minrank(g); i <= GD_maxrank(g); i++) {
 		n_nodes += GD_rank(g)[i].n;
-		if ((n = GD_rank(g)[i].v[0]))
+		if ((n = GD_rank(g)[i].v[0]) != 0)
 			sd.LeftBound = MIN(sd.LeftBound, (ND_coord(n).x - ND_lw(n)));
-		if (GD_rank(g)[i].n && (n = GD_rank(g)[i].v[GD_rank(g)[i].n - 1]))
+		if (GD_rank(g)[i].n && (n = GD_rank(g)[i].v[GD_rank(g)[i].n - 1])!=0)
 			sd.RightBound = MAX(sd.RightBound, (ND_coord(n).x + ND_rw(n)));
 		sd.LeftBound -= MINW;
 		sd.RightBound += MINW;
@@ -322,7 +322,7 @@ static void _dot_splines(graph_t * g, int normalize)
 			if ((ND_node_type(n) != NORMAL) &&
 				(sinfo.splineMerge(n) == FALSE))
 				continue;
-			for (k = 0; (e = ND_out(n).list[k]); k++) {
+			for (k = 0; (e = ND_out(n).list[k]) != 0; k++) {
 				if ((ED_edge_type(e) == FLATORDER)
 					|| (ED_edge_type(e) == IGNORED))
 					continue;
@@ -332,7 +332,7 @@ static void _dot_splines(graph_t * g, int normalize)
 					GROWEDGES;
 			}
 			if (ND_flat_out(n).list)
-				for (k = 0; (e = ND_flat_out(n).list[k]); k++) {
+				for (k = 0; (e = ND_flat_out(n).list[k]) != 0; k++) {
 					setflags(e, FLATEDGE, 0, AUXGRAPH);
 					edges[n_edges++] = e;
 					if (n_edges % CHUNK == 0)
@@ -349,7 +349,7 @@ static void _dot_splines(graph_t * g, int normalize)
 					ND_rw(n) = ND_mval(n);
 					ND_mval(n) = tmp;
 				}
-				for (k = 0; (e = ND_other(n).list[k]); k++) {
+				for (k = 0; (e = ND_other(n).list[k]) != 0; k++) {
 					setflags(e, 0, 0, AUXGRAPH);
 					edges[n_edges++] = e;
 					if (n_edges % CHUNK == 0)
@@ -637,9 +637,9 @@ static int edgecmp(edge_t** ptr0, edge_t** ptr1)
 		MAKEFWDEDGE(&fwdedgeb.out, eb);
 		eb = &fwdedgeb.out;
 	}
-	if ((rv = portcmp(ED_tail_port(ea), ED_tail_port(eb))))
+	if ((rv = portcmp(ED_tail_port(ea), ED_tail_port(eb))) != 0)
 		return rv;
-	if ((rv = portcmp(ED_head_port(ea), ED_head_port(eb))))
+	if ((rv = portcmp(ED_head_port(ea), ED_head_port(eb))) != 0)
 		return rv;
 
 	et0 = ED_tree_index(e0) & GRAPHTYPEMASK;
@@ -1734,8 +1734,8 @@ static void
 make_regular_edge(graph_t* g, spline_info_t* sp, path * P, edge_t ** edges, int ind, int cnt, int et)
 {
 	node_t *tn, *hn;
-	Agedgeinfo_t fwdedgeai, fwdedgebi, fwdedgei;
-	Agedgepair_t fwdedgea, fwdedgeb, fwdedge;
+	Agedgeinfo_t fwdedgeai = { 0 }, fwdedgebi = { 0 }, fwdedgei = { 0 };
+	Agedgepair_t fwdedgea = { 0 }, fwdedgeb = { 0 }, fwdedge = { 0 };
 	edge_t *e, *fe, *le, *segfirst;
 	pointf *ps;
 	pathend_t tend, hend;
@@ -1798,7 +1798,7 @@ make_regular_edge(graph_t* g, spline_info_t* sp, path * P, edge_t ** edges, int 
 
 	/* compute the spline points for the edge */
 
-	if ((et == ET_LINE) && (pointn = makeLineEdge(g, fe, pointfs, &hn))) {
+	if ((et == ET_LINE) && (pointn = makeLineEdge(g, fe, pointfs, &hn)) != 0) {
 	}
 	else {
 		int splines = et == ET_SPLINE;
@@ -1964,24 +1964,24 @@ completeregularpath(path * P, edge_t * first, edge_t * last,
 	uleft = uright = NULL;
 	uleft = top_bound(first, -1), uright = top_bound(first, 1);
 	if (uleft) {
-		if (!(spl = getsplinepoints(uleft))) return;
+		if (0==(spl = getsplinepoints(uleft))) return;
 		pp = spl->list[0].list;
 		pn = spl->list[0].size;
 	}
 	if (uright) {
-		if (!(spl = getsplinepoints(uright))) return;
+		if (0==(spl = getsplinepoints(uright))) return;
 		pp = spl->list[0].list;
 		pn = spl->list[0].size;
 	}
 	lleft = lright = NULL;
 	lleft = bot_bound(last, -1), lright = bot_bound(last, 1);
 	if (lleft) {
-		if (!(spl = getsplinepoints(lleft))) return;
+		if (0==(spl = getsplinepoints(lleft))) return;
 		pp = spl->list[spl->size - 1].list;
 		pn = spl->list[spl->size - 1].size;
 	}
 	if (lright) {
-		if (!(spl = getsplinepoints(lright))) return;
+		if (0==(spl = getsplinepoints(lright))) return;
 		pp = spl->list[spl->size - 1].list;
 		pn = spl->list[spl->size - 1].size;
 	}
@@ -2073,7 +2073,7 @@ completeregularpath(path * P, edge_t * first, edge_t * last,
  */
 static boxf makeregularend(boxf b, int side, double y)
 {
-	boxf newb;
+	boxf newb = { 0 };
 	switch (side) {
 	case BOTTOM:
 		newb = boxfof(b.LL.x, y, b.UR.x, b.LL.y);
@@ -2329,7 +2329,7 @@ static edge_t *top_bound(edge_t * e, int side)
 	edge_t *f, *ans = NULL;
 	int i;
 
-	for (i = 0; (f = ND_out(agtail(e)).list[i]); i++) {
+	for (i = 0; (f = ND_out(agtail(e)).list[i])!=0; i++) {
 #if 0				/* were we out of our minds? */
 		if (ED_tail_port(e).p.x != ED_tail_port(f).p.x)
 			continue;
@@ -2351,7 +2351,7 @@ static edge_t *bot_bound(edge_t * e, int side)
 	edge_t *f, *ans = NULL;
 	int i;
 
-	for (i = 0; (f = ND_in(aghead(e)).list[i]); i++) {
+	for (i = 0; (f = ND_in(aghead(e)).list[i])!=0; i++) {
 #if 0				/* same here */
 		if (ED_head_port(e).p.x != ED_head_port(f).p.x)
 			continue;
@@ -2438,8 +2438,8 @@ static boxf maximal_bbox(graph_t* g, spline_info_t* sp, node_t* vn, edge_t* ie, 
 
 	/* give this node all the available space up to its neighbors */
 	b = (double)(ND_coord(vn).x - ND_lw(vn) - FUDGE);
-	if ((left = neighbor(g, vn, ie, oe, -1))) {
-		if ((left_cl = cl_bound(g, vn, left)))
+	if ((left = neighbor(g, vn, ie, oe, -1))!=0) {
+		if ((left_cl = cl_bound(g, vn, left)) != 0)
 			nb = GD_bb(left_cl).UR.x + (double)(sp->Splinesep);
 		else {
 			nb = (double)(ND_coord(left).x + ND_mval(left));
@@ -2460,8 +2460,8 @@ static boxf maximal_bbox(graph_t* g, spline_info_t* sp, node_t* vn, edge_t* ie, 
 		b = (double)(ND_coord(vn).x + 10);
 	else
 		b = (double)(ND_coord(vn).x + ND_rw(vn) + FUDGE);
-	if ((right = neighbor(g, vn, ie, oe, 1))) {
-		if ((right_cl = cl_bound(g, vn, right)))
+	if ((right = neighbor(g, vn, ie, oe, 1)) != 0) {
+		if ((right_cl = cl_bound(g, vn, right)) != 0)
 			nb = GD_bb(right_cl).LL.x - (double)(sp->Splinesep);
 		else {
 			nb = ND_coord(right).x - ND_lw(right);

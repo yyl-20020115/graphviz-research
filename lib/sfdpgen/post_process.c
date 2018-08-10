@@ -764,6 +764,7 @@ static void get_edge_label_matrix(relative_position_constraints data, int m, int
 
 real get_stress(int m, int dim, int *iw, int *jw, real *w, real *d, real *x, real scaling, void *data, int weighted){
   int i, j;
+  data;
   real res = 0., dist;
   /* we use the fact that d_ij = w_ij*graph_dist(i,j). Also, d_ij and x are scalinged by *scaling, so divide by it to get actual unscaled streee. */
   for (i = 0; i < m; i++){

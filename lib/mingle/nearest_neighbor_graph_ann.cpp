@@ -22,9 +22,9 @@
 #include <ANN/ANN.h>					// ANN declarations
 
 using namespace std;					// make std:: accessible
-int                             dim                             = 4;                    // dimension
+int  dim   = 4;                    // dimension
 
-
+#if 0
 static void printPt(ostream &out, ANNpoint p)			// print point
 {
   out << "" << p[0];
@@ -33,7 +33,7 @@ static void printPt(ostream &out, ANNpoint p)			// print point
   }
   out << "";
 }
-
+#endif
 static void sortPtsX(int n, ANNpointArray pts){
   /* sort so that edges always go from left to right in x-doordinate */
   ANNpoint p;

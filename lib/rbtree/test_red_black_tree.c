@@ -31,11 +31,11 @@ void IntPrint(const void* a) {
 }
 
 void InfoPrint(void* a) {
-  ;
+  a;
 }
 
 void InfoDest(void *a){
-  ;
+  a;
 }
 
 int main() {
@@ -70,7 +70,7 @@ int main() {
 	{
 	  printf("type key of node to remove\n");
 	  scanf("%i",&newKey);
-	  if ( ( newNode=RBExactQuery(tree,&newKey ) ) ) RBDelete(tree,newNode);/*assignment*/
+	  if ( ( newNode=RBExactQuery(tree,&newKey ) )!=0 ) RBDelete(tree,newNode);/*assignment*/
 	  else printf("key not found in tree, no action taken\n");
 	}
 	break;
@@ -79,7 +79,7 @@ int main() {
 	{
 	  printf("type key of node to query for\n");
 	  scanf("%i",&newKey);
-	  if ( ( newNode = RBExactQuery(tree,&newKey) ) ) {/*assignment*/
+	  if ( ( newNode = RBExactQuery(tree,&newKey) ) != 0) {/*assignment*/
 	    printf("data found in tree at location %i\n",(int)newNode);
 	  } else {
 	    printf("data not in tree\n");
@@ -90,7 +90,7 @@ int main() {
 	{
 	  printf("type key of node to find predecessor of\n");
 	  scanf("%i",&newKey);
-	  if ( ( newNode = RBExactQuery(tree,&newKey) ) ) {/*assignment*/
+	  if ( ( newNode = RBExactQuery(tree,&newKey) ) != 0) {/*assignment*/
 	    newNode=TreePredecessor(tree,newNode);
 	    if(tree->nil == newNode) {
 	      printf("there is no predecessor for that node (it is a minimum)\n");
@@ -106,7 +106,7 @@ int main() {
 	{
 	  printf("type key of node to find successor of\n");
 	  scanf("%i",&newKey);
-	  if ( (newNode = RBExactQuery(tree,&newKey) ) ) {
+	  if ( (newNode = RBExactQuery(tree,&newKey) ) != 0) {
 	    newNode=TreeSuccessor(tree,newNode);
 	    if(tree->nil == newNode) {
 	      printf("there is no successor for that node (it is a maximum)\n");
@@ -123,7 +123,7 @@ int main() {
 	  printf("type low and high keys to see all keys between them\n");
 	  scanf("%i %i",&newKey,&newKey2);
 	  enumResult=RBEnumerate(tree,&newKey,&newKey2);	  
-	  while ( (newNode = StackPop(enumResult)) ) {
+	  while ( (newNode = StackPop(enumResult)) != 0) {
 	    tree->PrintKey(newNode->key);
 	    printf("\n");
 	  }

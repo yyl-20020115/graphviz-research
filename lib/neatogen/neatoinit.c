@@ -88,7 +88,7 @@ int user_pos(attrsym_t * posptr, attrsym_t * pinptr, node_t * np, int nG)
 		    pvec[i] = pvec[i] / PSinputscale;
 	    }
 	    if (Ndim > 2) {
-		if (N_z && (p = agxget(np, N_z)) && (sscanf(p,"%lf",&z) == 1)) {
+		if (N_z && (p = agxget(np, N_z))!=0 && (sscanf(p,"%lf",&z) == 1)) {
 		    if (PSinputscale > 0.0) {
 			pvec[2] = z / PSinputscale;
 		    }
@@ -161,9 +161,9 @@ static int numFields(unsigned char *pos)
     do {
 	while (isspace(*pos))
 	    pos++;		/* skip white space */
-	if ((c = *pos)) { /* skip token */
+	if ((c = *pos) != 0) { /* skip token */
 	    cnt++;
-	    while ((c = *pos) && !isspace(c) && (c != ';'))
+	    while ((c = *pos)!=0 && !isspace(c) && (c != ';'))
 		pos++;
 	}
     } while (isspace(c));
@@ -541,7 +541,7 @@ int init_nop(Agraph_t * g, int adjust)
 	G_bb = agattr(g, AGRAPH, "bb", "");
 
     scan_graph(g);		/* mainly to set up GD_neato_nlist */
-    for (i = 0; (np = GD_neato_nlist(g)[i]); i++) {
+    for (i = 0; (np = GD_neato_nlist(g)[i]) != 0; i++) {
 	if (!hasPos(np) && strncmp(agnameof(np), "cluster", 7)) {
 	    agerr(AGERR, "node %s in graph %s has no position\n",
 		  agnameof(np), agnameof(g));
@@ -612,9 +612,9 @@ static void neato_init_graph (Agraph_t * g)
 
     setEdgeType (g, ET_LINE);
     outdim = late_int(g, agfindgraphattr(g, "dimen"), 2, 2);
-    GD_ndim(agroot(g)) = late_int(g, agfindgraphattr(g, "dim"), outdim, 2);
+    GD_ndim(agroot(g)) = (unsigned short)late_int(g, agfindgraphattr(g, "dim"), outdim, 2);
     Ndim = GD_ndim(g->root) = MIN(GD_ndim(g->root), MAXDIM);
-    GD_odim(g->root) = MIN(outdim, Ndim);
+    GD_odim(g->root) = (unsigned short)MIN(outdim, Ndim);
     neato_init_node_edge(g);
 }
 
@@ -623,7 +623,7 @@ static int neatoModel(graph_t * g)
     char *p = agget(g, "model");
     char c;
 
-    if (!p || (!(c = *p)))    /* if p is NULL or "" */
+    if (!p || (0==(c = *p)))    /* if p is NULL or "" */
 	return MODEL_SHORTPATH;
     if ((c == 'c') && streq(p, "circuit"))
 	return MODEL_CIRCUIT;
@@ -718,7 +718,7 @@ dfsCycle (vtx_data* graph, int i,int mode, node_t* nodes[])
 	j = graph[i].edges[e];
 	hp = nodes[j];
 	if (ND_onstack(hp)) {  /* back edge: reverse it */
-            graph[i].edists[e] = x;
+            graph[i].edists[e] = (float)x;
             for (f = 1; (f < graph[j].nedges) &&(graph[j].edges[f] != i); f++) ;
             assert (f < graph[j].nedges);
             graph[j].edists[f] = -1.0;
@@ -844,10 +844,10 @@ static vtx_data *makeGraphData(graph_t * g, int nv, int *nedges, int mode, int m
 	    idx = checkEdge(ps, ep, j);
 	    if (idx != j) {	/* seen before */
 		if (haveWt)
-		    graph[i].eweights[idx] += ED_factor(ep);
+		    graph[i].eweights[idx] +=(float) ED_factor(ep);
 		if (haveLen) {
-		    int curlen = graph[i].ewgts[idx];
-		    graph[i].ewgts[idx] = MAX(ED_dist(ep), curlen);
+		    int curlen =(int) graph[i].ewgts[idx];
+		    graph[i].ewgts[idx] = (float)MAX(ED_dist(ep), curlen);
 		}
 	    } else {
 		node_t *vp = (((agtail(ep)) == np) ? aghead(ep) : agtail(ep));
@@ -856,9 +856,9 @@ static vtx_data *makeGraphData(graph_t * g, int nv, int *nedges, int mode, int m
 
 		*edges++ = ND_id(vp);
 		if (haveWt)
-		    *eweights++ = ED_factor(ep);
+		    *eweights++ = (float)ED_factor(ep);
 		if (haveLen)
-		    *ewgts++ = ED_dist(ep);
+		    *ewgts++ = (float)ED_dist(ep);
 		else if (haveDir)
 		    *ewgts++ = 1.0;
 #ifdef DIGCOLA
@@ -867,7 +867,7 @@ static vtx_data *makeGraphData(graph_t * g, int nv, int *nedges, int mode, int m
                     if(s&&!strncmp(s,"none",4)) {
                         *edists++ = 0;
                     } else {
-                        *edists++ = (np == aghead(ep) ? 1.0 : -1.0);
+                        *edists++ = (float)(np == aghead(ep) ? 1.0 : -1.0);
                     }
                 }
 #endif
@@ -1131,6 +1131,7 @@ majorization(graph_t *mg, graph_t * g, int nv, int mode, int model, int dim, int
     node_t *v;
     vtx_data *gp;
     node_t** nodes;
+	steps;
 #ifdef DIGCOLA
 #ifdef IPSEPCOLA
     expand_t margin;
@@ -1250,9 +1251,9 @@ majorization(graph_t *mg, graph_t * g, int nv, int mode, int model, int dim, int
     }
     else for (v = agfstnode(g); v; v = agnxtnode(g, v)) { /* store positions back in nodes */
 	int idx = ND_id(v);
-	int i;
-	for (i = 0; i < Ndim; i++) {
-	    ND_pos(v)[i] = coords[i][idx];
+	int _i;
+	for (_i = 0; _i < Ndim; _i++) {
+	    ND_pos(v)[_i] = coords[_i][idx];
 	}
     }
     freeGraphData(gp);
@@ -1288,7 +1289,7 @@ static void mds_model(graph_t * g, int nG)
     long i, j;
     node_t *v;
     edge_t *e;
-
+	nG;
     for (v = agfstnode(g); v; v = agnxtnode(g, v)) {
 	for (e = agfstout(g, v); e; e = agnxtout(g, e)) {
 	    i = AGSEQ(agtail(e));
@@ -1344,7 +1345,7 @@ neatoLayout(Agraph_t * mg, Agraph_t * g, int layoutMode, int layoutModel,
     int nG;
     char *str;
 
-    if ((str = agget(g, "maxiter")))
+    if ((str = agget(g, "maxiter")) != 0)
 	MaxIter = atoi(str);
     else if (layoutMode == MODE_MAJOR)
 	MaxIter = DFLT_ITERATIONS;

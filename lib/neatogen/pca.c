@@ -99,7 +99,7 @@ iterativePCA_1D(double **coords, int dim, int n, double *new_direction)
     free(mat1);
 
     /* Compute direction */
-    return power_iteration(mat, dim, 1, &new_direction, &eval, TRUE);
+    return (boolean)power_iteration(mat, dim, 1, &new_direction, &eval, TRUE);
 /* ?? When is mat freed? */
 }
 

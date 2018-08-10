@@ -28,7 +28,7 @@ static char *trstrcpy(char *to, char *from, int endc)
     n = strlen(from);
     memcpy(to, from, n);
     to += n;
-    if ((*to = endc))
+    if ((*to = (char)endc)!=0)
 	to += 1;
     return to;
 }

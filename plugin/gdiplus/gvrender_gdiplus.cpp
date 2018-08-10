@@ -10,7 +10,9 @@
  *
  * Contributors: See CVS logs. Details at http://www.graphviz.org/
  *************************************************************************/
-
+#ifdef MAXSHORT
+#undef MAXSHORT
+#endif
 #include "config.h"
 
 #include <stdlib.h>
@@ -108,7 +110,7 @@ static void gdiplusgen_begin_page(GVJ_t *job)
 			/* EMF image */
 			image = new Metafile (stream,
 				DeviceContext().hdc,
-				RectF(0.0f, 0.0f, job->width, job->height),
+				RectF(0.0f, 0.0f, (Gdiplus::REAL)job->width, (Gdiplus::REAL)job->height),
 				MetafileFrameUnitPixel,
 					job->device.id == FORMAT_EMFPLUS ? EmfTypeEmfPlusOnly : EmfTypeEmfPlusDual);
 				/* output in EMF for wider compatibility; output in EMF+ for antialiasing etc. */
@@ -129,7 +131,7 @@ static void gdiplusgen_begin_page(GVJ_t *job)
 		{
 			/* create EMF image in the job window which was set during begin job */
 			Metafile* metafile = new Metafile(DeviceContext().hdc,
-				RectF(0.0f, 0.0f, job->width, job->height),
+				RectF(0.0f, 0.0f, (Gdiplus::REAL)job->width, (Gdiplus::REAL) job->height),
 				MetafileFrameUnitPixel,
 				EmfTypeEmfPlusOnly);
 			*((Metafile**)job->window) = metafile;
@@ -145,9 +147,9 @@ static void gdiplusgen_begin_page(GVJ_t *job)
 	/* set up the context transformation */
 	context->ResetTransform();
 
-	context->ScaleTransform(job->scale.x, job->scale.y);
-	context->RotateTransform(-job->rotation);
-	context->TranslateTransform(job->translation.x, -job->translation.y);
+	context->ScaleTransform((Gdiplus::REAL)job->scale.x, (Gdiplus::REAL)job->scale.y);
+	context->RotateTransform((Gdiplus::REAL)-job->rotation);
+	context->TranslateTransform((Gdiplus::REAL)job->translation.x, (Gdiplus::REAL) -job->translation.y);
 }
 
 
@@ -179,7 +181,7 @@ static void gdiplusgen_textspan(GVJ_t *job, pointf p, textspan_t *span)
 
 		/* draw the text */
 		SolidBrush brush(Color(job->obj->pencolor.u.rgba [3], job->obj->pencolor.u.rgba [0], job->obj->pencolor.u.rgba [1], job->obj->pencolor.u.rgba [2]));
-	context->DrawString(&layout->text[0], layout->text.size(), layout->font, PointF(p.x, -p.y), GetGenericTypographic(), &brush);
+	context->DrawString(&layout->text[0], layout->text.size(), layout->font, PointF((Gdiplus::REAL)p.x, (Gdiplus::REAL) -p.y), GetGenericTypographic(), &brush);
 	
 	if (span->free_layout != &gdiplus_free_layout)
 		delete layout;
@@ -192,7 +194,7 @@ static vector<PointF> points(pointf *A, int n)
 	/* convert Graphviz pointf (struct of double) to GDI+ PointF (struct of float) */
 	vector<PointF> newPoints;
 	for (int i = 0; i < n; ++i)
-		newPoints.push_back(PointF(A[i].x, -A[i].y));
+		newPoints.push_back(PointF((Gdiplus::REAL)A[i].x, -(Gdiplus::REAL)A[i].y));
 	return newPoints;
 }
 
@@ -208,7 +210,7 @@ static void gdiplusgen_path(GVJ_t *job, const GraphicsPath *path, int filled)
 	
 	/* draw the given path from job pen color and pen width */
 	Pen draw_pen(Color(job->obj->pencolor.u.rgba [3], job->obj->pencolor.u.rgba [0], job->obj->pencolor.u.rgba [1], job->obj->pencolor.u.rgba [2]),
-		job->obj->penwidth);
+		(Gdiplus::REAL)job->obj->penwidth);
 
 	/* 
 	 * Set line type
@@ -236,7 +238,7 @@ static void gdiplusgen_ellipse(GVJ_t *job, pointf *A, int filled)
 	GraphicsPath path;
 	double dx = A[1].x - A[0].x;
 	double dy = A[1].y - A[0].y;
-	path.AddEllipse(RectF(A[0].x - dx, -A[0].y - dy, dx * 2.0, dy * 2.0));
+	path.AddEllipse(RectF((Gdiplus::REAL)(A[0].x - dx), (Gdiplus::REAL)( -A[0].y - dy), (Gdiplus::REAL)( dx * 2.0), (Gdiplus::REAL)( dy * 2.0)));
 	
 	/* draw the path */
 	gdiplusgen_path(job, &path, filled);
@@ -256,6 +258,8 @@ static void
 gdiplusgen_bezier(GVJ_t *job, pointf *A, int n, int arrow_at_start,
 	     int arrow_at_end, int filled)
 {
+	arrow_at_start;
+	arrow_at_end;
 	/* convert the beziers into path */
 	GraphicsPath path;
 	path.AddBeziers(&points(A,n).front(), n);

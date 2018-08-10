@@ -24,6 +24,6 @@ char *vmstrdup(Vmalloc_t * v, register const char *s)
 
     return ((t =
 	     vmalloc(v, n =
-		     strlen(s) + 1)) ? (char *) memcpy(t, s,
+		     strlen(s) + 1)) != 0 ? (char *) memcpy(t, s,
 						       n) : (char *) 0);
 }
