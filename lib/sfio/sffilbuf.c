@@ -72,7 +72,7 @@ int _sffilbuf(Sfio_t * f, reg int n)
 	    if (n > 0) {
 		if (r > n && f->extent < 0 && (f->flags & SF_SHARE))
 		    r = n;	/* read only as much as requested */
-		else if (justseek && n <= f->iosz && f->iosz <= f->size)
+		else if (justseek && n <= (int)f->iosz && f->iosz <= (size_t)f->size)
 		    r = f->iosz;	/* limit buffer filling */
 	    }
 	}

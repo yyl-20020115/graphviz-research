@@ -20,16 +20,17 @@
 #include "glcomppanel.h"
 
 
-static viewport_camera *new_viewport_camera(ViewInfo * view)
+static viewport_camera *new_viewport_camera(ViewInfo * _view)
 {
+	_view;
     return NEW(viewport_camera);
 }
 
-static void viewport_update_camera_indexes(ViewInfo * view)
+static void viewport_update_camera_indexes(ViewInfo * _view)
 {
     int ind = 0;
-    for (ind = 0; ind < view->camera_count; ind++) {
-	view->cameras[ind]->index = ind;
+    for (ind = 0; ind < _view->camera_count; ind++) {
+	_view->cameras[ind]->index = ind;
     }
 }
 

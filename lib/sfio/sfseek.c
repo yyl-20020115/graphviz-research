@@ -195,7 +195,7 @@ Sfoff_t sfseek(Sfio_t * f, Sfoff_t p, int type)
     }
     /* else, believe previous setting of f->iosz */
 
-    if (f->iosz >= f->size)
+    if (f->iosz >= (size_t)f->size)
 	f->iosz = 0;
 
     /* buffer is now considered empty */

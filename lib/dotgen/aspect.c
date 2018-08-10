@@ -1754,6 +1754,7 @@ void applyExpansion(graph_t * g)
  */
 static void zapLayers(graph_t * g)
 {
+	g;
 	int i, j;
 	int start = 0;
 	int count = 0;

@@ -204,7 +204,7 @@ action		:	LABEL ':' {
 				$1->lex = PROCEDURE;
 				expr.procedure = $1->value = exnewnode(expr.program, PROCEDURE, 1, $1->type, NiL, NiL);
 				expr.procedure->type = INTEGER;
-				if (!(disc = newof(0, Dtdisc_t, 1, 0)))
+				if (0==(disc = newof(0, Dtdisc_t, 1, 0)))
 					exnospace();
 				disc->key = offsetof(Exid_t, name);
 				if (expr.assigned && !streq($1->name, "begin"))
@@ -406,7 +406,7 @@ switch_list	:	/* empty */
 
 			if (expr.swstate)
 			{
-				if (!(sw = newof(0, Switch_t, 1, 0)))
+				if (0==(sw = newof(0, Switch_t, 1, 0)))
 				{
 					exnospace();
 					sw = &swstate;

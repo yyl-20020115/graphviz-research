@@ -152,10 +152,10 @@ static void glCompColorxlate(glCompColor* c,char* str)
 {
         gvcolor_t cl;
 	colorxlate(str, &cl, RGBA_DOUBLE);
-	c->R=cl.u.RGBA[0];
-	c->G=cl.u.RGBA[1];
-	c->B=cl.u.RGBA[2];
-	c->A=cl.u.RGBA[3];
+	c->R= (GLfloat)cl.u.RGBA[0];
+	c->G= (GLfloat)cl.u.RGBA[1];
+	c->B= (GLfloat)cl.u.RGBA[2];
+	c->A= (GLfloat)cl.u.RGBA[3];
 }
 
 /* If the "visible" attribute is not set or "", return true

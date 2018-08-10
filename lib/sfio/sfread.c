@@ -95,7 +95,7 @@ ssize_t sfread(reg Sfio_t * f, void * buf, reg size_t n)
 	    /* exact IO is desirable for these cases */
 	    if (SFDIRECT(f, n) || ((f->flags & SF_SHARE) && f->extent < 0))
 		r = (ssize_t) n;
-	    else if (justseek && n <= f->iosz && f->iosz <= f->size)
+	    else if (justseek && n <= f->iosz && f->iosz <=(size_t) f->size)
 		r = f->iosz;	/* limit buffering */
 	    else
 		r = f->size;	/* full buffering */

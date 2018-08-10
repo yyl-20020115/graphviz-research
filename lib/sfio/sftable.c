@@ -40,7 +40,7 @@ static Fmtpos_t *sffmtpos(Sfio_t * f, const char *form, va_list args,
 
     if (type < 0)
 	fp = NIL(Fmtpos_t *);
-    else if (!(fp = sffmtpos(f, form, args, -1)))
+    else if (0==(fp = sffmtpos(f, form, args, -1)))
 	return NIL(Fmtpos_t *);
 
     dollar = 0;

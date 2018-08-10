@@ -61,7 +61,7 @@ void *sfsetbuf(reg Sfio_t * f, reg void * buf, reg size_t size)
     reg Sfdisc_t *disc;
     reg ssize_t osize, blksize;
     reg int oflags, init, local;
-    Stat_t st;
+	Stat_t st = { 0 };
 
     SFONCE();
 
@@ -81,7 +81,7 @@ void *sfsetbuf(reg Sfio_t * f, reg void * buf, reg size_t size)
 	size = 0;
     }
 
-    if ((init = f->mode & SF_INIT)) {
+    if ((init = f->mode & SF_INIT) != 0) {
 	if (!f->pool && _sfsetpool(f) < 0)
 	    SFMTXRETURN(f, NIL(void *));
     } else if ((f->mode & SF_RDWR) != SFMODE(f, local)
@@ -243,7 +243,7 @@ void *sfsetbuf(reg Sfio_t * f, reg void * buf, reg size_t size)
 	}
 	if (!buf) {		/* do allocation */
 	    while (!buf && size > 0) {
-		if ((buf = (void *) malloc(size)))
+		if ((buf = (void *) malloc(size)) != 0)
 		    break;
 		else
 		    size /= 2;

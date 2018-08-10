@@ -268,7 +268,7 @@ lex(register Expr_t* ex)
 
 	for (;;)
 	{
-		if ((c = ex->input->peek))
+		if ((c = ex->input->peek)!=0)
 			ex->input->peek = 0;
 		else if (ex->input->pp)
 		{

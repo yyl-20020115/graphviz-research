@@ -875,7 +875,7 @@ int main(int argc, char *argv[])
 #if defined(_WIN32)
     lt_preloaded_symbols[0].address = (void*)(&gvplugin_neato_layout_LTX_library);
 #endif
-    gvc = gvContextPlugins(lt_preloaded_symbols, DEMAND_LOADING,TRUE);
+    gvc = gvContextPlugins(lt_preloaded_symbols, DEMAND_LOADING,(void*)TRUE);
     gs = readGraphs(&cnt, gvc);
     if (cnt == 0)
 	exit(0);

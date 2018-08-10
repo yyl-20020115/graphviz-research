@@ -235,7 +235,7 @@ static double project_to_line(point_t pt, point_t left, point_t right, real angl
 double ink(pedge* edges, int numEdges, int *pick, double *ink0, point_t *meet1, point_t *meet2, real angle_param, real angle)
 {
   int i;
-  point_t begin, end, mid, diff;
+  point_t begin = { 0.0,0.0 }, end = { 0.0,0.0 }, mid = { 0.0,0.0 }, diff = { 0.0,0.0 };
   pedge e;
   real *x;
   point_t* sources = N_NEW(numEdges, point_t);

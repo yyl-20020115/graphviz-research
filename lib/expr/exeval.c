@@ -716,7 +716,7 @@ exsplit(Expr_t * ex, register Exnode_t * expr, void *env)
 	    		addItem (arr, v, "");
 	    		v.integer++;
 			}
-			for (i = 1; i < sz; i++) {
+			for (i = 1; i < (int)sz; i++) {
 	    		addItem (arr, v, "");
 	    		v.integer++;
 			}

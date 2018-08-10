@@ -75,7 +75,7 @@ Sfdouble_t _sfstrtod(reg const char *s, char **retp)
 	++s;
 
     /* get the sign */
-    if ((sign = (*s == '-')) || *s == '+')
+    if ((sign = (*s == '-') )!= 0 || *s == '+')
 	s += 1;
 
     mode = IPART;
@@ -122,7 +122,7 @@ Sfdouble_t _sfstrtod(reg const char *s, char **retp)
 		    break;
 		mode = EPART;
 		c = *++s;
-		if ((expsign = (c == '-')) || c == '+')
+		if ((expsign = (c == '-')) != 0 || c == '+')
 		    s += 1;
 	    } else
 		break;

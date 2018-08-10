@@ -127,7 +127,7 @@ exfreenode(Expr_t* p, register Exnode_t* x)
 		break;
 	case ID:
 		rn = x->data.variable.reference;
-		while ((r = rn))
+		while ((r = rn) != 0)
 		{
 			rn = r->next;
 			vmfree(p->vm, r);
@@ -161,7 +161,7 @@ exfreenode(Expr_t* p, register Exnode_t* x)
 		if (x->data.print.descriptor)
 			exfreenode(p, x->data.print.descriptor);
 		pn = x->data.print.args;
-		while ((pr = pn))
+		while ((pr = pn) != 0)
 		{
 			for (i = 0; i < elementsof(pr->param) && pr->param[i]; i++)
 				exfreenode(p, pr->param[i]);
@@ -463,7 +463,7 @@ excast(Expr_t* p, register Exnode_t* x, register int type, register Exnode_t* xr
 			x->type = type;
 			return x;
 		}
-		if (!(t2t = TYPECAST(x->type, type)))
+		if (0==(t2t = TYPECAST(x->type, type)))
 			return x;
 		if (EXTERNAL(t2t) && !p->disc->convertf)
 			exerror("cannot convert %s to %s", extypename(p, x->type), extypename(p, type));
@@ -628,9 +628,9 @@ qualify(register Exref_t* ref, register Exid_t* sym)
 		ref = ref->next;
 	sfprintf(expr.program->tmp, "%s.%s", ref->symbol->name, sym->name);
 	s = exstash(expr.program->tmp, NiL);
-	if (!(x = (Exid_t*)dtmatch(expr.program->symbols, s)))
+	if (0==(x = (Exid_t*)dtmatch(expr.program->symbols, s)))
 	{
-		if ((x = newof(0, Exid_t, 1, strlen(s) - EX_NAMELEN + 1)))
+		if ((x = newof(0, Exid_t, 1, strlen(s) - EX_NAMELEN + 1))!=0)
 		{
 			memcpy(x, sym, sizeof(Exid_t) - EX_NAMELEN);
 			strcpy(x->name, s);
@@ -664,7 +664,7 @@ call(Exref_t* ref, register Exid_t* fun, register Exnode_t* args)
 	x->data.variable.reference = ref;
 	num = 0;
 	N(t);
-	while ((type = T(t)))
+	while ((type = T(t)) != 0)
 	{
 		if (!args)
 		{
@@ -895,20 +895,20 @@ expush(Expr_t* p, const char* name, int line, const char* sp, Sfio_t* fp)
 	register char*		s;
 	char			buf[PATH_MAX];
 
-	if (!(in = newof(0, Exinput_t, 1, 0)))
+	if (0==(in = newof(0, Exinput_t, 1, 0)))
 	{
 		exnospace();
 		return -1;
 	}
 	if (!p->input)
 		p->input = &expr.null;
-	if (!(in->bp = in->sp = (char*)sp))
+	if (0==(in->bp = in->sp = (char*)sp))
 	{
-		if ((in->fp = fp))
+		if ((in->fp = fp) != 0)
 			in->close = 0;
 		else if (name)
 		{
-			if (!(s = pathfind(name, p->disc->lib, p->disc->type, buf, sizeof(buf))) || !(in->fp = sfopen(NiL, s, "r")))
+			if (0==(s = pathfind(name, p->disc->lib, p->disc->type, buf, sizeof(buf))) || 0==(in->fp = sfopen(NiL, s, "r")))
 			{
 				exerror("%s: file not found", name);
 				in->bp = in->sp = "";
@@ -1061,13 +1061,13 @@ exclose(register Expr_t* p, int all)
 				dtclose(p->symbols);
 			if (p->tmp)
 				sfclose(p->tmp);
-			while ((in = p->input))
+			while ((in = p->input) != 0)
 			{
 				if (in->pushback)
 					free(in->pushback);
 				if (in->fp && in->close)
 					sfclose(in->fp);
-				if ((p->input = in->next))
+				if ((p->input = in->next) != 0)
 					free(in);
 			}
 			free(p);

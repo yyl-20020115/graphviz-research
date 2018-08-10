@@ -147,7 +147,7 @@ static int nsiter2(graph_t * g)
 	char *s;
 
 	if ((s = agget(g, "nslimit")) != 0)
-		maxiter = atof(s) * agnnodes(g);
+		maxiter = (int)(atof(s) * agnnodes(g));
 	return maxiter;
 }
 
@@ -184,7 +184,7 @@ edge_t *make_aux_edge(node_t * u, node_t * v, double len, int wt)
 	aghead(e) = v;
 	if (len > USHRT_MAX)
 		len = largeMinlen(len);
-	ED_minlen(e) = ROUND(len);
+	ED_minlen(e) =(unsigned short) ROUND(len);
 	ED_weight(e) = wt;
 	fast_edge(e);
 	return e;
@@ -259,7 +259,7 @@ make_LR_constraints(graph_t * g)
 			if (v) {
 				width = ND_rw(u) + ND_lw(v) + nodesep;
 				e0 = make_aux_edge(u, v, width, 0);
-				last = (ND_rank(v) = last + width);
+				last = (ND_rank(v) = (int)(last + width));
 			}
 
 			/* constraints from labels of flat edges on previous rank */
@@ -272,13 +272,13 @@ make_LR_constraints(graph_t * g)
 					e1 = ff;
 				}
 				m0 = (ED_minlen(e) * GD_nodesep(g)) / 2;
-				m1 = m0 + ND_rw(aghead(e0)) + ND_lw(agtail(e0));
+				m1 = m0 + (int)(ND_rw(aghead(e0)) + ND_lw(agtail(e0)));
 				/* these guards are needed because the flat edges
 				 * work very poorly with cluster layout */
 				if (canreach(agtail(e0), aghead(e0)) == FALSE)
 					make_aux_edge(aghead(e0), agtail(e0), m1,
 						ED_weight(e));
-				m1 = m0 + ND_rw(agtail(e1)) + ND_lw(aghead(e1));
+				m1 = m0 + (int)(ND_rw(agtail(e1)) + ND_lw(aghead(e1)));
 				if (canreach(aghead(e1), agtail(e1)) == FALSE)
 					make_aux_edge(agtail(e1), aghead(e1), m1,
 						ED_weight(e));

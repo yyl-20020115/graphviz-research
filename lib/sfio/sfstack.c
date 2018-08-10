@@ -53,7 +53,7 @@ Sfio_t *sfstack(Sfio_t * f1, Sfio_t * f2)
     _Sfstack = sfstack;
 
     if (f2 == SF_POPSTACK) {
-	if (!(f2 = f1->push))
+	if (0==(f2 = f1->push))
 	    STKMTXRETURN(f1, f2, NIL(Sfio_t *));
 	f2->mode &= ~SF_PUSH;
     } else {

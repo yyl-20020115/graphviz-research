@@ -74,7 +74,7 @@ int sfsync(reg Sfio_t * f)
     int local, rv, mode;
     Sfio_t *origf;
 
-    if (!(origf = f))
+    if (0==(origf = f))
 	return _sfall();
 
     SFMTXSTART(origf, -1);

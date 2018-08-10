@@ -114,7 +114,7 @@ collapse_rankset(graph_t * g, graph_t * subg, int kind)
 
 	u = v = agfstnode(subg);
 	if (u) {
-		ND_ranktype(u) = kind;
+		ND_ranktype(u) = (char)kind;
 		while ((v = agnxtnode(subg, v)) != 0) {
 			UF_union(u, v);
 			ND_ranktype(v) = ND_ranktype(u);
@@ -137,10 +137,10 @@ collapse_rankset(graph_t * g, graph_t * subg, int kind)
 		}
 		switch (kind) {
 		case SOURCERANK:
-			ND_ranktype(GD_minset(g)) = kind;
+			ND_ranktype(GD_minset(g)) = (char)kind;
 			break;
 		case SINKRANK:
-			ND_ranktype(GD_maxset(g)) = kind;
+			ND_ranktype(GD_maxset(g)) = (char)kind;
 			break;
 		}
 	}
@@ -157,7 +157,7 @@ rank_set_class(graph_t * g)
 	if (is_cluster(g))
 		return CLUSTER;
 	val = maptoken(agget(g, "rank"), name, class);
-	GD_set_type(g) = val;
+	GD_set_type(g) = (char)val;
 	return val;
 }
 
@@ -210,9 +210,9 @@ dot_scan_ranks(graph_t * g)
 	GD_maxrank(g) = -1;
 	for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
 		if (GD_maxrank(g) < ND_rank(n))
-			GD_maxrank(g) = ND_rank(n);
+			GD_maxrank(g) =(short) ND_rank(n);
 		if (GD_minrank(g) > ND_rank(n))
-			GD_minrank(g) = ND_rank(n);
+			GD_minrank(g) =(short) ND_rank(n);
 		if (leader == NULL)
 			leader = n;
 		else {
@@ -319,8 +319,8 @@ set_minmax(graph_t * g)
 {
 	int c;
 
-	GD_minrank(g) += ND_rank(GD_leader(g));
-	GD_maxrank(g) += ND_rank(GD_leader(g));
+	GD_minrank(g) += (short)ND_rank(GD_leader(g));
+	GD_maxrank(g) += (short)ND_rank(GD_leader(g));
 	for (c = 1; c <= GD_n_cluster(g); c++)
 		set_minmax(GD_clust(g)[c]);
 }
@@ -372,12 +372,12 @@ minmax_edges2(graph_t * g, point slen)
 				continue;
 			if ((ND_out(n).size == 0) && GD_maxset(g) && (n != GD_maxset(g))) {
 				e = virtual_edge(n, GD_maxset(g), NULL);
-				ED_minlen(e) = slen.y;
+				ED_minlen(e) = (unsigned short)slen.y;
 				ED_weight(e) = 0;
 			}
 			if ((ND_in(n).size == 0) && GD_minset(g) && (n != GD_minset(g))) {
 				e = virtual_edge(GD_minset(g), n, NULL);
-				ED_minlen(e) = slen.x;
+				ED_minlen(e) = (unsigned short)slen.x;
 				ED_weight(e) = 0;
 			}
 		}
@@ -441,9 +441,9 @@ static void expand_ranksets(graph_t * g, aspect_t* asp)
 				ND_rank(n) += ND_rank(leader);
 
 			if (GD_maxrank(g) < ND_rank(n))
-				GD_maxrank(g) = ND_rank(n);
+				GD_maxrank(g) = (short)ND_rank(n);
 			if (GD_minrank(g) > ND_rank(n))
-				GD_minrank(g) = ND_rank(n);
+				GD_minrank(g) = (short)ND_rank(n);
 
 			if (ND_ranktype(n) && (ND_ranktype(n) != LEAFSET))
 				UF_singleton(n);
@@ -554,7 +554,6 @@ restoreVirtualEdges(graph_t *g)
 int dumpGraph(graph_t* g) {
 	FILE* f = fopen("\\WorkingCurrent\\gv\\debug-gv-node-with-rank.txt", "w+");
 
-	int t = 0;
 	for (node_t* n = agfstnode(g); n; n = agnxtnode(g, n))
 	{
 		fprintf(f, "%6d:%s\n", ND_rank(n), ND_label(n)->text);
@@ -569,7 +568,7 @@ int dumpGraph(graph_t* g) {
  */
 static void dot1_rank(graph_t * g, aspect_t* asp)
 {
-	int nn =0, ne=0;
+//	int nn =0, ne=0;
 	point p;
 #ifdef ALLOW_LEVELS
 	attrsym_t* N_level;
@@ -590,7 +589,7 @@ static void dot1_rank(graph_t * g, aspect_t* asp)
 	p = minmax_edges(g); // done nothing, p = (0,0)
 	decompose(g, 0);
 
-	int s = GD_comp(g).size;//s==1
+//	int s = GD_comp(g).size;//s==1
 
 	if (asp && ((GD_comp(g).size > 1) || (GD_n_cluster(g) > 0))) {
 		asp->badGraph = 1;
@@ -937,7 +936,7 @@ static void compile_nodes(graph_t * g, graph_t * Xg)
 
 static void merge(edge_t * e, int minlen, int weight)
 {
-	ED_minlen(e) = MAX(ED_minlen(e), minlen);
+	ED_minlen(e) =(unsigned short) MAX(ED_minlen(e), minlen);
 	ED_weight(e) += weight;
 }
 
@@ -1147,9 +1146,9 @@ static void readout_levels(graph_t * g, graph_t * Xg, int ncc)
 		xn = ND_rep(find(n));
 		ND_rank(n) = ND_rank(xn);
 		if (GD_maxrank(g) < ND_rank(n))
-			GD_maxrank(g) = ND_rank(n);
+			GD_maxrank(g) = (short)ND_rank(n);
 		if (GD_minrank(g) > ND_rank(n))
-			GD_minrank(g) = ND_rank(n);
+			GD_minrank(g) = (short)ND_rank(n);
 		if (minrk) {
 			ND_comp(n) = ND_comp(xn);
 			minrk[ND_comp(n)] = MIN(minrk[ND_comp(n)], ND_rank(n));
@@ -1165,8 +1164,8 @@ static void readout_levels(graph_t * g, graph_t * Xg, int ncc)
 		int delta = GD_minrank(g);
 		for (n = agfstnode(g); n; n = agnxtnode(g, n))
 			ND_rank(n) -= delta;
-		GD_minrank(g) -= delta;
-		GD_maxrank(g) -= delta;
+		GD_minrank(g) -= (short)delta;
+		GD_maxrank(g) -= (short)delta;
 	}
 
 	setMinMax(g, doRoot);
@@ -1270,7 +1269,7 @@ void dot2_rank(graph_t * g, aspect_t* asp)
 	edgelabel_ranks(g);
 
 	if ((s = agget(g, "nslimit1")) != 0)
-		maxiter = atof(s) * agnnodes(g);
+		maxiter =(int)(atof(s) * agnnodes(g));
 	else
 		maxiter = INT_MAX;
 

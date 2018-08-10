@@ -1150,10 +1150,10 @@ static void set_color_theme_color(colorschemaset * sc, char **colorstr, int smoo
 	av_perc = (float)(1.0 / (colorcnt));
 	for (ind = 0; ind < colorcnt; ind++) {
 	    colorxlate(colorstr[ind], &cl, RGBA_DOUBLE);
-	    sc->s[ind].c.R = cl.u.RGBA[0];
-	    sc->s[ind].c.G = cl.u.RGBA[1];
-	    sc->s[ind].c.B = cl.u.RGBA[2];
-	    sc->s[ind].c.A = cl.u.RGBA[3];
+	    sc->s[ind].c.R = (GLfloat) cl.u.RGBA[0];
+	    sc->s[ind].c.G = (GLfloat)cl.u.RGBA[1];
+	    sc->s[ind].c.B = (GLfloat)cl.u.RGBA[2];
+	    sc->s[ind].c.A = (GLfloat)cl.u.RGBA[3];
 	    sc->s[ind].perc = (ind+1) * av_perc;
 	}
     }

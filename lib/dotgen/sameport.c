@@ -113,6 +113,7 @@ static void sameport(node_t * u, elist * l, double arr_len)
    It's used for edges that don't themselves have an arrow.
 */
 {
+	arr_len;
 	node_t *v;
 	edge_t *e, *f;
 	int i;
@@ -169,8 +170,7 @@ static void sameport(node_t * u, elist * l, double arr_len)
 	prt.p.x = ROUND(x1);
 	prt.p.y = ROUND(y1);
 	prt.bp = 0;
-	prt.order =
-		(MC_SCALE * (ND_lw(u) + prt.p.x)) / (ND_lw(u) + ND_rw(u));
+	prt.order =(unsigned char)((MC_SCALE * (ND_lw(u) + prt.p.x)) / (ND_lw(u) + ND_rw(u)));
 	prt.constrained = FALSE;
 	prt.defined = TRUE;
 	prt.clip = FALSE;

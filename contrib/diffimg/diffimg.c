@@ -39,16 +39,16 @@
 #define EX_DATAERR		65
 #define EX_NOINPUT		66
 #define EX_UNAVAILABLE	69
-#ifndef bool
-#define bool int
-#endif
+
 #define false 0
 #else
 #include <sysexits.h>
 #endif
 #include <gd.h>
 #include <stdbool.h>
-
+#ifndef bool
+#define bool int
+#endif
 #define NOT(v) (!(v))
 #ifndef false
 #define false 0

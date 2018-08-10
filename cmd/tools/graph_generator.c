@@ -230,7 +230,7 @@ void makeTree(int depth, int nary, edgefn ef)
     unsigned int idx = 2;
 
     for (i = 1; i <= n; i++) {
-	for (j = 0; j < nary; j++) {
+	for (j = 0; j < (unsigned int)nary; j++) {
 	    ef (i, idx++);
 	}
     }
