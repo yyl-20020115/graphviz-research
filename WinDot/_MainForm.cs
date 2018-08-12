@@ -13,7 +13,7 @@ namespace WinDot
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var txt = System.IO.File.ReadAllText("Network.gv");
+            var txt = System.IO.File.ReadAllText("\\WorkingCurrent\\gv\\Network.gv");
             using (GraphResult g = GraphProvider.Generate(txt, "dot", "bmp"))
             {
                 if (g != null)

@@ -64,23 +64,82 @@ interclust1(graph_t * g, node_t * t, node_t * h, edge_t * e)
 	rh = make_aux_edge(v, h0, h_len, ED_weight(e));
 	ED_to_orig(rt) = ED_to_orig(rh) = e;
 }
+char* translate_type(int type) {
+	switch (type)
+	{
+	case NORMAL:
+		return "normal";
+	case VIRTUAL:
+		return "virtual";
+	case SLACKNODE:
+		return "slack";
+	case REVERSED:
+		return "reversed";
+	case FLATORDER:
+		return "flatorder";
+	case CLUSTER_EDGE:
+		return "clusteredge";
+	case IGNORED:
+		return "ignored";
+	default:
+		return "unknown";
+	}
+}
+
+void printEdge(edge_t* edge, char* buffer, int length) {
+	node_t* head = aghead(edge);
+	node_t* tail = agtail(edge);
+
+	textlabel_t* label = 0;
+
+	int n = snprintf(buffer, length, "[");
+	length -= n;
+	buffer += n;
+	label = ND_label(tail);
+	if (label != 0) {
+		n = snprintf(buffer, length, "(%s)", label->text);
+	}
+	else {
+		n = snprintf(buffer, length, "(%d:%s)", ND_id(tail), translate_type(ND_node_type(tail)));
+	}
+	length -= n;
+	buffer += n;
+
+	n = snprintf(buffer, length, "->");
+	length -= n;
+	buffer += n;
+
+	label = ND_label(head);
+	if (label != 0) {
+		n = snprintf(buffer, length, "(%s)", label->text);
+	}
+	else {
+		n = snprintf(buffer, length, "(%d:%s)", ND_id(head), translate_type(ND_node_type(head)));
+	}
+	length -= n;
+	buffer += n;
+
+	n = snprintf(buffer, length, "]");
+	length -= n;
+	buffer += n;
+
+}
 void class1(graph_t * g)
 {
 	node_t *n, *t, *h;
 	edge_t *e, *rep;
-
+	char display_e[256] = { 0 };
+	char display_f[256] = { 0 };
 	mark_clusters(g);//cluster of nodes are removed and nothing elses
 
-	//int es = 0; //197
-	//for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
-	//	for (e = agfstout(g, n); e; e = agnxtout(g, e)) {
-	//		es++;
-	//	}
-	//}
+
 	for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
 		for (e = agfstout(g, n); e; e = agnxtout(g, e)) {
+			memset(display_e, 0, sizeof(display_e));
+			memset(display_f, 0, sizeof(display_f));
 
-			/* skip edges already processed */
+			printEdge(e, display_e, sizeof(display_e));
+
 			if (ED_to_virt(e))
 				continue;
 

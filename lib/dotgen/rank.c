@@ -549,20 +549,7 @@ restoreVirtualEdges(graph_t *g)
 		printf("restored %d virt edges\n", nVirtualEdges);
 }
 #endif
-#ifndef EXP_GRAPH
-#define EXP_GRAPH
-int dumpGraph(graph_t* g) {
-	FILE* f = fopen("\\WorkingCurrent\\gv\\debug-gv-node-with-rank.txt", "w+");
 
-	for (node_t* n = agfstnode(g); n; n = agnxtnode(g, n))
-	{
-		fprintf(f, "%6d:%s\n", ND_rank(n), ND_label(n)->text);
-	}
-
-	fclose(f);
-	return 0;
-}
-#endif
 /* dot1_rank:
  * asp != NULL => g is root
  */
@@ -588,9 +575,9 @@ static void dot1_rank(graph_t * g, aspect_t* asp)
 
 	p = minmax_edges(g); // done nothing, p = (0,0)
 	decompose(g, 0);
-
+#ifdef _DEBUG
 //	int s = GD_comp(g).size;//s==1
-
+#endif
 	if (asp && ((GD_comp(g).size > 1) || (GD_n_cluster(g) > 0))) {
 		asp->badGraph = 1;
 		asp = NULL;
@@ -614,7 +601,6 @@ static void dot1_rank(graph_t * g, aspect_t* asp)
 			rank1(g);
 
 	expand_ranksets(g, asp);
-	//dumpGraph(g);
 
 	cleanup1(g);
 }

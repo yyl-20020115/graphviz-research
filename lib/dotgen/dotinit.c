@@ -288,26 +288,50 @@ attach_phase_attrs(Agraph_t * g, int maxphase)
 		}
 	}
 }
-static void dumpPositions(Agraph_t * g)
+static int nodeCompare(void const* a, void const* b)
 {
-	node_t* n = 0;
-	FILE* fp = fopen("\\WorkingCurrent\\gv\\debug-gv-positions.txt", "w+");
-	if (fp != 0) {
-		for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
-			char* t = ND_label(n)->text;
-			fprintf(fp, "%s:(%lf,%lf)\n", t, ND_coord(n).x, ND_coord(n).y);
-		}
-		fclose(fp);
-	}
+	node_t** n1 = (node_t**)a;
+	node_t** n2 = (node_t**)b;
 
+	return ND_rank(*n1) - ND_rank(*n2);
 }
-static void dumpRanks(graph_t * g)
+static int dumpRanks(graph_t* g) {
+	
+	int count = 0;
+	for (node_t* n = agfstnode(g); n; n = agnxtnode(g, n))
+		count++;
+
+	node_t** nodes = (node_t**)calloc(count, sizeof(node_t*));
+
+	if (nodes != 0)
+	{
+		int i = 0;
+		for (node_t* n = agfstnode(g); n; n = agnxtnode(g, n))
+			nodes[i++] = n;
+
+		qsort(nodes, count, sizeof(node_t*), nodeCompare);
+
+		FILE* f = fopen("\\WorkingCurrent\\gv\\debug-gv-ranks.txt", "w+");
+
+		for (i = 0;i<count;i++)
+		{
+			node_t* n = nodes[i];
+			fprintf(f, "%06d:%s\n", ND_rank(n), ND_label(n)->text);
+		}
+
+		fclose(f);
+
+		free(nodes);
+	}
+	return 0;
+}
+static void dumpMinCross(graph_t * g)
 {
 	int i, j;
 	node_t* u;
 	rank_t *rank = GD_rank(g);
 	int rcnt = 0;
-	FILE* fp = fopen("\\WorkingCurrent\\gv\\debug-gv-ranks.txt", "w+");
+	FILE* fp = fopen("\\WorkingCurrent\\gv\\debug-gv-node-with-rank.txt", "w+");
 	if (fp != 0) {
 		for (i = GD_minrank(g); i <= GD_maxrank(g); i++) {
 			fprintf(fp, "Rank=%d:\n", i);
@@ -328,6 +352,20 @@ static void dumpRanks(graph_t * g)
 	}
 }
 
+static void dumpPositions(Agraph_t * g)
+{
+	node_t* n = 0;
+	FILE* fp = fopen("\\WorkingCurrent\\gv\\debug-gv-positions.txt", "w+");
+	if (fp != 0) {
+		for (n = agfstnode(g); n; n = agnxtnode(g, n)) {
+			char* t = ND_label(n)->text;
+			fprintf(fp, "%s:(%lf,%lf)\n", t, ND_coord(n).x, ND_coord(n).y);
+		}
+		fclose(fp);
+	}
+
+}
+
 
 static void dotLayout(Agraph_t * g)
 {
@@ -346,6 +384,7 @@ static void dotLayout(Agraph_t * g)
 
 	do {
 		dot_rank(g, asp);
+		dumpRanks(g);
 		if (maxphase == 1) {
 			attach_phase_attrs(g, 1);
 			return;
@@ -356,19 +395,19 @@ static void dotLayout(Agraph_t * g)
 			aspect.nextIter = 0;
 		}
 		dot_mincross(g, (asp != NULL));
+		dumpMinCross(g);
 		if (maxphase == 2) {
 			attach_phase_attrs(g, 2);
 			return;
 		}
-		dumpRanks(g);
 		dot_position(g, asp);
+		dumpPositions(g);
 		if (maxphase == 3) {
 			attach_phase_attrs(g, 2);  /* positions will be attached on output */
 			return;
 		}
 		aspect.nPasses--;
 	} while (aspect.nextIter && aspect.nPasses);
-	//dumpPositions(g);
 	if (GD_flags(g) & NEW_RANK) {
 		removeFill(g); //not called
 	}
