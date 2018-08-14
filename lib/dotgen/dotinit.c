@@ -331,7 +331,7 @@ static void dumpMinCross(graph_t * g)
 	node_t* u;
 	rank_t *rank = GD_rank(g);
 	int rcnt = 0;
-	FILE* fp = fopen("\\WorkingCurrent\\gv\\debug-gv-node-with-rank.txt", "w+");
+	FILE* fp = fopen("\\WorkingCurrent\\gv\\debug-gv-mincross.txt", "w+");
 	if (fp != 0) {
 		for (i = GD_minrank(g); i <= GD_maxrank(g); i++) {
 			fprintf(fp, "Rank=%d:\n", i);

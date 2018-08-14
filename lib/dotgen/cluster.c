@@ -273,7 +273,8 @@ remove_rankleaders(graph_t * g)
 
 	for (r = GD_minrank(g); r <= GD_maxrank(g); r++) {
 		v = GD_rankleader(g)[r];
-
+		//out=FastOut
+		//in=FastIn
 		/* remove the entire chain */
 		while ((e = ND_out(v).list[0]) != 0)
 			delete_fast_edge(e);
