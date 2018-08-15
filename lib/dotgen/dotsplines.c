@@ -129,7 +129,7 @@ int portcmp(port p0, port p1)
 }
 
 /* swap_bezier:
- * 
+ *
  */
 static void swap_bezier(bezier * old, bezier * new)
 {
@@ -303,7 +303,7 @@ static void _dot_splines(graph_t * g, int normalize)
 		n_nodes += GD_rank(g)[i].n;
 		if ((n = GD_rank(g)[i].v[0]) != 0)
 			sd.LeftBound = MIN(sd.LeftBound, (ND_coord(n).x - ND_lw(n)));
-		if (GD_rank(g)[i].n && (n = GD_rank(g)[i].v[GD_rank(g)[i].n - 1])!=0)
+		if (GD_rank(g)[i].n && (n = GD_rank(g)[i].v[GD_rank(g)[i].n - 1]) != 0)
 			sd.RightBound = MAX(sd.RightBound, (ND_coord(n).x + ND_rw(n)));
 		sd.LeftBound -= MINW;
 		sd.RightBound += MINW;
@@ -1967,24 +1967,24 @@ completeregularpath(path * P, edge_t * first, edge_t * last,
 	uleft = uright = NULL;
 	uleft = top_bound(first, -1), uright = top_bound(first, 1);
 	if (uleft) {
-		if (0==(spl = getsplinepoints(uleft))) return;
+		if (0 == (spl = getsplinepoints(uleft))) return;
 		pp = spl->list[0].list;
 		pn = spl->list[0].size;
 	}
 	if (uright) {
-		if (0==(spl = getsplinepoints(uright))) return;
+		if (0 == (spl = getsplinepoints(uright))) return;
 		pp = spl->list[0].list;
 		pn = spl->list[0].size;
 	}
 	lleft = lright = NULL;
 	lleft = bot_bound(last, -1), lright = bot_bound(last, 1);
 	if (lleft) {
-		if (0==(spl = getsplinepoints(lleft))) return;
+		if (0 == (spl = getsplinepoints(lleft))) return;
 		pp = spl->list[spl->size - 1].list;
 		pn = spl->list[spl->size - 1].size;
 	}
 	if (lright) {
-		if (0==(spl = getsplinepoints(lright))) return;
+		if (0 == (spl = getsplinepoints(lright))) return;
 		pp = spl->list[spl->size - 1].list;
 		pn = spl->list[spl->size - 1].size;
 	}
@@ -2320,7 +2320,7 @@ static void recover_slack(edge_t * e, path * p)
 	}
 }
 
-static void resize_vn(node_t* vn, int lx, int cx,int rx)
+static void resize_vn(node_t* vn, int lx, int cx, int rx)
 {
 	ND_coord(vn).x = cx;
 	ND_lw(vn) = cx - lx, ND_rw(vn) = rx - cx;
@@ -2332,7 +2332,7 @@ static edge_t *top_bound(edge_t * e, int side)
 	edge_t *f, *ans = NULL;
 	int i;
 
-	for (i = 0; (f = ND_out(agtail(e)).list[i])!=0; i++) {
+	for (i = 0; (f = ND_out(agtail(e)).list[i]) != 0; i++) {
 #if 0				/* were we out of our minds? */
 		if (ED_tail_port(e).p.x != ED_tail_port(f).p.x)
 			continue;
@@ -2354,7 +2354,7 @@ static edge_t *bot_bound(edge_t * e, int side)
 	edge_t *f, *ans = NULL;
 	int i;
 
-	for (i = 0; (f = ND_in(aghead(e)).list[i])!=0; i++) {
+	for (i = 0; (f = ND_in(aghead(e)).list[i]) != 0; i++) {
 #if 0				/* same here */
 		if (ED_head_port(e).p.x != ED_head_port(f).p.x)
 			continue;
@@ -2441,7 +2441,7 @@ static boxf maximal_bbox(graph_t* g, spline_info_t* sp, node_t* vn, edge_t* ie, 
 
 	/* give this node all the available space up to its neighbors */
 	b = (double)(ND_coord(vn).x - ND_lw(vn) - FUDGE);
-	if ((left = neighbor(g, vn, ie, oe, -1))!=0) {
+	if ((left = neighbor(g, vn, ie, oe, -1)) != 0) {
 		if ((left_cl = cl_bound(g, vn, left)) != 0)
 			nb = GD_bb(left_cl).UR.x + (double)(sp->Splinesep);
 		else {
@@ -2522,7 +2522,7 @@ static boolean pathscross(node_t* n0, node_t* n1, edge_t* ie1, edge_t * oe1)
 	int order, cnt;
 
 	order = (ND_order(n0) > ND_order(n1));
-	if ((ND_out(n0).size != 1) && (ND_out(n0).size != 1))
+	if ((ND_out(n0).size != 1) && (ND_out(n1).size != 1))
 		return FALSE;
 	e1 = oe1;
 	if (ND_out(n0).size == 1 && e1) {
