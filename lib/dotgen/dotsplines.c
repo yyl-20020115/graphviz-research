@@ -381,7 +381,8 @@ static void _dot_splines(graph_t * g, int normalize)
 		}
 	}
 
-	for (i = 0; i < n_edges;) {
+	for (i = 0; i < n_edges;) 
+	{
 		ind = i;
 		le0 = getmainedge((e0 = edges[i++]));
 		if (ED_tail_port(e0).defined || ED_head_port(e0).defined) {
@@ -394,17 +395,21 @@ static void _dot_splines(graph_t * g, int normalize)
 			MAKEFWDEDGE(&fwdedgea.out, ea);
 			ea = &fwdedgea.out;
 		}
-		for (cnt = 1; i < n_edges; cnt++, i++) {
+		for (cnt = 1; i < n_edges; cnt++, i++) 
+		{
 			if (le0 != (le1 = getmainedge((e1 = edges[i]))))
 				break;
 			if (ED_adjacent(e0)) continue; /* all flat adjacent edges at once */
-			if (ED_tail_port(e1).defined || ED_head_port(e1).defined) {
+			if (ED_tail_port(e1).defined || ED_head_port(e1).defined) 
+			{
 				eb = e1;
 			}
-			else {
+			else 
+			{
 				eb = le1;
 			}
-			if (ED_tree_index(eb) & BWDEDGE) {
+			if (ED_tree_index(eb) & BWDEDGE)
+			{
 				MAKEFWDEDGE(&fwdedgeb.out, eb);
 				eb = &fwdedgeb.out;
 			}
@@ -452,7 +457,7 @@ static void _dot_splines(graph_t * g, int normalize)
 				int dwny = ND_coord(n).y - ND_coord(GD_rank(g)[r + 1].v[0]).y;
 				sizey = MIN(upy, dwny);
 			}
-			makeSelfEdge(P, edges, ind, cnt, sd.Multisep, sizey / 2, &sinfo);
+			makeSelfEdge(edges, ind, cnt, sd.Multisep, sizey / 2, &sinfo);
 			for (b = 0; b < cnt; b++) {
 				e = edges[ind + b];
 				if (ED_label(e))
@@ -1346,8 +1351,10 @@ makeFlatEnd(graph_t* g, spline_info_t* sp, path* P, node_t* n, edge_t* e, pathen
 
 	b = endp->nb = maximal_bbox(g, sp, n, NULL, e);
 	endp->sidemask = TOP;
-	if (isBegin) beginpath(P, e, FLATEDGE, endp, FALSE);
-	else endpath(P, e, FLATEDGE, endp, FALSE);
+	if (isBegin) 
+		beginpath(P, e, FLATEDGE, endp, FALSE);
+	else 
+		endpath(P, e, FLATEDGE, endp, FALSE);
 	b.UR.y = endp->boxes[endp->boxn - 1].UR.y;
 	b.LL.y = endp->boxes[endp->boxn - 1].LL.y;
 	b = makeregularend(b, TOP, ND_coord(n).y + GD_rank(g)[ND_rank(n)].ht2);
@@ -1364,8 +1371,10 @@ makeBottomFlatEnd(graph_t* g, spline_info_t* sp, path* P, node_t* n, edge_t* e,
 
 	b = endp->nb = maximal_bbox(g, sp, n, NULL, e);
 	endp->sidemask = BOTTOM;
-	if (isBegin) beginpath(P, e, FLATEDGE, endp, FALSE);
-	else endpath(P, e, FLATEDGE, endp, FALSE);
+	if (isBegin)
+		beginpath(P, e, FLATEDGE, endp, FALSE);
+	else 
+		endpath(P, e, FLATEDGE, endp, FALSE);
 	b.UR.y = endp->boxes[endp->boxn - 1].UR.y;
 	b.LL.y = endp->boxes[endp->boxn - 1].LL.y;
 	b = makeregularend(b, BOTTOM, ND_coord(n).y - GD_rank(g)[ND_rank(n)].ht2);
@@ -1627,8 +1636,10 @@ make_flat_edge(graph_t* g, spline_info_t* sp, path * P, edge_t ** edges, int ind
 		for (j = 0; j < boxn; j++) add_box(P, boxes[j]);
 		for (j = hend.boxn - 1; j >= 0; j--) add_box(P, hend.boxes[j]);
 
-		if (et == ET_SPLINE) ps = routesplines(P, &pn);
-		else ps = routepolylines(P, &pn);
+		if (et == ET_SPLINE) 
+			ps = routesplines(P, &pn);
+		else
+			ps = routepolylines(P, &pn);
 		if (pn == 0)
 			return;
 		clip_and_install(e, aghead(e), ps, pn, &sinfo);
@@ -1844,7 +1855,10 @@ make_regular_edge(graph_t* g, spline_info_t* sp, path * P, edge_t ** edges, int 
 				hend.boxes[hend.boxn++] = b;
 			P->end.theta = M_PI / 2, P->end.constrained = TRUE;
 			completeregularpath(P, segfirst, e, &tend, &hend, boxes, boxn, 1);
-			if (splines) ps = routesplines(P, &pn);
+			if (splines)
+			{
+				ps = routesplines(P, &pn);
+			}
 			else {
 				ps = routepolylines(P, &pn);
 				if ((et == ET_LINE) && (pn > 4)) {

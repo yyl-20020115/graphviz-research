@@ -121,7 +121,7 @@ extern "C" {
     extern void* init_xdot (Agraph_t* g);
     extern int initMapData (GVJ_t*, char*, char*, char*, char*, char*, void*);
     extern boolean isPolygon(node_t *);
-    extern void makeSelfEdge(path * P, edge_t * edges[], int ind, int cnt,
+    extern void makeSelfEdge(edge_t * edges[], int ind, int cnt,
 	double sizex, double sizey, splineInfo * sinfo);
     extern textlabel_t *make_label(void *obj, char *str, int kind, double fontsize, char *fontname, char *fontcolor);
     extern bezier *new_spline(edge_t * e, int sz);
