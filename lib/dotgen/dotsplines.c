@@ -299,7 +299,10 @@ static void _dot_splines(graph_t * g, int normalize)
 	/* compute boundaries and list of splines */
 	sd.LeftBound = sd.RightBound = 0;
 	n_edges = n_nodes = 0;
-	for (i = GD_minrank(g); i <= GD_maxrank(g); i++) {
+	int mi = GD_minrank(g);
+	int mx = GD_maxrank(g);
+
+	for (i = mi; i <= mx; i++) {
 		n_nodes += GD_rank(g)[i].n;
 		if ((n = GD_rank(g)[i].v[0]) != 0)
 			sd.LeftBound = MIN(sd.LeftBound, (ND_coord(n).x - ND_lw(n)));
